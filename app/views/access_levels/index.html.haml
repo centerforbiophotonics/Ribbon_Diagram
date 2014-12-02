@@ -1,0 +1,23 @@
+%h1 Listing access_levels
+
+%table
+  %tr
+    %th Code
+    %th Description
+    %th Institution
+    %th
+    %th
+    %th
+
+  - @access_levels.each do |access_level|
+    %tr
+      %td= access_level.code
+      %td= access_level.description
+      %td= access_level.institution_id
+      %td= link_to 'Show', access_level
+      %td= link_to 'Edit', edit_access_level_path(access_level)
+      %td= link_to 'Destroy', access_level, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Access level', new_access_level_path

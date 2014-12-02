@@ -1,0 +1,21 @@
+%h1 Listing user_diagrams
+
+%table
+  %tr
+    %th User
+    %th Diagram
+    %th
+    %th
+    %th
+
+  - @user_diagrams.each do |user_diagram|
+    %tr
+      %td= user_diagram.user
+      %td= user_diagram.diagram
+      %td= link_to 'Show', user_diagram
+      %td= link_to 'Edit', edit_user_diagram_path(user_diagram)
+      %td= link_to 'Destroy', user_diagram, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New User diagram', new_user_diagram_path

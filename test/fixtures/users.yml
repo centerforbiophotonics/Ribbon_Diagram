@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  institution_id: 
+  access_level: 1
+  access_level_desc: MyString
+  name: MyString
+  email: MyString
+
+two:
+  institution_id: 
+  access_level: 1
+  access_level_desc: MyString
+  name: MyString
+  email: MyString

@@ -1,0 +1,442 @@
+:javascript
+  function UCDRibbonGraphDiagram(graph, data){
+    this.graph = graph;
+    this.statuses = data.statuses;
+    this.background = data.background;
+    this.majors = data.majors;
+    this.starting_term = data.starting_term;
+    this.color = d3.scale.category20();
+
+  }
+
+  UCDRibbonGraphDiagram.prototype = {
+
+
+    draw : function(){
+      var disciplines = #{@disciplines.to_json};
+      var majors = #{@majors.to_json};
+
+      var start_disc_expanded = {};
+      var end_disc_expanded = {};
+
+      var unselected_link_opacity = 0.1;
+
+
+      disciplines.forEach(function(d){
+        start_disc_expanded[d] = false;
+        end_disc_expanded[d] = false;
+      })
+
+
+
+      var graph = this.graph,
+          majors = this.majors,
+          starting_term = this.starting_term,
+          sankey_object = graph.to_sankey_object(),
+          color = this.color,
+          diagram = this;
+
+      var shift_key_down = false;
+      var ctrl_key_down = false;
+      var alt_key_down = false;
+      function record_key_state(e){
+        shift_key_down = e.shiftKey;
+        ctrl_key_down = e.ctrlKey;
+        alt_key_down = e.altKey;
+       }
+      $(document).keydown(record_key_state).keyup(record_key_state);
+
+
+      //var years_from_start = parseInt($("#end_term").val());
+      var end_term = parseInt($("#end_term").val());//graph.end_of_nth_year_from_fall_term(starting_term, years_from_start);
+      var end_year = Math.floor(end_term / 100);
+      var end_term_season = "";
+      if (end_term % 100 == 10) end_term_season = 'Fall';
+      else if (end_term % 100 == 7) end_term_season = 'Summer';
+      else if (end_term % 100 == 3) end_term_season = 'Spring';
+      else if (end_term % 100 == 1) end_term_season = 'Winter';
+
+
+      function color_from_discipline(d){
+
+
+        var label = d.source == undefined ? d.get_unique_name() : d.source.get_unique_name();
+
+        if (label == "Left")
+          return "#000000";
+        else if (label == "Enrolled")
+          return "#555555";
+        else if (label == "Dismissed")
+          return "#FF0000";
+        else if (label == "PELP")
+          return "#FFFF00";
+        else
+          return color(label);
+      }
+
+      function isShowing(element, index, array){
+        if (element.type == undefined){    //element is a link
+          return element.source.show && element.target.show;
+        } else    //element is a node
+          return element.show;
+      }
+
+      function isSelected(element, index, array){
+        return element.selected;
+      }
+
+      function perc_of_major_in_discipline(major_node){
+        var sum = 0;
+        graph.nodes.forEach(function(n){
+          if (n.type == 'Major' && n.discipline == major_node.discipline && n.time == major_node.time){
+             sum += n.value;
+          }
+        });
+        return major_node.value/sum;
+      }
+
+      function perc_of_discipline_in_total(disc_node){
+        var sum = 0;
+        graph.nodes.forEach(function(n){
+          if (n.type == 'Discipline' && n.time == disc_node.time){
+             sum += n.value;
+          }
+        });
+        return disc_node.value/sum;
+      }
+
+      $("#start_title").text("Status Fall "+parseInt(starting_term/100));
+      $("#end_title").text("Status "+end_term_season+" "+end_year);
+      $("#vis_title").text("Starting Class of Fall "+parseInt(starting_term/100));
+
+      $('#get_csv').attr('href', 'major_in_outs.csv?starting_term='+starting_term);
+      $('#controls').show();
+      $('#control_toggle_container').show();
+
+      $('#major_in_outs_chart').html('')
+
+      var margin = {top: 10, right: 200, bottom: 6, left: 200},
+          width = 940 - margin.left - margin.right,
+          height = 800 - margin.top - margin.bottom;
+
+      disciplines.forEach(function(d){
+
+        start_side_num_expanded = 0;
+        end_side_num_expanded = 0;
+        if (start_disc_expanded[d]) start_side_num_expanded++;
+        if (end_disc_expanded[d]) end_side_num_expanded++;
+
+        height += Math.max(start_side_num_expanded, end_side_num_expanded) * 400;
+      });
+
+      $("#major_in_outs_chart").height(height + margin.top + margin.bottom);
+
+      var formatNumber = d3.format(",.0f"),
+          format = function(d) { return formatNumber(d) + " Students"; };
+
+      var svg = d3.select("#major_in_outs_chart").append("svg")
+          .style("width", width + margin.left + margin.right)
+          .style("margin", "0 auto")
+          .style("height", height + margin.top + margin.bottom)
+          .style("display","block")
+          .style("overflow-x","visible")
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var sankey = d3.sankey()
+          .nodeWidth(15)
+          .nodePadding(10)
+          .size([width, height]);
+
+      var path = sankey.link();
+
+
+      graph.links.forEach(function(l){
+        if(l.target.selected || l.source.selected)
+          l.selected = true;
+      });
+
+
+      var filtered_nodes = sankey_object.nodes;
+      var filtered_links = sankey_object.links;
+
+      sankey
+          .nodes(filtered_nodes)
+          .links(filtered_links)
+          .layout(32);
+
+      //build key
+      //$("#color_key").html("")
+      //disciplines.forEach(function(d){
+      //  $("#color_key").append('<tr>'+
+      //    '<td>'+d+'</td>'+
+      //    '<td style="background-color:'+color(d)+'; width:20px">' +
+      //    '</tr>'
+      //  );
+      //});
+      //$("#color_key_div").show();
+
+
+      //build table
+      filtered_links.forEach(function(l){
+        if (l.source.type != "Discipline" && l.target.type != "Discipline"){
+          $("#"+l.source.name+"-"+l.target.name).html(l.value);
+        }
+      });
+
+      var hovered_link = null;
+
+      var link = svg.append("g").attr("class", "links").selectAll(".link")
+          .data(filtered_links)
+        .enter().append("path")
+          .attr("class", "link")
+          .attr("d", path)
+          .style("stroke-width", function(d) { return Math.max(1, d.dy); })
+          .style("stroke", color_from_discipline)
+          .on("click", function(d){
+            d.toggle_selection();
+            set_opacity_by_selected();
+          })
+          .sort(function(a, b) { return b.dy - a.dy; })
+          .on("mouseover", function(d) {
+            if(hovered_link == null){
+              var source_links_sum = 0
+              d.source.sourceLinks.forEach(function(l){source_links_sum += l.value})
+              var source_links_percentage = d.value/source_links_sum * 100
+
+              var target_links_sum = 0
+              d.target.targetLinks.forEach(function(l){target_links_sum += l.value})
+              var target_links_percentage = d.value/target_links_sum * 100
+
+              var title = d.source.time + " in " + d.source.name + " (" +formatNumber(source_links_percentage) + "%) → " + d.target.time + " in " + d.target.name + " (" +formatNumber(target_links_percentage) + "%)"+ "\n" + format(d.value);
+
+              $("#current_hovered_item").html(title);
+
+              d3.select(this).style("stroke-dasharray","3,1");
+
+              hovered_link = this;
+            }
+
+          })
+          .on("mouseout", function(d) {
+             $("#current_hovered_item").html("");
+
+             d3.select(this).style("stroke-dasharray","");
+
+             hovered_link = null;
+          });
+
+      link.append("title")
+        .text(function(d) {
+          var source_links_sum = 0
+          d.source.sourceLinks.forEach(function(l){source_links_sum += l.value})
+          var source_links_percentage = d.value/source_links_sum * 100
+
+          var target_links_sum = 0
+          d.target.targetLinks.forEach(function(l){target_links_sum += l.value})
+          var target_links_percentage = d.value/target_links_sum * 100
+
+          return d.source.time + " in " + d.source.name + " (" +formatNumber(source_links_percentage) + "%) → " + d.target.time + " in " + d.target.name + " (" +formatNumber(target_links_percentage) + "%)"+ "\n" + format(d.value);
+        });
+
+
+      var node = svg.append("g").selectAll(".node")
+          .data(filtered_nodes)
+        .enter().append("g")
+          .attr("class", "node")
+          .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+          .on("click", function(d,i){
+            if (shift_key_down){
+              if (alt_key_down){
+                if (d.parent_node != null)
+                  d.parent_node.collapse();
+
+              } else {
+
+                d.expand();
+              }
+
+              diagram.draw();
+            } else
+              d.toggle_selection();
+              set_opacity_by_selected();
+              //toggle_link_selection(d,i);
+          })
+        .call(d3.behavior.drag()
+          .origin(function(d) { return d; })
+          .on("dragstart", function() { this.parentNode.appendChild(this); })
+          .on("drag", dragmove));
+
+      node.append("rect")
+          .attr("height", function(d) { return d.dy; })
+          .attr("width", sankey.nodeWidth())
+          .style("fill", color_from_discipline)
+          .style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
+          .on("mouseover", function(d) {
+            var title = ""
+            title += d.time + " in " + d.name + "\n";
+            title += format(d.value) + "\n"
+
+            if (d.parent_node == null){  //One of the top level nodes
+              title += formatNumber(d.percent_of_sibling_total()*100)+"% of total during "+d.time;
+            } else {
+              title += formatNumber(d.percent_of_sibling_total()*100)+"% of "+d.parent_node.name;
+            }
+
+            $("#current_hovered_item").html(title);
+          })
+          .on("mouseout", function(d) {
+            $("#current_hovered_item").html("");
+          })
+        .append("title")
+          .text(function(d) {
+            var title = ""
+            title += d.time + " in " + d.name + "\n";
+            title += format(d.value) + "\n"
+            if (d.parent_node == null){  //One of the top level nodes
+              title += formatNumber(d.percent_of_sibling_total()*100)+"% of total during "+d.time;
+            } else {
+              title += formatNumber(d.percent_of_sibling_total()*100)+"% of "+d.parent_node.name;
+            }
+            return title;
+          })
+
+      node.append("text")
+          .attr("x", sankey.nodeWidth() + 6)
+          .attr("y", function(d) { return d.dy / 2; })
+          .attr("dy", ".35em")
+          .attr("text-anchor", "start")
+          .attr("transform", null)
+          .style("font-weight", "bold")
+          .text(function(d) { return d.get_unique_name(); })
+        .filter(function(d) { return d.x < width / 2; })
+          .attr("x", -sankey.nodeWidth() + 6)
+          .attr("text-anchor", "end");
+
+      function dragmove(d) {
+        d3.select(this).attr("transform", "translate(" + d.x + "," + (d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))) + ")");
+        sankey.relayout();
+        link.attr("d", path);
+      }
+
+      //function toggle_link_selection(d,i){
+      //  d.selected = !d.selected
+      //
+      //  if ("sourceLinks" in d){   //d is a node
+      //    if (d.type == "Discipline"){
+      //      graph.nodes.filter(isNonZero).forEach(function(n){
+      //        if (n.discipline == d.discipline && n.time == d.time){
+      //          n.selected = d.selected;
+      //          if (n.sourceLinks != undefined  && n.sourceLinks != null){
+      //            n.sourceLinks.forEach(function(l){
+      //              l.selected = n.selected;
+      //            });
+      //          }
+      //
+      //          if (n.targetLinks != undefined  && n.targetLinks != null){
+      //            n.targetLinks.forEach(function(l){
+      //              l.selected = n.selected;
+      //            });
+      //          }
+      //        }
+      //      });
+      //    }
+      //
+      //    d.sourceLinks.forEach(function(l){
+      //      l.selected = d.selected;
+      //    });
+      //
+      //
+      //    d.targetLinks.forEach(function(l){
+      //      l.selected = (l.source.selected || l.target.selected)});
+      //  }
+      //
+      //  set_opacity_by_selected();
+      //  create_csv_from_selected(graph);
+      //}
+
+
+
+      function set_opacity_by_selected(){
+        if ($("#hide_unselected").is(":checked")) {
+          d3.selectAll(".link").style("visibility", function(d,i){
+            if (d.selected) return "visible";
+            else return "hidden";
+          });
+        }
+        d3.selectAll(".link").style("stroke-opacity", function(d,i){
+          if (d.selected) return "1";
+          else return unselected_link_opacity.toString();
+        });
+      }
+      //
+      //$("#hide_unselected").change(function(){
+      //  var checkbox_checked = $(this).is(":checked")
+      //
+      //  d3.selectAll(".link").style("visibility", function(d,i){
+      //    if (d.selected) return "visible";
+      //
+      //    if(checkbox_checked) return "hidden";
+      //    else return "visible";
+      //  });
+      //});
+
+
+      function create_csv_from_selected(graph){
+        var selected = sankey_object.links.filter(isSelected);
+
+        var start_majors = [];
+        var start_disciplines = [];
+        var end_majors = [];
+
+        selected.forEach(function(l){
+          if (start_majors.indexOf(l.source.name) == -1){
+            start_majors.push(l.source.name);
+            start_disciplines.push(l.source.discipline);
+          }
+
+          if (end_majors.indexOf(l.target.name) == -1){
+            end_majors.push(l.target.name);
+          }
+        });
+
+        var csv = ",";
+
+        end_majors.forEach(function(m){
+          csv += ","+m
+        });
+
+        start_majors.forEach(function(sm,i){
+          csv += "\n"+sm+","+start_disciplines[i]
+          end_majors.forEach(function(em){
+            var found = false;
+            selected.forEach(function(sel){
+              if (sel.source.name == sm && sel.target.name == em){
+                found = true;
+                csv += ","+sel.value;
+              }
+            });
+
+            if(!found)
+              csv += ",";
+          });
+        });
+
+        $("#subselect_csv").text("");
+        $("#subselect_csv").text(csv);
+      }
+
+
+      set_opacity_by_selected();
+      create_csv_from_selected(graph);
+
+      $("#major_in_outs_container").css("width","60%");
+      $("#vis_header").show();
+
+    },
+
+    clear : function(){
+
+
+    }
+  }

@@ -1,0 +1,39 @@
+:javascript
+  function UCDRibbonGraphLink(src_node, tgt_node){
+    this.source = src_node;
+    this.target = tgt_node;
+
+    this.value = 1;
+
+    this.showing = (src_node.showing && tgt_node.showing);
+    this.selected = (src_node.selected || tgt_node.selected);
+  }
+
+  UCDRibbonGraphLink.prototype = {
+    increment_value : function(){
+      this.value++;
+      this.source.value++;
+      this.target.value++;
+
+    },
+
+    reset_value : function(){
+      this.source.value = 0;//this.value;
+      this.target.value = 0;//this.value;
+      this.value = 0;
+    },
+
+    is_showing : function(){
+      return this.showing;
+    },
+
+    is_selected : function(){
+      return this.selected;
+    },
+
+    is_nonzero : function(){
+      return this.value > 0;
+    }
+
+
+  }

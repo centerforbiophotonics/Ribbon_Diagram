@@ -17,3 +17,8 @@
 
 # IntelliJ Config
 /.idea
+Ribbon_Diagram.iml
+
+#AWS Credentials
+credentials.csv
+.elasticbeanstalk/

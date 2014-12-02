@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b User:
+  = @user_diagram.user
+%p
+  %b Diagram:
+  = @user_diagram.diagram
+
+= link_to 'Edit', edit_user_diagram_path(@user_diagram)
+\|
+= link_to 'Back', user_diagrams_path

@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source 'http://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -37,4 +37,15 @@ gem 'spring',        group: :development
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+# File Storage
+gem 'paperclip'
+gem 'aws-sdk'
+
+# Authentication
+gem 'devise'
+
+# Markup
+gem 'haml-rails'
+
 

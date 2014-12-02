@@ -1,0 +1,10 @@
+= form_for @diagram do |f|
+  - if @diagram.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@diagram.errors.count, "error")} prohibited this diagram from being saved:"
+      %ul
+        - @diagram.errors.full_messages.each do |msg|
+          %li= msg
+
+  .actions
+    = f.submit 'Save'

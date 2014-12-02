@@ -1,0 +1,173 @@
+:javascript
+  function UCDRibbonGraphController(){
+    this.diagram = null;
+    this.graph = null;
+    this.current_data_string = null;
+
+    //this.fetch_data();
+    this.fetch_data_dev();
+    //this.#{Rails.env.development? ? "fetch_data_dev()" : "fetch_data()"}
+    this.register_form_events();
+  }
+
+  UCDRibbonGraphController.prototype = {
+    register_form_events: function(){
+      var controller = this;
+
+      $("#control_toggle").click(function(){
+        $("#controls").animate({width: 'toggle'});
+      });
+
+      $(".wrap").addClass("wrap-wide").removeClass("wrap");
+
+      $("#hide_unselected").change(function(){
+        var checkbox_checked = $(this).is(":checked")
+        d3.selectAll(".link").style("visibility", function(d,i){
+          if (d.selected) return "visible";
+
+          if(checkbox_checked) return "hidden";
+          else return "visible";
+        });
+      });
+
+      $("#end_forward_button").click(function(){
+        $('#end_term option:selected').next().attr('selected', 'selected');
+        $("#apply_filter").click();
+
+      });
+
+      $("#end_back_button").click(function(){
+        $('#end_term option:selected').prev().attr('selected', 'selected');
+        $("#apply_filter").click();
+      });
+
+      $("#deselect_links").click(function(){
+        controller.graph.select_none();
+        controller.diagram.draw();
+        return false;
+      });
+
+      $(".select_all").click(function(){
+        $("#" + $(this).attr("id").replace("_select_all", "") + " option").attr('selected', true);
+        $("#" + $(this).attr("id").replace("_select_all", "")).focus();
+        //$("#" + $(this).attr("id").replace("_select_all", "")).change();
+        return false;
+      });
+
+      $(".select_none").click(function(){
+        $("#" + $(this).attr("id").replace("_select_none", "") + " option").attr('selected', false);
+        $("#" + $(this).attr("id").replace("_select_none", "")).focus();
+        //$("#" + $(this).attr("id").replace("_select_none", "")).change();
+        return false;
+      });
+
+
+      $('select option').mousedown(function(e){
+        e.preventDefault();
+        $(this).prop("selected", !$(this).prop("selected"));
+
+        $(this).change();
+        return false;
+      });
+
+      $("#apply_filter").click(function(){
+        controller.graph.reset_node_and_link_values();
+        controller.graph.create_graph_from_base_data(JSON.parse(controller.graph.json));
+        controller.diagram.draw();
+      });
+
+      $("#beta_major_in_out_form").submit(function(e){
+        $("#major_in_outs_chart").html("");
+        controller.fetch_data_dev();
+        return false;
+      });
+    },
+
+    fetch_data_dev: function(){
+      var controller = this;
+      var term = $("#starting_term").val();
+      $.get(
+        "/mio"+term+".json",
+
+        $('#beta_major_in_out_form').serialize(),
+
+        function(data){
+          console.log(data);
+
+          if (!data.error) {
+            controller.current_data_string = JSON.stringify(data);
+            var end_terms = []
+
+            var first_term_seen = 0;
+            var i = 0;
+            while (first_term_seen < 2){
+              if (data.statuses[i].term == term) first_term_seen++;
+              else end_terms.push(data.statuses[i].term);
+              i++;
+            }
+
+            $("#end_term").html("");
+            end_terms.forEach(function(et, index){
+              $("#end_term").append('<option value="'+et+'" '+(index == 13 ? 'selected' : '')+'>'+et+'</option>');
+
+            });
+
+
+            console.log(end_terms);
+
+            var data_string = controller.current_data_string;
+
+            controller.graph = new UCDRibbonGraph(data_string);
+            controller.diagram = new UCDRibbonGraphDiagram(
+              controller.graph,
+              data
+            );
+
+            controller.diagram.draw();
+
+          } else {
+
+          }
+        },
+        "json"
+      );
+    },
+
+    fetch_data: function(){
+      var controller = this;
+
+      $.get(
+        "/beta_major_in_outs.json",
+
+        $('#beta_major_in_out_form').serialize(),
+
+        function(data){
+          if (!data.error) {
+            controller.current_data_string = JSON.stringify(data);
+            var data_string = controller.current_data_string;
+
+            controller.graph = new UCDRibbonGraph(data_string);
+            controller.diagram = new UCDRibbonGraphDiagram(
+              controller.graph,
+              data
+            );
+
+            controller.diagram.draw();
+
+
+          } else {
+
+          }
+        },
+        "json"
+      );
+    }
+  }
+
+  var ribbon_controller = null;
+
+  window.onload = function(){
+    ribbon_controller = new UCDRibbonGraphController();
+  }
+
+
