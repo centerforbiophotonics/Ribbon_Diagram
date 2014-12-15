@@ -19,6 +19,9 @@
 /.idea
 Ribbon_Diagram.iml
 
-#AWS Credentials
+# AWS Credentials
 credentials.csv
 .elasticbeanstalk/
+
+# Secrets
+/ignore

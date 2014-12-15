@@ -1,8 +1,13 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, :controllers => { :registrations => "custom_registrations" }
+  
   resources :user_diagrams
 
-  resources :diagrams
+  resources :diagrams do
+    member do
+      get 'download'
+    end
+  end
 
   resources :access_levels
 

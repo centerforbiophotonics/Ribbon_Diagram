@@ -1,5 +1,13 @@
 %p#notice= notice
 
+%p
+  %b Name:
+  = @diagram.name
+
+= link_to 'Download Data File', download_diagram_path(@diagram)
+
+%br
+%br
 
 = link_to 'Edit', edit_diagram_path(@diagram)
 \|

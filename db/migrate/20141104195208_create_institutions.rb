@@ -5,5 +5,9 @@ class CreateInstitutions < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    if Rails.env == "development"
+      Institution.new(:name => "Test Institution").save!
+    end
   end
 end

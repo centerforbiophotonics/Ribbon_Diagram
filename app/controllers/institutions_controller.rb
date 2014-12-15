@@ -1,5 +1,5 @@
 class InstitutionsController < ApplicationController
-  before_action :set_institution, only: [:show, :edit, :update, :destroy]
+  before_action :set_institution, :only => [:show, :edit, :update, :destroy]
 
   def index
     @institutions = Institution.all
@@ -20,7 +20,12 @@ class InstitutionsController < ApplicationController
 
   def create
     @institution = Institution.new(institution_params)
-    @institution.save
+    if @institution.save
+      AccessLevel.new(:institution => @institution, :code => 100, :description => "Institution Admin").save!
+      AccessLevel.new(:institution => @institution, :code => 1, :description => "Institution User").save!
+    end
+
+
     respond_with(@institution)
   end
 

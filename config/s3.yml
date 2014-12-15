@@ -1,0 +1,9 @@
+development:
+  access_key_id: AKIAJHAQF6LLG5S5B2OA
+  secret_access_key: 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
+  bucket: ribbon-files
+
+production:
+  access_key_id: AKIAJHAQF6LLG5S5B2OA
+  secret_access_key: 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
+  bucket: ribbon-files

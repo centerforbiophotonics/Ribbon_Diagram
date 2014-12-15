@@ -2,13 +2,11 @@
 
 %p
   %b Institution:
-  = @user.institution
+  = @user.institution.name
 %p
   %b Access level:
   = @user.access_level
-%p
-  %b Access level desc:
-  = @user.access_level_desc
+
 %p
   %b Name:
   = @user.name

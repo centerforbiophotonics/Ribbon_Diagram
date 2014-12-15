@@ -6,5 +6,12 @@
         - @diagram.errors.full_messages.each do |msg|
           %li= msg
 
+  .field
+    = f.label :name
+    = f.text_field :name
+
+  .field
+    = f.file_field :data_file
+
   .actions
     = f.submit 'Save'

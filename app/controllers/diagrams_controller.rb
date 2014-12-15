@@ -1,8 +1,13 @@
 class DiagramsController < ApplicationController
-  before_action :set_diagram, only: [:show, :edit, :update, :destroy, :download]
+  before_action :set_diagram, :only => [:show, :edit, :update, :destroy, :download]
 
   def index
     @diagrams = Diagram.all
+
+    unless current_user.super_admin
+      @diagrams = current_user.diagrams
+    end
+
     respond_with(@diagrams)
   end
 
@@ -20,7 +25,12 @@ class DiagramsController < ApplicationController
 
   def create
     @diagram = Diagram.new(diagram_params)
-    @diagram.save
+    @diagram.institution = current_user.institution
+
+    if @diagram.save
+      UserDiagram.new(:diagram => @diagram, :user => current_user).save!
+    end
+
     respond_with(@diagram)
   end
 
@@ -40,7 +50,7 @@ class DiagramsController < ApplicationController
   end
 
   def download
-    redirect_to @diagram.data_file.expiring_url(10)
+    send_data @diagram.data_file.expiring_url(10), :filename => @diagram.data_file.original_filename
   end
 
   private
@@ -49,6 +59,6 @@ class DiagramsController < ApplicationController
     end
 
     def diagram_params
-      params[:diagram]
+      params.require(:diagram).permit(:data_file, :name)
     end
 end

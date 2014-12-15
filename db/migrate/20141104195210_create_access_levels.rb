@@ -1,9 +1,9 @@
-class CreateAccessLevels < ActiveRecord::Migration
+  class CreateAccessLevels < ActiveRecord::Migration
   def change
     create_table :access_levels do |t|
       t.integer :code
       t.string :description
-      t.integer :institution_id
+      t.belongs_to :institution
 
       t.timestamps
     end

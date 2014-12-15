@@ -11,5 +11,39 @@
  * file per style scope.
  *
  *= require_tree .
+ *= require dataTables/extras/dataTables.responsive
+ *= require dataTables/jquery.dataTables
  *= require_self
  */
+
+
+
+/*@media (max-width: 400px) {*/
+    /*.page-content{*/
+        /*display: block;*/
+        /*width: 100%;*/
+    /*}*/
+
+    /*.slicknav{*/
+        /*display: block;*/
+        /*width: 100%;*/
+    /*}*/
+/*}*/
+
+@media (min-width: 600px) {
+    .page-content{
+        display: inline-block;
+        width: 70%;
+
+        margin-right: 1%;
+        vertical-align: top;
+    }
+
+    .slicknav{
+        display: inline-block;
+        width: 20%;
+        max-width: 175px;
+        margin-right: 1%;
+        vertical-align: top;
+    }
+}

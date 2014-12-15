@@ -12,5 +12,26 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require dataTables/jquery.dataTables
+//= require dataTables/extras/dataTables.responsive
+//= require dataTables/jquery.dataTables
 //= require turbolinks
 //= require_tree .
+
+function ready(){
+    $("#menu").slicknav({
+        prependTo:'.slicknav'
+    });
+
+    console.log("application js");
+
+    $('.datatable').DataTable({
+        responsive: true,
+        autoWidth: false
+    });
+}
+
+$(document).ready(ready);
+$(document).on('page:load', ready);
+
+

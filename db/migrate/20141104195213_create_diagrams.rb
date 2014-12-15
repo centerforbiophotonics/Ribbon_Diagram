@@ -1,7 +1,10 @@
 class CreateDiagrams < ActiveRecord::Migration
   def change
     create_table :diagrams do |t|
-
+      t.belongs_to :users
+      t.belongs_to :institution, :index => true
+      t.string :name
+      t.attachment :data_file
       t.timestamps
     end
   end
