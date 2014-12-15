@@ -25,8 +25,14 @@ class ApplicationController < ActionController::Base
   def access_level_at_least(access_level)
     #puts "Before Filter: access_level_at_least"
 
-    unless @current_user.access_level >= access_level
+    unless current_user.access_level >= access_level
       redirect_to user_path(@current_user), :status => :unauthorized
+    end
+  end
+
+  def user_is_super_admin
+    unless current_user.super_admin
+      redirect_to diagrams_path, :status => :unauthorized
     end
   end
 end

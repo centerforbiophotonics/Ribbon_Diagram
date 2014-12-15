@@ -1,22 +1,23 @@
 %h1 Listing user_diagrams
 
-%table
-  %tr
-    %th User
-    %th Institution
-    %th Diagram
-    %th
-    %th
-    %th
-
-  - @user_diagrams.each do |user_diagram|
+%table.datatable.responsive.no-wrap
+  %thead
     %tr
-      %td= user_diagram.user.name
-      %td= user_diagram.user.institution.name
-      %td= user_diagram.diagram.name
-      %td= link_to 'Show', user_diagram
-      %td= link_to 'Edit', edit_user_diagram_path(user_diagram)
-      %td= link_to 'Destroy', user_diagram, :method => :delete, :data => { :confirm => 'Are you sure?' }
+      %th User
+      %th Institution
+      %th Diagram
+      %th
+      %th
+      %th
+  %tbody
+    - @user_diagrams.each do |user_diagram|
+      %tr
+        %td= user_diagram.user.name
+        %td= user_diagram.user.institution.name
+        %td= user_diagram.diagram.name
+        %td= link_to 'Show', user_diagram
+        %td= link_to 'Edit', edit_user_diagram_path(user_diagram)
+        %td= link_to 'Destroy', user_diagram, :method => :delete, :data => { :confirm => 'Are you sure?' }
 
 %br
 

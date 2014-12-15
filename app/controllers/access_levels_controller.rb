@@ -1,8 +1,10 @@
 class AccessLevelsController < ApplicationController
   before_action :set_access_level, only: [:show, :edit, :update, :destroy]
+  before_action :set_access_levels, only: [:index]
+
 
   def index
-    @access_levels = AccessLevel.all
+
     respond_with(@access_levels)
   end
 
@@ -37,6 +39,14 @@ class AccessLevelsController < ApplicationController
   private
     def set_access_level
       @access_level = AccessLevel.find(params[:id])
+    end
+
+    def set_access_levels
+      if current_user.super_admin
+        @access_levels = AccessLevel.all
+      else
+        @access_levels = AccessLevel.where(:institution_id => current_user.institution_id)
+      end
     end
 
     def access_level_params

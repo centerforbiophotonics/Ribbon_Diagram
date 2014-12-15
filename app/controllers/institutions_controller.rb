@@ -1,5 +1,6 @@
 class InstitutionsController < ApplicationController
   before_action :set_institution, :only => [:show, :edit, :update, :destroy]
+  before_filter :user_is_super_admin
 
   def index
     @institutions = Institution.all

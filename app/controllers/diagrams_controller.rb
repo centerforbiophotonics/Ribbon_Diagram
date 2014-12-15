@@ -1,13 +1,8 @@
 class DiagramsController < ApplicationController
   before_action :set_diagram, :only => [:show, :edit, :update, :destroy, :download]
+  before_action :set_diagrams, :only => [:index]
 
   def index
-    @diagrams = Diagram.all
-
-    unless current_user.super_admin
-      @diagrams = current_user.diagrams
-    end
-
     respond_with(@diagrams)
   end
 
@@ -56,6 +51,14 @@ class DiagramsController < ApplicationController
   private
     def set_diagram
       @diagram = Diagram.find(params[:id])
+    end
+
+    def set_diagrams
+      if current_user.super_admin
+        @diagrams = Diagram.all
+      else
+        @diagrams = current_user.diagrams
+      end
     end
 
     def diagram_params
