@@ -17,24 +17,10 @@
  */
 
 
-
-/*@media (max-width: 400px) {*/
-    /*.page-content{*/
-        /*display: block;*/
-        /*width: 100%;*/
-    /*}*/
-
-    /*.slicknav{*/
-        /*display: block;*/
-        /*width: 100%;*/
-    /*}*/
-/*}*/
-
-@media (min-width: 600px) {
+@media screen and (orientation:landscape) {
     .page-content{
         display: inline-block;
-        width: 70%;
-
+        width: 75%;
         margin-right: 1%;
         vertical-align: top;
     }
