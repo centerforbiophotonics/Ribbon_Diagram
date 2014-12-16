@@ -1,3 +1,5 @@
+rails_env = Rails.env
+
 Chef::Log.info("Precompiling assets for RAILS_ENV=#{rails_env}...")
 Chef::Log.info("********************************")
 
