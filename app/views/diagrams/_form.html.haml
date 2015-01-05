@@ -11,6 +11,14 @@
     = f.text_field :name
 
   .field
+    = f.label :category
+    = f.text_field :category
+
+  .field
+    = f.label :data_format
+    = f.select :data_format, ["json-individual"] #,"json-aggregate", "csv-aggregate"]
+
+  .field
     = f.file_field :data_file
 
   .actions

@@ -7,11 +7,13 @@
       %th
       %th
       %th
+      %th
   %tbody
     - @diagrams.each do |diagram|
       %tr
         %td= diagram.name
         %td= link_to 'Show', diagram
+        %td= link_to 'Download', download_diagram_path(diagram)
         %td= link_to 'Edit', edit_diagram_path(diagram)
         %td= link_to 'Destroy', diagram, :method => :delete, :data => { :confirm => 'Are you sure?' }
 

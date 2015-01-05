@@ -1,37 +1,32 @@
 :javascript
-  function UCDRibbonGraphDiagram(graph, data){
+  function UCDRibbonGraphDiagram(graph){
     this.graph = graph;
-    this.statuses = data.statuses;
-    this.background = data.background;
-    this.majors = data.majors;
-    this.starting_term = data.starting_term;
     this.color = d3.scale.category20();
-
   }
 
   UCDRibbonGraphDiagram.prototype = {
 
 
     draw : function(){
-      var disciplines = #{@disciplines.to_json};
-      var majors = #{@majors.to_json};
+      //var disciplines = #{@disciplines.to_json};
+      //var majors = #{@majors.to_json};
 
-      var start_disc_expanded = {};
-      var end_disc_expanded = {};
+      //var start_disc_expanded = {};
+      //var end_disc_expanded = {};
 
       var unselected_link_opacity = 0.1;
 
 
-      disciplines.forEach(function(d){
-        start_disc_expanded[d] = false;
-        end_disc_expanded[d] = false;
-      })
+      //disciplines.forEach(function(d){
+      //  start_disc_expanded[d] = false;
+      //  end_disc_expanded[d] = false;
+      //})
 
 
 
       var graph = this.graph,
-          majors = this.majors,
-          starting_term = this.starting_term,
+          //majors = this.majors,
+          //starting_term = this.starting_term,
           sankey_object = graph.to_sankey_object(),
           color = this.color,
           diagram = this;
@@ -47,19 +42,7 @@
       $(document).keydown(record_key_state).keyup(record_key_state);
 
 
-      //var years_from_start = parseInt($("#end_term").val());
-      var end_term = parseInt($("#end_term").val());//graph.end_of_nth_year_from_fall_term(starting_term, years_from_start);
-      var end_year = Math.floor(end_term / 100);
-      var end_term_season = "";
-      if (end_term % 100 == 10) end_term_season = 'Fall';
-      else if (end_term % 100 == 7) end_term_season = 'Summer';
-      else if (end_term % 100 == 3) end_term_season = 'Spring';
-      else if (end_term % 100 == 1) end_term_season = 'Winter';
-
-
       function color_from_discipline(d){
-
-
         var label = d.source == undefined ? d.get_unique_name() : d.source.get_unique_name();
 
         if (label == "Left")
@@ -105,36 +88,35 @@
         return disc_node.value/sum;
       }
 
-      $("#start_title").text("Status Fall "+parseInt(starting_term/100));
-      $("#end_title").text("Status "+end_term_season+" "+end_year);
-      $("#vis_title").text("Starting Class of Fall "+parseInt(starting_term/100));
+      $("#time_1_title").text("Status "+graph.time_1);
+      $("#time_2_title").text("Status "+graph.time_2);
+      $("#vis_title").text("#{@diagram.category}: #{@diagram.name} ");
 
-      $('#get_csv').attr('href', 'major_in_outs.csv?starting_term='+starting_term);
       $('#controls').show();
       $('#control_toggle_container').show();
 
-      $('#major_in_outs_chart').html('')
+      $('#ribbon_diagram_chart').html('')
 
       var margin = {top: 10, right: 200, bottom: 6, left: 200},
           width = 940 - margin.left - margin.right,
           height = 800 - margin.top - margin.bottom;
 
-      disciplines.forEach(function(d){
-
-        start_side_num_expanded = 0;
-        end_side_num_expanded = 0;
-        if (start_disc_expanded[d]) start_side_num_expanded++;
-        if (end_disc_expanded[d]) end_side_num_expanded++;
-
-        height += Math.max(start_side_num_expanded, end_side_num_expanded) * 400;
-      });
+      //disciplines.forEach(function(d){
+      //
+      //  start_side_num_expanded = 0;
+      //  end_side_num_expanded = 0;
+      //  if (start_disc_expanded[d]) start_side_num_expanded++;
+      //  if (end_disc_expanded[d]) end_side_num_expanded++;
+      //
+      //  height += Math.max(start_side_num_expanded, end_side_num_expanded) * 400;
+      //});
 
       $("#major_in_outs_chart").height(height + margin.top + margin.bottom);
 
       var formatNumber = d3.format(",.0f"),
           format = function(d) { return formatNumber(d) + " Students"; };
 
-      var svg = d3.select("#major_in_outs_chart").append("svg")
+      var svg = d3.select("#ribbon_diagram_chart").append("svg")
           .style("width", width + margin.left + margin.right)
           .style("margin", "0 auto")
           .style("height", height + margin.top + margin.bottom)
@@ -194,7 +176,7 @@
           .style("stroke-width", function(d) { return Math.max(1, d.dy); })
           .style("stroke", color_from_discipline)
           .on("click", function(d){
-            d.toggle_selection();
+            d.toggle_selected();
             set_opacity_by_selected();
           })
           .sort(function(a, b) { return b.dy - a.dy; })

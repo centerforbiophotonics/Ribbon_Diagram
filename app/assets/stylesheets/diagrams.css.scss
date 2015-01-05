@@ -1,3 +1,67 @@
 // Place all the styles related to the Diagrams controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+#controls{
+  width: 20%;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+#filters{
+  font-weight: bold;
+}
+
+#ribbon_diagram_container{
+  width: 78%;
+  float:left;
+  text-align:center;
+
+}
+
+#control_toggle_container{
+  float:left;
+  /*-moz-box-shadow:    3px 3px 5px 3px #ccc;*/
+  /*-webkit-box-shadow: 3px 3px 5px 3px #ccc;*/
+  /*box-shadow:         3px 3px 5px 3px #ccc;*/
+  border: 1px solid black;
+  padding: 2px;
+  margin-left: -1px;
+  display: none;
+  cursor: pointer;
+}
+
+.filter-form-item{
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  /*border-bottom: 1px solid black;*/
+
+  label {
+    margin-bottom: 3px;
+  }
+}
+
+.node rect {
+  cursor: move;
+  fill-opacity: .9;
+  shape-rendering: crispEdges;
+}
+
+.node text {
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .1;
+}
+
+.filter-label {
+  color: darkred;
+}
+
+.indent{
+  margin-left: 10px;
+}

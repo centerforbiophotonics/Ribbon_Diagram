@@ -153,7 +153,7 @@
         this.subnodes.forEach(function(s){
           children.push(s.get_object_or_children());
         });
-        children = flattenArray(children);
+        children = this.graph.flatten_array(children);
         return children;
       }
 

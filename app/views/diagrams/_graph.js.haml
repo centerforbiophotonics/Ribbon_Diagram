@@ -1,23 +1,22 @@
 :javascript
   //Accepts a JSON string that is a flat array of statues or a JSON representation of another graph
-  function UCDRibbonGraph(json){
+  function UCDRibbonGraph(data, data_format, filter){
     this.nodes = [];  //nested
     this.links = [];  //flat
-    this.filter = null;
+    this.filter = filter;
 
+    this.time_1 = null;
+    this.time_2 = null;
 
-    this.json = json;
+    this.data = data;
+    this.data_format = data_format;
 
-    if (this.json != null){
-      console.log('json import');
+    if (this.data_format == "json-individual"){
+      this.create_graph_from_individual_json(this.data);
+    } else if (this.data_format == "json-aggregate"){
 
-      var object = JSON.parse(this.json);
-
-      if (Array.isArray(object)){
-        console.log('array');
-      } else {
-        this.create_graph_from_base_data(object);
-      }
+    } else if (this.data_format == "csv-aggregate"){
+      this.create_graph_from_aggregate_csv(this.data);
     }
   }
 
@@ -155,7 +154,7 @@
       nonzero_toplevel_nodes.forEach(function(n){
         flat_object.nodes.push(n.get_object_or_children());
       });
-      flat_object.nodes = flattenArray(flat_object.nodes);
+      flat_object.nodes = this.flatten_array(flat_object.nodes);
 
 
       return flat_object;//JSON.stringify(this);
@@ -177,8 +176,8 @@
       return link_or_node.value > 0;
     },
 
-    filter_students : function(data){
-      var included_students = [];
+    filter_data : function(data){
+      var filtered_data = {"STUDENTS":[]};
 
       var filter = {
         gender: $('select#gender').val(),
@@ -195,145 +194,181 @@
 
       this.filter = filter;
 
-      data.background.forEach(function(student){
+      data["STUDENTS"].forEach(function(student){
+        var demographics = student["DEMOGRAPHICS"];
         var push = true;
 
-        if ($.inArray(student.gender, filter.gender) == -1){
+        if ($.inArray(demographics.gender, filter.gender) == -1){
+          console.log("GENDER MISMATCH");
           push = false;
         }
 
-        if ($.inArray(student.admit_level, filter.admit_level) == -1){
+        if ($.inArray(demographics.admit_level, filter.admit_level) == -1){
+          console.log("admit_level MISMATCH");
           push = false;
         }
 
-        if (filter.urm && (student.is_urm == false)){
+        if (filter.urm && (demographics.is_urm == false)){
+          console.log("is_urm MISMATCH");
           push = false;
         }
 
         if (filter.urm == false){
-          if (student.ethn_desc == null)
-            student.ethn_desc = "BLANK";
+          if (demographics.ethnicity == null)
+            demographics.ethnicity = "BLANK";
 
-          if ($.inArray(student.ethn_desc, filter.ethnicities) == -1){
+          if ($.inArray(demographics.ethnicity, filter.ethnicities) == -1){
+            console.log("ethnicity MISMATCH");
             push = false;
           }
         }
 
-        if ((filter.started_stem == "Excluded" && student.any_first_term_major_is_stem ) ||
-            (filter.started_stem == "Only" && (student.any_first_term_major_is_stem == false))
+        if ((filter.started_stem == "Excluded" && demographics.started_in_stem ) ||
+            (filter.started_stem == "Only" && (demographics.started_in_stem == false))
         ){
+          console.log("GENDER MISMATCH");
           push = false;
         }
 
-        if ((filter.international == "Excluded" && student.started_international ) ||
-            (filter.international == "Only" && (student.started_international == false))
+        if ((filter.international == "Excluded" && demographics.international ) ||
+            (filter.international == "Only" && (demographics.international == false))
         ){
+          console.log("GENDER MISMATCH");
           push = false;
         }
 
-        if ((filter.eop == "Excluded" && student.is_eop ) ||
-            (filter.eop == "Only" && (student.is_eop == false))
+        if ((filter.eop == "Excluded" && demographics.is_eop ) ||
+            (filter.eop == "Only" && (demographics.is_eop == false))
         ){
+          console.log("GENDER MISMATCH");
           push = false;
         }
 
-        if ((filter.busp == "Excluded" && student.is_busp ) ||
-            (filter.busp == "Only" && (student.is_busp == false))
+        if ((filter.busp == "Excluded" && demographics.is_busp ) ||
+            (filter.busp == "Only" && (demographics.is_busp == false))
         ){
+          console.log("GENDER MISMATCH");
           push = false;
         }
 
-        if ((filter.murps == "Excluded" && student.is_murps == 1) ||
-            (filter.murps == "Only" && (student.is_murps == 0))
+        if ((filter.murps == "Excluded" && demographics.is_murps == 1) ||
+            (filter.murps == "Only" && (demographics.is_murps == 0))
         ){
+          console.log("GENDER MISMATCH");
           push = false;
         }
 
-        if ((filter.regents_offered == "Excluded" && student.ro_times_offered > 0) ||
-            (filter.regents_offered == "Only" && (student.ro_times_offered == 0))
-        ){
-          push = false;
-        }
+        //if ((filter.regents_offered == "Excluded" && demographics.ro_times_offered > 0) ||
+        //    (filter.regents_offered == "Only" && (demographics.ro_times_offered == 0))
+        //){
+        //  push = false;
+        //}
 
-        if (push){
-          included_students.push(student.pidm);
-        }
+        if (push)
+          filtered_data["STUDENTS"].push(student);
       });
 
-      return included_students;
+      return filtered_data;
     },
 
-    create_graph_from_base_data : function(data){
-      //Iterate through statuses and generate counts based on filters.
-      var filtered_pidms = this.filter_students(data);
+
+
+    create_graph_from_individual_json : function(data){
+      var filtered_data = this.filter.filter_data(data);
+
+      console.log("FILTERED DATA:");
+      console.log(filtered_data);
 
       var graph = this;
 
-      $("#vis_filter_desc").html("(Filtered to "+filtered_pidms.length+" people)");
+      $("#vis_filter_desc").html("(Filtered to "+filtered_data["STUDENTS"].length+" people)");
 
-      var end_term = parseInt($("#end_term").val());
+      var time_2 = $("#time_2_select").val();
+      this.time_2 = time_2;
 
       var nodes = {},
           links = {};
 
-      data.statuses.forEach(function(status){
-        if (status.major_1 == '0000')
-         status.disc_1 = 'ACOLW';
+      data["STUDENTS"].forEach(function(student){
+        student["RECORDS"].forEach(function(record){
+          if (record["GROUPS"][2]["major"] == '0000')
+            record["GROUPS"][1]["discipline"] = 'ACOLW';
+        });
       });
 
 
-      data.statuses.forEach(function(status){
-        if (
-          $.inArray(status.pidm, filtered_pidms) != -1
-        ){
-          if (status.term == status.first_fall_term){  //Time = Started UCD
-            graph.create_leaf_node(
-              [status.status, status.disc_1, status.major_1],
-              ["Status","Discipline","Major"],
-              status.first_fall_term
-            );
+      filtered_data["STUDENTS"].forEach(function(student){
+        var first_record = student["RECORDS"][0];
+        var fr_time = first_record["TIME"];
+        var fr_group_types = first_record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
+        var fr_group_vals = first_record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
 
-          } else if (status.term == end_term){//graph.end_of_nth_year_from_fall_term(status.first_fall_term, end_term)){  // Time = Graduated UCD or End of Window
-            graph.create_leaf_node(
-              [status.status, status.disc_1, status.major_1],
-              ["Status","Discipline","Major"],
-              end_term//graph.end_of_nth_year_from_fall_term(status.first_fall_term, end_term)
-            );
-          }
-        }
+        graph.time_1 = fr_time;
+
+        graph.create_leaf_node(
+          fr_group_vals,
+          fr_group_types,
+          fr_time
+        );
+
+        var time_2_record = student["RECORDS"].filter(function(r){ return (""+r["TIME"]) == time_2 })[0];
+        var er_group_types = time_2_record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
+        var er_group_vals = time_2_record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
+
+        graph.create_leaf_node(
+          er_group_vals,
+          er_group_types,
+          time_2
+        );
+
+        var source_node = graph.find_node_recursive(
+          fr_group_vals,
+          fr_group_types,
+          fr_time
+        );
+
+        var target_node = graph.find_node_recursive(
+          er_group_vals,
+          er_group_types,
+          time_2
+        );
+
+        graph.create_or_increment_link_and_parent_node_links(source_node, target_node);
       });
 
+      this.update_link_showing();
+    },
 
-      var student_first_term = null;
-      var student_last_term = null;
-      data.statuses.forEach(function(status){
-        if (
-          $.inArray(status.pidm, filtered_pidms) != -1
-        ){
-          if (status.term == status.first_fall_term){  //Relies on statuses being sorted by pidm and then term
-            student_first_term = status;
-          } else if (status.term == end_term){//graph.end_of_nth_year_from_fall_term(status.first_fall_term, end_term)){
-            student_last_term = status;
+    create_graph_from_aggregate_csv : function(data){
+      var graph = this;
 
-            var source_node = graph.find_node_recursive(
-              [student_first_term.status, student_first_term.disc_1, student_first_term.major_1],
-              ["Status", "Discipline", "Major"],
-              student_first_term.term
-            );
+      var time_2 = $("#time_2_select").val();
+      this.time_2 = time_2;
 
-            var target_node = graph.find_node_recursive(
-              [student_last_term.status, student_last_term.disc_1, student_last_term.major_1],
-              ["Status", "Discipline", "Major"],
-              student_last_term.term
-            );
+      var nodes = {},
+          links = {};
 
-            graph.create_or_increment_link_and_parent_node_links(source_node, target_node);
+      var first_record = true;
+      data.forEach(function(record){
 
+        var time = record["TIME"];
+        var group_types = null;
+        var group_vals = null;
 
-            student_first_term = null;
-            student_last_term = null;
-          }
+        if (first_record)
+          this.time_1 = time;
+
+        for(var i = 0; i < record["NUMBER"]; i++){
+          graph.create_leaf_node(
+            fr_group_vals,
+            fr_group_types,
+            fr_time
+          );
         }
+
+
+
+        graph.create_or_increment_link_and_parent_node_links(source_node, target_node);
       });
 
       this.update_link_showing();
@@ -343,70 +378,44 @@
       return (Math.floor(term/100)+n)*100+3
     },
 
-    reset_node_and_link_values: function(){
+    reset_node_and_link_values : function(){
       this.links.forEach(function(l){
         l.reset_value();
       });
     },
 
-    select_none: function(){
+    select_none : function(){
       this.nodes.forEach(function(n){
         n.set_selection(false);
       });
-    }
+    },
 
+    array_equal : function(a, b){
+      var i = Math.max(a.length, b.length, 1);
+      while(i-- >= 0 && a[i] === b[i]);
+      return (i === -2);
+    },
 
+    /*
+     * @name flatten_array
+     * @description flattens multi-dimension array into one-dimension array
+     * useful for manipulating function arguments like flattenArray(arguments)
+     * @usage flattenArray(arr)
+     * eg.
+     * [1, 2]                => [1, 2]
+     * [1, [[[[[[2]]]]]]]    => [1, 2]
+     * [1,[2,3],[[[[4]]],5]] => [1, 2, 3, 4, 5]
+     *
+     * @param {arr} Array to flatten
+     * @return {Array} Array, one-dimension array
+     */
+     flatten_array : function(arr){
+      	var r = [];
+
+        while (!this.array_equal(r, arr)) {
+            r = arr;
+            arr = [].concat.apply([], arr);
+        }
+        return arr;
+     }
   }
-
-
-  //Test code
-  //var graph = null;
-        //
-        //var load = function(){
-        //  $.get(
-        //    "/major_in_outs.json",
-        //
-        //    $('#major_in_out_form').serialize(),
-        //
-        //    function(data){
-        //      if (!data.error) {
-        //        var data_string = JSON.stringify(data);
-        //        graph = new UCDRibbonGraph(data_string);
-        //      } else {
-        //
-        //      }
-        //    },
-        //    "json"
-        //  )
-        //};
-
-  function arrayEqual(a, b) {
-  	var i = Math.max(a.length, b.length, 1);
-  	while(i-- >= 0 && a[i] === b[i]);
-  	return (i === -2);
-  }
-
-  /*
-   * @name flattenArray
-   * @description flattens multi-dimension array into one-dimension array
-   * useful for manipulating function arguments like flattenArray(arguments)
-   * @usage flattenArray(arr)
-   * eg.
-   * [1, 2]                => [1, 2]
-   * [1, [[[[[[2]]]]]]]    => [1, 2]
-   * [1,[2,3],[[[[4]]],5]] => [1, 2, 3, 4, 5]
-   *
-   * @param {arr} Array to flatten
-   * @return {Array} Array, one-dimension array
-   */
-  function flattenArray(arr) {
-  	var r = [];
-
-  	while (!arrayEqual(r, arr)) {
-  		r = arr;
-  		arr = [].concat.apply([], arr);
-  	}
-  	return arr;
-  }
-
-  //window.onload = load;

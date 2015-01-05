@@ -21,6 +21,7 @@ class DiagramsController < ApplicationController
   def create
     @diagram = Diagram.new(diagram_params)
     @diagram.institution = current_user.institution
+    @diagram.created_by = current_user.id
 
     if @diagram.save
       UserDiagram.new(:diagram => @diagram, :user => current_user).save!
@@ -62,6 +63,6 @@ class DiagramsController < ApplicationController
     end
 
     def diagram_params
-      params.require(:diagram).permit(:data_file, :name)
+      params.require(:diagram).permit(:data_file, :data_format,  :name, :category)
     end
 end

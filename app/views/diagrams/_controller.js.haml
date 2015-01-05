@@ -2,11 +2,19 @@
   function UCDRibbonGraphController(){
     this.diagram = null;
     this.graph = null;
-    this.current_data_string = null;
+    this.filter = null;
+    this.data = null;
+    this.data_string = #{Paperclip.io_adapters.for(@diagram.data_file).read.inspect};
+    this.data_format = #{@diagram.data_format.inspect};
 
-    //this.fetch_data();
-    this.fetch_data_dev();
-    //this.#{Rails.env.development? ? "fetch_data_dev()" : "fetch_data()"}
+    if (this.data_format.split("-")[0] == "csv"){
+      this.data = $.csv.toObjects(this.data_string);
+    } else if (this.data_format.split("-")[0] == "json") {
+      this.data = JSON.parse(this.data_string);
+      this.filter = new UCDRibbonGraphFilter(this.data);
+    }
+
+    this.initialize();
     this.register_form_events();
   }
 
@@ -30,15 +38,19 @@
         });
       });
 
-      $("#end_forward_button").click(function(){
-        $('#end_term option:selected').next().attr('selected', 'selected');
-        $("#apply_filter").click();
+      $("#time_2_forward_button").click(function(){
+        $('#time_2_select option:selected').next().attr('selected', 'selected');
+        $(".apply_filter").click();
 
       });
 
-      $("#end_back_button").click(function(){
-        $('#end_term option:selected').prev().attr('selected', 'selected');
-        $("#apply_filter").click();
+      $("#time_2_back_button").click(function(){
+        $('#time_2_select option:selected').prev().attr('selected', 'selected');
+        $(".apply_filter").click();
+      });
+
+      $("#time_2_select").change(function(){
+        $(".apply_filter").click();
       });
 
       $("#deselect_links").click(function(){
@@ -70,98 +82,80 @@
         return false;
       });
 
-      $("#apply_filter").click(function(){
+      $(".apply_filter").click(function(){
         controller.graph.reset_node_and_link_values();
-        controller.graph.create_graph_from_base_data(JSON.parse(controller.graph.json));
+        controller.graph.create_graph_from_individual_json(controller.data);
         controller.diagram.draw();
       });
 
-      $("#beta_major_in_out_form").submit(function(e){
-        $("#major_in_outs_chart").html("");
-        controller.fetch_data_dev();
-        return false;
+      var instructions_showing = true;
+
+      $("#toggle_instructions").click(function(e){
+        e.preventDefault();
+
+        if (instructions_showing){
+          $(this).text("Show Instructions");
+          $("#instructions").slideUp();
+        }else{
+          $("#instructions").slideDown();
+          $(this).text("Hide Instructions");
+        }
+        instructions_showing = !instructions_showing;
+
+
+
       });
+
+
     },
 
-    fetch_data_dev: function(){
-      var controller = this;
-      var term = $("#starting_term").val();
-      $.get(
-        "/mio"+term+".json",
+    initialize: function(){
 
-        $('#beta_major_in_out_form').serialize(),
+      this.initialize_time_2_selector();
 
-        function(data){
-          console.log(data);
+      //Create the graph and the diagram
+      this.graph = new UCDRibbonGraph(this.data, this.data_format, this.filter);
+      this.diagram = new UCDRibbonGraphDiagram(this.graph);
 
-          if (!data.error) {
-            controller.current_data_string = JSON.stringify(data);
-            var end_terms = []
-
-            var first_term_seen = 0;
-            var i = 0;
-            while (first_term_seen < 2){
-              if (data.statuses[i].term == term) first_term_seen++;
-              else end_terms.push(data.statuses[i].term);
-              i++;
-            }
-
-            $("#end_term").html("");
-            end_terms.forEach(function(et, index){
-              $("#end_term").append('<option value="'+et+'" '+(index == 13 ? 'selected' : '')+'>'+et+'</option>');
-
-            });
-
-
-            console.log(end_terms);
-
-            var data_string = controller.current_data_string;
-
-            controller.graph = new UCDRibbonGraph(data_string);
-            controller.diagram = new UCDRibbonGraphDiagram(
-              controller.graph,
-              data
-            );
-
-            controller.diagram.draw();
-
-          } else {
-
-          }
-        },
-        "json"
-      );
+      //Draw the diagram
+      this.diagram.draw();
     },
 
-    fetch_data: function(){
-      var controller = this;
+    initialize_time_2_selector : function(){
+      var data = this.data;
+      var data_format = this.data_format;
 
-      $.get(
-        "/beta_major_in_outs.json",
+      //Read first student data to figure out the earliest terms and all other terms
+      var times = [];
 
-        $('#beta_major_in_out_form').serialize(),
+      if (this.data_format == "json-individual"){
+        var first_time = data["STUDENTS"][0]["RECORDS"][0];
 
-        function(data){
-          if (!data.error) {
-            controller.current_data_string = JSON.stringify(data);
-            var data_string = controller.current_data_string;
-
-            controller.graph = new UCDRibbonGraph(data_string);
-            controller.diagram = new UCDRibbonGraphDiagram(
-              controller.graph,
-              data
-            );
-
-            controller.diagram.draw();
+        data["STUDENTS"][0]["RECORDS"].forEach(function(record){
+          if (record["TIME"] != first_time)
+            times.push(record["TIME"]);
+        });
+      } else if (this.data_format == "json-aggregate"){
 
 
-          } else {
+      } else if (this.data_format == "csv-aggregate"){
+        var first_time = data[0]["TIME"];
 
-          }
-        },
-        "json"
-      );
+        data.forEach(function(record){
+          if (record["TIME"] != first_time && times.indexOf(record["TIME"]) == -1 )
+            times.push(record["TIME"]);
+        });
+      }
+
+
+
+      //Create menu items based on the terms in the data
+      $("#time_2_select").html("");
+      times.forEach(function(et, index){
+        $("#time_2_select").append('<option value="'+et+'" '+(index == 13 ? 'selected' : '')+'>'+et+'</option>');
+      });
     }
+
   }
 
   var ribbon_controller = null;

@@ -5,6 +5,7 @@ class CreateDiagrams < ActiveRecord::Migration
       t.belongs_to :institution, :index => true
       t.integer :created_by, :null => false
       t.string :name
+      t.string :category
       t.attachment :data_file
       t.timestamps
     end

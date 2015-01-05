@@ -1,14 +1,98 @@
-%p#notice= notice
+%h1#ribbon_diagram_title Ribbon Diagram
 
-%p
-  %b Name:
-  = @diagram.name
+%p{:style => "font-size:12px; font-weight: bold"}
+  This graph visualizes the migration of students between various statuses over time.
 
-= link_to 'Download Data File', download_diagram_path(@diagram)
+#top_info
+  %a{:href => "", :id => "toggle_instructions", :style => "font-size:12px; font-weight:bold;"} Hide Instructions
+  #instructions
+    %ul{:style => "font-size:12px;"}
+      %li Hovering the cursor over a box or link will show additional information about the students represented.
+      %li Click a box to highlight the links leaving or entering the box. A double-click is sometimes necessary.
+      %li Click a link to highlight it.
+      %li If the diagram is too cluttered check the "Hide Unselected Links" checkbox.
+      %li Drag a box to reposition it vertically.
+      %li Shift-double-click a box to expand it (reveal the subcategories within it).
+      %li Shift-alt-double-click a box to collapse it and it's siblings into the parent (hide the subcategory and show the parent category).
+      %li Shift-double-clicking a box will contract all boxes in the same group back into the parent box.
+      %li Filter the population using the filter options in the collapsible menu accessible via the wrench icon to the left of the diagram.
+      %li The original data used in to create that graph can be downloaded by clicking the link at the top of the collapsible menu to the left.
 
-%br
-%br
+%table{:width => "100%", :style => "display:none;"}
+  %tr
+    %td
+      #start_disc_expanders
+    %td
+      #end_disc_expanders
 
-= link_to 'Edit', edit_diagram_path(@diagram)
-\|
-= link_to 'Back', diagrams_path
+%hr{:style => "clear:both;"}
+
+#controls{:style => "float:left; width: 20%; display:none; "}
+  #download_link
+    =link_to "Download Original Data", download_diagram_path(@diagram)
+
+  #link_selectors{:style => "margin-top:10px; margin-bottom:10px;"}
+    %label{:for => "hide_unselected", :style => "font-weight:bold"} Hide Unselected Links:
+    = check_box_tag "hide_unselected"
+    %br
+    %a{:href => "", :id => "deselect_links"} Deselect All Links
+
+  #filter_menu
+    %h2{:style => "margin-bottom:3px;"} Filter Options:
+    %input{:type => :button, :value => "Apply Filter", :class => "apply_filter"}
+    #filters
+    %input{:type => :button, :value => "Apply Filter", :class => "apply_filter"}
+#control_toggle_container
+  %img#control_toggle{:src => "/assets/wrench.png", :height => "24", :width => "24"}
+
+#ribbon_diagram_container
+  #vis_header{:style => "display:none;"}
+    #vis_title{:style => "margin:0 auto; font-size:x-large;"}
+    %br
+    #vis_filter_desc{:style => "margin:0 auto; font-size:x-large;"}
+    %br{:style => "clear:both;"}
+
+    #current_hovered_item{:style => "height:50px;"}
+
+    %br{:style => "clear:both;"}
+
+    #time_1_header{:style => "float: left; width:50%;"}
+      #time_1_title{:style => "font-size:large; text-align:center;"}
+
+    #time_2_header{:style => "float: right; width:50%;"}
+      #time_2_title{:style => "font-size:large; text-align:center; margin-left:5px; margin-right:5px;"}
+      %br
+
+      #time_2_back{:style => "display: inline;"}
+        = button_tag "<", {:id => "time_2_back_button"}
+      #time_2{:style => "display: inline;"}
+        = select_tag :time_2_select, []
+      #time_2_forward{:style => "display: inline;"}
+        = button_tag ">", {:id => "time_2_forward_button"}
+
+
+
+  #ribbon_diagram_chart{:style => "width: 100%"}
+    %h2#loadingMsg
+      This visualization may take several minutes to fetch the data it requires. Please be patient and do not refresh the page.
+      %br
+      =image_tag("spinner.gif")
+      Loading
+
+-##color_key_div{:style => "float:right; display:none; margin-left:10px;"}
+-#  %h4 Key
+-#  %table#color_key
+-#    %tr
+-#      %td Discipline
+-#      %td Color
+
+%br{:style => "clear:both;"}
+
+
+= render(:partial => "diagrams/link.js")
+= render(:partial => "diagrams/node.js")
+= render(:partial => "diagrams/diagram.js")
+= render(:partial => "diagrams/graph.js")
+= render(:partial => "diagrams/filter.js")
+= render(:partial => "diagrams/controller.js")
+

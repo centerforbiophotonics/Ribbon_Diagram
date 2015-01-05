@@ -9,9 +9,9 @@ class Diagram < ActiveRecord::Base
                     :s3_permissions => :private,
                     :s3_server_side_encryption => :aes256,
                     :s3_credentials => S3_CREDENTIALS,
-                    :path => "data_files/:institution/:filename"
+                    :path => "data_files/:institution/:creator_id/:filename"
 
-  validates_attachment_content_type :data_file, :content_type => ["application/json", "text/plain"]
+  validates_attachment_content_type :data_file, :content_type => ["application/json", "text/plain", "text/csv"]
 
   private
 
@@ -21,6 +21,10 @@ class Diagram < ActiveRecord::Base
 
   Paperclip.interpolates :institution  do |attachment, style|
     attachment.instance.institution.name
+  end
+
+  Paperclip.interpolates :creator_id  do |attachment, style|
+    attachment.instance.created_by
   end
 
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141104195314) do
+ActiveRecord::Schema.define(version: 20150104205128) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,13 +27,16 @@ ActiveRecord::Schema.define(version: 20141104195314) do
   create_table "diagrams", force: true do |t|
     t.integer  "users_id"
     t.integer  "institution_id"
+    t.integer  "created_by",             null: false
     t.string   "name"
+    t.string   "category"
     t.string   "data_file_file_name"
     t.string   "data_file_content_type"
     t.integer  "data_file_file_size"
     t.datetime "data_file_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "data_format"
   end
 
   add_index "diagrams", ["institution_id"], name: "index_diagrams_on_institution_id", using: :btree
