@@ -10,9 +10,9 @@
     = f.label :institution_id, "Institution: "
     = f.select(:institution_id,  options_for_select(Institution.all.map{|u| [u.name, u.id]}, :selected => @user.institution.id))
 
-  .field
-    = f.label :access_level_id
-    = f.number_field :access_level
+  -#.field
+  -#  = f.label :access_level_id
+  -#  = f.number_field :access_level
 
   .field
     = f.label :name
