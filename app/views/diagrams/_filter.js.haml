@@ -45,8 +45,6 @@
 
               if (demographics[key] > filter[key][1])
                 filter[key][1] = demographics[key];
-
-              filter[key] = [demographics[key],demographics[key]];
             } else if (demographics[key] == null){
               demographics[key] = "Not Specified";
               if (filter_types[key] == "string" && filter[key].indexOf("Not Specified") == -1)
