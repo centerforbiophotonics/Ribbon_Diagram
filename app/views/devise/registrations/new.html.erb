@@ -14,9 +14,21 @@
   </div>
 
   <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :department %><br />
+    <%= f.text_field :department, autofocus: true %>
+  </div>
+
+  <div class="field">
     <%= f.label :institution_id, "I belong to the following institution: "%>
     <%= f.select(:institution_id, Institution.all.order(:name).map{|u| [u.name, u.id]}.unshift(["Choose an Institution", nil]), {}, {:class => "select2"}) %>
   </div>
+
+
   <br/>
 
   <div class="field">

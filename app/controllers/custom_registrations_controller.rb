@@ -9,7 +9,7 @@ class CustomRegistrationsController < Devise::RegistrationsController
     #end
 
     #TEMPORARY for TEA Demo
-    diagram = Diagram.where(:name => "Randomized Demo Data")
+    diagram = Diagram.where(:name => "Randomized Demo Data")[0]
     if @user.save
       UserDiagram.new(:diagram => diagram, :user => @user).save!
     end

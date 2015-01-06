@@ -21,14 +21,6 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.save
-
-    #TEMPORARY for TEA Demo
-    diagram = Diagram.where(:name => "Randomized Demo Data")
-    if @user.save
-      UserDiagram.new(:diagram => diagram, :user => @user).save!
-    end
-    #End TEMPORARY
-
     respond_with(@user)
   end
 
@@ -56,6 +48,6 @@ class UsersController < ApplicationController
     end
 
     def user_params
-      params.require(:user).permit(:institution_id, :access_level, :access_level_desc, :name, :email)
+      params.require(:user).permit(:institution_id, :access_level, :access_level_desc, :name, :email, :title, :department)
     end
 end

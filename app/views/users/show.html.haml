@@ -13,6 +13,12 @@
 %p
   %b Email:
   = @user.email
+%p
+  %b Title:
+  = @user.title
+%p
+  %b Department:
+  = @user.department
 
 = link_to 'Edit', edit_user_path(@user)
 \|
