@@ -300,42 +300,6 @@
         link.attr("d", path);
       }
 
-      //function toggle_link_selection(d,i){
-      //  d.selected = !d.selected
-      //
-      //  if ("sourceLinks" in d){   //d is a node
-      //    if (d.type == "Discipline"){
-      //      graph.nodes.filter(isNonZero).forEach(function(n){
-      //        if (n.discipline == d.discipline && n.time == d.time){
-      //          n.selected = d.selected;
-      //          if (n.sourceLinks != undefined  && n.sourceLinks != null){
-      //            n.sourceLinks.forEach(function(l){
-      //              l.selected = n.selected;
-      //            });
-      //          }
-      //
-      //          if (n.targetLinks != undefined  && n.targetLinks != null){
-      //            n.targetLinks.forEach(function(l){
-      //              l.selected = n.selected;
-      //            });
-      //          }
-      //        }
-      //      });
-      //    }
-      //
-      //    d.sourceLinks.forEach(function(l){
-      //      l.selected = d.selected;
-      //    });
-      //
-      //
-      //    d.targetLinks.forEach(function(l){
-      //      l.selected = (l.source.selected || l.target.selected)});
-      //  }
-      //
-      //  set_opacity_by_selected();
-      //  create_csv_from_selected(graph);
-      //}
-
 
 
       function set_opacity_by_selected(){
@@ -350,17 +314,6 @@
           else return unselected_link_opacity.toString();
         });
       }
-      //
-      //$("#hide_unselected").change(function(){
-      //  var checkbox_checked = $(this).is(":checked")
-      //
-      //  d3.selectAll(".link").style("visibility", function(d,i){
-      //    if (d.selected) return "visible";
-      //
-      //    if(checkbox_checked) return "hidden";
-      //    else return "visible";
-      //  });
-      //});
 
 
       function create_csv_from_selected(graph){
