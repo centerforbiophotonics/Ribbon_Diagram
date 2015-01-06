@@ -167,7 +167,7 @@
         var start_time = student["RECORDS"][0]["TIME"];
         if (start_time == time_1){
           student["RECORDS"].forEach(function(r,index){
-            if (index != 0 times_for_starting_group.indexOf(r["TIME"]) == -1)
+            if (index != 0 && times_for_starting_group.indexOf(r["TIME"]) == -1)
               times_for_starting_group.push(r["TIME"]);
           });
         }
