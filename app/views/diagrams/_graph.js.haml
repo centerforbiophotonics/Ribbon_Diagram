@@ -313,7 +313,7 @@
         var time_1_record = student["RECORDS"][0];
         var time_2_record = student["RECORDS"].filter(function(r){ return (""+r["TIME"]) == time_2 })[0];
 
-        if (time_1_record != undefined && time_2_record != undefined){
+        if (time_1_record != undefined && time_2_record != undefined && time_1 != time_2){
           var time_1_group_types = time_1_record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
           var time_1_group_vals = time_1_record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
 
