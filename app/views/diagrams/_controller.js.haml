@@ -162,12 +162,12 @@
 
     populate_time_2_from_time_1 : function(time_1){
       var data = this.data;
-      var times_for_starting_group = [time_1];
+      var times_for_starting_group = [];
       data["STUDENTS"].forEach(function(student){
         var start_time = student["RECORDS"][0]["TIME"];
         if (start_time == time_1){
-          student["RECORDS"].forEach(function(r){
-            if (times_for_starting_group.indexOf(r["TIME"]) == -1)
+          student["RECORDS"].forEach(function(r,index){
+            if (index != 0 times_for_starting_group.indexOf(r["TIME"]) == -1)
               times_for_starting_group.push(r["TIME"]);
           });
         }
