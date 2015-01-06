@@ -16,6 +16,7 @@
 //= require dataTables/extras/dataTables.responsive
 //= require dataTables/jquery.dataTables
 //= require jquery.csv.js
+//= require select2
 //= require d3
 //= require_tree .
 
@@ -27,8 +28,11 @@ function ready(){
 
     $('.datatable').DataTable({
         responsive: true,
-        autoWidth: false
+        autoWidth: false,
+        pageLength: 100
     });
+
+    $('.select2').select2({ placeholder: 'Search for your institution.'});
 }
 
 $(document).ready(ready);

@@ -20,6 +20,7 @@ gem 'therubyracer',  platforms: :ruby
 gem 'jquery-rails'
 gem 'jquery-datatables-rails', '~> 3.1.1'
 gem 'jquerycsv-rails'
+gem 'select2-rails'
 
 gem 'd3-rails'
 
