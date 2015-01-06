@@ -11,12 +11,22 @@ end
 File.open("/Users/steinwam/Desktop/TEA Data for testing/BUSTEMribbon.JSON", 'w') { |file| file.write(new_object.to_json) }
 
 
+
+#USASK
+
 file = File.read('/Users/steinwam/Desktop/TEA Data for testing/USASK_ribbon_20150103.json')
 
 data_hash = JSON.parse(file)
 
-puts data_hash["STUDENTS"].size
+data_hash["STUDENTS"].select do |s|
+  s["DEMOGRAPHICS"]["high_school_average_rounded"].present? && s["DEMOGRAPHICS"]["high_school_average"].present?
 
+end.size
+
+data_hash["STUDENTS"].each do |s|
+  s["DEMOGRAPHICS"] = s["DEMOGRAPHICS"].except("NSID")
+
+end
 File.open("/Users/steinwam/Desktop/TEA Data for testing/USASK_ribbon_20150103.json", 'w') { |file| file.write(data_hash.to_json) }
 
 

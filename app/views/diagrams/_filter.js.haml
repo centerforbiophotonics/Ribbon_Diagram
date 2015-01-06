@@ -40,11 +40,11 @@
             if (typeof demographics[key] == "string" && filter[key].indexOf(demographics[key]) == -1){
               filter[key].push(demographics[key]);
             } else if (typeof demographics[key] == "number"){
-              if (demographics[key] < filter[key][0])
-                filter[key][0] = demographics[key];
+              if (parseFloat(demographics[key]) < parseFloat(filter[key][0]))
+                filter[key][0] = parseFloat(demographics[key]);
 
-              if (demographics[key] > filter[key][1])
-                filter[key][1] = demographics[key];
+              if (parseFloat(demographics[key]) > parseFloat(filter[key][1]))
+                filter[key][1] = parseFloat(demographics[key]);
             } else if (demographics[key] == null){
               demographics[key] = "Not Specified";
               if (filter_types[key] == "string" && filter[key].indexOf("Not Specified") == -1)
@@ -109,9 +109,9 @@
         '<p class="filter-label">'+key+':<p>'+
         '<div class="indent">'+
           '<label for="'+key+'_min">Min:</label>\n'+
-          '<input type="number" id="'+key+'_min" min="'+values[0]+'" max="'+values[1]+'" value="'+values[0]+'">\n'+
+          '<input type="number" id="'+key+'_min" min="'+values[0]+'" max="'+values[1]+'" value="'+values[0]+'" step="any">\n'+
           '<label for="'+key+'_max">Max:</label>\n'+
-          '<input type="number" id="'+key+'_max" min="'+values[0]+'" max="'+values[1]+'" value="'+values[1]+'">\n<br>'+
+          '<input type="number" id="'+key+'_max" min="'+values[0]+'" max="'+values[1]+'" value="'+values[1]+'" step="any">\n<br>'+
           '<label for="'+key+'_include_nulls">Include Nulls:</label>\n'+
           '<input type="checkbox" id="'+key+'_include_nulls" checked>'+
         '</div>'+
@@ -162,11 +162,14 @@
               push = false;
 
           } else if (filter_types[key] == "number"){
-            if ($("#"+key+"_min").val() > demographics[key])
+            if (demographics[key] != "Not Specified" && parseFloat($("#"+key+"_min").val()) > parseFloat(demographics[key])){
               push = false;
+            }
 
-            if ($("#"+key+"_max").val() < demographics[key])
+
+            if (demographics[key] != "Not Specified" && parseFloat($("#"+key+"_max").val()) < parseFloat(demographics[key])){
               push = false;
+            }
 
             if ($("#"+key+"_include_nulls").prop('checked') == false && demographics[key] == "Not Specified")
               push = false;

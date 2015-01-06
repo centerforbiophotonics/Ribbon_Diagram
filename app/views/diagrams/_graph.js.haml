@@ -276,6 +276,7 @@
 
 
     create_graph_from_individual_json : function(data){
+      var raw_data_total = data["STUDENTS"].length;
       var filtered_data = this.filter.filter_data(data);
 
       console.log("FILTERED DATA:");
@@ -352,7 +353,8 @@
       });
 
       $("#vis_filter_desc").html(
-        "<p>Cohort includes "+this.starting_cohort_count+" people.</p>\n"+
+        "<p>The raw data contains "+raw_data_total+" people.</p>\n"+
+        "<p>The selected cohort includes "+this.starting_cohort_count+" people.</p>\n"+
         "<p>"+this.not_specified_count+" people had an unspecified status during "+time_2+".</p>\n"
       );
 
