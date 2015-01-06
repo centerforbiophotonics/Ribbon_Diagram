@@ -28,7 +28,8 @@
 %hr{:style => "clear:both;"}
 #control_container
   #control_toggle_container
-    %img#control_toggle{:src => "/assets/wrench.png", :height => "24", :width => "24"}
+    %img#control_toggle{:src => "/assets/wrench.png", :height => "24", :width => "24", :style => "display:inline"}
+    <---- Click here to hide/show this menu.
   #controls
     #download_link
       =link_to "Download Original Data", download_diagram_path(@diagram)
