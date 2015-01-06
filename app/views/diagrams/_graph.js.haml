@@ -7,6 +7,8 @@
 
     this.time_1 = null;
     this.time_2 = null;
+    this.starting_cohort_count = null;
+    this.not_specified_count = 0;
 
     this.data = data;
     this.data_format = data_format;
@@ -281,60 +283,78 @@
 
       var graph = this;
 
-      $("#vis_filter_desc").html("(Filtered to "+filtered_data["STUDENTS"].length+" people)");
-
+      var time_1 = $("#time_1_select").val();
       var time_2 = $("#time_2_select").val();
+      this.time_1 = time_1;
       this.time_2 = time_2;
+
+      var starting_cohort = {
+        "STUDENTS" : filtered_data["STUDENTS"].filter(function(student){
+          return (student["RECORDS"][0]["TIME"]+"") == time_1;
+        })
+      }
+
+      this.starting_cohort_count = starting_cohort["STUDENTS"].length;
+      this.not_specified_count = 0;
 
       var nodes = {},
           links = {};
 
-      data["STUDENTS"].forEach(function(student){
+      //TEMPORARY remove after TEA
+      starting_cohort["STUDENTS"].forEach(function(student){
         student["RECORDS"].forEach(function(record){
           if (record["GROUPS"][2]["major"] == '0000')
             record["GROUPS"][1]["discipline"] = 'ACOLW';
         });
       });
+      //END TEMPORARY
 
-
-      filtered_data["STUDENTS"].forEach(function(student){
-        var first_record = student["RECORDS"][0];
-        var fr_time = first_record["TIME"];
-        var fr_group_types = first_record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
-        var fr_group_vals = first_record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
-
-        graph.time_1 = fr_time;
-
-        graph.create_leaf_node(
-          fr_group_vals,
-          fr_group_types,
-          fr_time
-        );
-
+      starting_cohort["STUDENTS"].forEach(function(student){
+        var time_1_record = student["RECORDS"][0];
         var time_2_record = student["RECORDS"].filter(function(r){ return (""+r["TIME"]) == time_2 })[0];
-        var er_group_types = time_2_record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
-        var er_group_vals = time_2_record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
 
-        graph.create_leaf_node(
-          er_group_vals,
-          er_group_types,
-          time_2
-        );
+        if (time_1_record != undefined && time_2_record != undefined){
+          var time_1_group_types = time_1_record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
+          var time_1_group_vals = time_1_record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
 
-        var source_node = graph.find_node_recursive(
-          fr_group_vals,
-          fr_group_types,
-          fr_time
-        );
+          graph.create_leaf_node(
+            time_1_group_vals,
+            time_1_group_types,
+            time_1
+          );
 
-        var target_node = graph.find_node_recursive(
-          er_group_vals,
-          er_group_types,
-          time_2
-        );
+          var time_2_group_types = time_2_record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
+          var time_2_group_vals = time_2_record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
 
-        graph.create_or_increment_link_and_parent_node_links(source_node, target_node);
+          graph.create_leaf_node(
+            time_2_group_vals,
+            time_2_group_types,
+            time_2
+          );
+
+          var source_node = graph.find_node_recursive(
+            time_1_group_vals,
+            time_1_group_types,
+            time_1
+          );
+
+          var target_node = graph.find_node_recursive(
+            time_2_group_vals,
+            time_2_group_types,
+            time_2
+          );
+
+          graph.create_or_increment_link_and_parent_node_links(source_node, target_node);
+        } else if (time_2_record == undefined){
+          graph.not_specified_count += 1;
+        }
+
       });
+
+      $("#vis_filter_desc").html(
+        "<p>Cohort includes "+this.starting_cohort_count+" people.</p>\n"+
+        "<p>"+this.not_specified_count+" people had an unspecified status during "+time_2+".</p>\n"
+      );
 
       this.update_link_showing();
     },
@@ -365,8 +385,6 @@
             fr_time
           );
         }
-
-
 
         graph.create_or_increment_link_and_parent_node_links(source_node, target_node);
       });

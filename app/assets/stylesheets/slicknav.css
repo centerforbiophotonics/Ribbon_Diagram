@@ -21,7 +21,7 @@
 .slicknav_menu:after { content: " "; display: table; }
 .slicknav_menu:after { clear: both }
 /* IE6/7 support */
-.slicknav_menu { *zoom: 1 }
+.slicknav_menu { *zoom: 1; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; }
 
 /* 
     User Default Style

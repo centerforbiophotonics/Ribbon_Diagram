@@ -88,14 +88,13 @@
         return disc_node.value/sum;
       }
 
-      $("#time_1_title").text("Status "+graph.time_1);
-      $("#time_2_title").text("Status "+graph.time_2);
+      $("#time_1_title").text("Starting Cohort from"+graph.time_1);
+      $("#time_2_title").text("Status in "+graph.time_2);
       $("#vis_title").text("#{@diagram.category}: #{@diagram.name} ");
 
-      $('#controls').show();
-      $('#control_toggle_container').show();
+      $('#control_container').show();
 
-      $('#ribbon_diagram_chart').html('')
+      $('#ribbon_diagram_chart').html('');
 
       var margin = {top: 10, right: 200, bottom: 6, left: 200},
           width = 940 - margin.left - margin.right,
@@ -255,14 +254,14 @@
           .style("fill", color_from_discipline)
           .style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
           .on("mouseover", function(d) {
-            var title = ""
-            title += d.time + " in " + d.name + "\n";
-            title += format(d.value) + "\n"
+            var title = format(d.value) + "\n"
+            title += " students are " + d.name + "\n";
+            title += "in " + d.time + "\n"
 
             if (d.parent_node == null){  //One of the top level nodes
-              title += formatNumber(d.percent_of_sibling_total()*100)+"% of total during "+d.time;
+              title += "("+formatNumber(d.percent_of_sibling_total()*100)+"% of cohort during "+d.time+")";
             } else {
-              title += formatNumber(d.percent_of_sibling_total()*100)+"% of "+d.parent_node.name;
+              title += "("+formatNumber(d.percent_of_sibling_total()*100)+"% of "+d.parent_node.name+")";
             }
 
             $("#current_hovered_item").html(title);

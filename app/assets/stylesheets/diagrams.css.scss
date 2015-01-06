@@ -2,9 +2,14 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-#controls{
-  width: 20%;
+#control_container{
+  position: absolute;
   border: 1px solid black;
+  background-color: white;
+  display: none;
+}
+
+#controls{
   padding: 10px;
 }
 
@@ -13,21 +18,13 @@
 }
 
 #ribbon_diagram_container{
-  width: 78%;
-  float:left;
   text-align:center;
-
 }
 
+
+
 #control_toggle_container{
-  float:left;
-  /*-moz-box-shadow:    3px 3px 5px 3px #ccc;*/
-  /*-webkit-box-shadow: 3px 3px 5px 3px #ccc;*/
-  /*box-shadow:         3px 3px 5px 3px #ccc;*/
-  border: 1px solid black;
-  padding: 2px;
-  margin-left: -1px;
-  display: none;
+  padding: 4px;
   cursor: pointer;
 }
 

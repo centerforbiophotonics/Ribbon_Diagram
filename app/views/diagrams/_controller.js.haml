@@ -41,7 +41,6 @@
       $("#time_2_forward_button").click(function(){
         $('#time_2_select option:selected').next().attr('selected', 'selected');
         $(".apply_filter").click();
-
       });
 
       $("#time_2_back_button").click(function(){
@@ -50,6 +49,21 @@
       });
 
       $("#time_2_select").change(function(){
+        $(".apply_filter").click();
+      });
+
+      $("#time_1_forward_button").click(function(){
+        $('#time_1_select option:selected').next().attr('selected', 'selected');
+        $(".apply_filter").click();
+      });
+
+      $("#time_1_back_button").click(function(){
+        $('#time_1_select option:selected').prev().attr('selected', 'selected');
+        $(".apply_filter").click();
+      });
+
+      $("#time_1_select").change(function(){
+        controller.populate_time_2_from_time_1($("#time_1_select").val());
         $(".apply_filter").click();
       });
 
@@ -101,17 +115,12 @@
           $(this).text("Hide Instructions");
         }
         instructions_showing = !instructions_showing;
-
-
-
       });
-
-
     },
 
     initialize: function(){
 
-      this.initialize_time_2_selector();
+      this.initialize_time_selectors();
 
       //Create the graph and the diagram
       this.graph = new UCDRibbonGraph(this.data, this.data_format, this.filter);
@@ -121,38 +130,52 @@
       this.diagram.draw();
     },
 
-    initialize_time_2_selector : function(){
+    initialize_time_selectors : function(){
       var data = this.data;
       var data_format = this.data_format;
 
-      //Read first student data to figure out the earliest terms and all other terms
-      var times = [];
+      var start_times = [];
+      data["STUDENTS"].forEach(function(student){
+        var start_time = student["RECORDS"][0]["TIME"];
+        if (start_times.indexOf(start_time) == -1)
+          start_times.push(start_time);
+      });
 
-      if (this.data_format == "json-individual"){
-        var first_time = data["STUDENTS"][0]["RECORDS"][0];
+      //Creates the time_1 selector and selects the first time in the list (not guaranteed to be earliest
+      $("#time_1_select").html("");
+      start_times.forEach(function(t, index){
+        $("#time_1_select").append('<option value="'+t+'" '+(index == 0 ? 'selected' : '')+'>'+t+'</option>');
+      });
 
-        data["STUDENTS"][0]["RECORDS"].forEach(function(record){
-          if (record["TIME"] != first_time)
-            times.push(record["TIME"]);
-        });
-      } else if (this.data_format == "json-aggregate"){
-
-
-      } else if (this.data_format == "csv-aggregate"){
-        var first_time = data[0]["TIME"];
-
-        data.forEach(function(record){
-          if (record["TIME"] != first_time && times.indexOf(record["TIME"]) == -1 )
-            times.push(record["TIME"]);
-        });
-      }
+      this.populate_time_2_from_time_1(start_times[0]);
 
 
+      //if (this.data_format == "json-individual"){
+      //
+      //} else if (this.data_format == "json-aggregate"){
+      //
+      //
+      //} else if (this.data_format == "csv-aggregate"){
+      //
+      //}
+    },
 
-      //Create menu items based on the terms in the data
+    populate_time_2_from_time_1 : function(time_1){
+      var data = this.data;
+      var times_for_starting_group = [time_1];
+      data["STUDENTS"].forEach(function(student){
+        var start_time = student["RECORDS"][0]["TIME"];
+        if (start_time == time_1){
+          student["RECORDS"].forEach(function(r){
+            if (times_for_starting_group.indexOf(r["TIME"]) == -1)
+              times_for_starting_group.push(r["TIME"]);
+          });
+        }
+      });
+
       $("#time_2_select").html("");
-      times.forEach(function(et, index){
-        $("#time_2_select").append('<option value="'+et+'" '+(index == 13 ? 'selected' : '')+'>'+et+'</option>');
+      times_for_starting_group.forEach(function(t, index){
+        $("#time_2_select").append('<option value="'+t+'" '+(index == (times_for_starting_group.length-1) ? 'selected' : '')+'>'+t+'</option>');
       });
     }
 

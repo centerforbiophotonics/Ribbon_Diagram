@@ -26,24 +26,25 @@
       #end_disc_expanders
 
 %hr{:style => "clear:both;"}
+#control_container
+  #control_toggle_container
+    %img#control_toggle{:src => "/assets/wrench.png", :height => "24", :width => "24"}
+  #controls
+    #download_link
+      =link_to "Download Original Data", download_diagram_path(@diagram)
 
-#controls{:style => "float:left; width: 20%; display:none; "}
-  #download_link
-    =link_to "Download Original Data", download_diagram_path(@diagram)
+    #link_selectors{:style => "margin-top:10px; margin-bottom:10px;"}
+      %label{:for => "hide_unselected", :style => "font-weight:bold"} Hide Unselected Links:
+      = check_box_tag "hide_unselected"
+      %br
+      %a{:href => "", :id => "deselect_links"} Deselect All Links
 
-  #link_selectors{:style => "margin-top:10px; margin-bottom:10px;"}
-    %label{:for => "hide_unselected", :style => "font-weight:bold"} Hide Unselected Links:
-    = check_box_tag "hide_unselected"
-    %br
-    %a{:href => "", :id => "deselect_links"} Deselect All Links
+    #filter_menu
+      %h2{:style => "margin-bottom:3px;"} Filter Options:
+      %input{:type => :button, :value => "Apply Filter", :class => "apply_filter"}
+      #filters
+      %input{:type => :button, :value => "Apply Filter", :class => "apply_filter"}
 
-  #filter_menu
-    %h2{:style => "margin-bottom:3px;"} Filter Options:
-    %input{:type => :button, :value => "Apply Filter", :class => "apply_filter"}
-    #filters
-    %input{:type => :button, :value => "Apply Filter", :class => "apply_filter"}
-#control_toggle_container
-  %img#control_toggle{:src => "/assets/wrench.png", :height => "24", :width => "24"}
 
 #ribbon_diagram_container
   #vis_header{:style => "display:none;"}
@@ -57,7 +58,16 @@
     %br{:style => "clear:both;"}
 
     #time_1_header{:style => "float: left; width:50%;"}
-      #time_1_title{:style => "font-size:large; text-align:center;"}
+      #time_1_title{:style => "font-size:large; text-align:center; margin-left:5px; margin-right:5px;"}
+      %br
+
+      #time_1_back{:style => "display: inline;"}
+        = button_tag "<", {:id => "time_1_back_button"}
+      #time_1{:style => "display: inline;"}
+        = select_tag :time_1_select, []
+      #time_1_forward{:style => "display: inline;"}
+        = button_tag ">", {:id => "time_1_forward_button"}
+
 
     #time_2_header{:style => "float: right; width:50%;"}
       #time_2_title{:style => "font-size:large; text-align:center; margin-left:5px; margin-right:5px;"}
@@ -72,7 +82,7 @@
 
 
 
-  #ribbon_diagram_chart{:style => "width: 100%"}
+  #ribbon_diagram_chart
     %h2#loadingMsg
       This visualization may take several minutes to fetch the data it requires. Please be patient and do not refresh the page.
       %br
