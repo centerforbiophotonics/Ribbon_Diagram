@@ -69,8 +69,8 @@ class DiagramsController < ApplicationController
     end
 
     def user_can_access_diagram
-      unless current_user.diagrams.include?(@diagram) && current_user.super_admin == false
-        render :status => 404
+      unless current_user.diagrams.include?(@diagram) || current_user.super_admin
+        render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found
       end
     end
 end
