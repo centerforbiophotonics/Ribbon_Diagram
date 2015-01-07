@@ -9,7 +9,7 @@ class Diagram < ActiveRecord::Base
                     :s3_permissions => :private,
                     :s3_server_side_encryption => :aes256,
                     :s3_credentials => S3_CREDENTIALS,
-                    :path => "data_files/:institution/:creator_id/:filename"
+                    :path => "data_files#{Rails.env == "development" ? "_dev":""}/:institution/:creator_id/:filename"
 
   validates_attachment_content_type :data_file, :content_type => ["application/json", "text/plain", "text/csv"]
 

@@ -2,6 +2,8 @@ class DiagramsController < ApplicationController
   before_action :set_diagram, :only => [:show, :edit, :update, :destroy, :download]
   before_action :set_diagrams, :only => [:index]
 
+  before_action :user_can_access_diagram, :only => [:show, :edit, :update, :destroy, :download]
+
   def index
     respond_with(@diagrams)
   end
@@ -46,7 +48,7 @@ class DiagramsController < ApplicationController
   end
 
   def download
-    send_data @diagram.data_file.expiring_url(10), :filename => @diagram.data_file.original_filename
+    redirect_to @diagram.data_file.expiring_url(10), :filename => @diagram.data_file.original_filename
   end
 
   private
@@ -64,5 +66,11 @@ class DiagramsController < ApplicationController
 
     def diagram_params
       params.require(:diagram).permit(:data_file, :data_format,  :name, :category)
+    end
+
+    def user_can_access_diagram
+      unless current_user.diagrams.include?(@diagram)
+        redirect_to diagrams_path
+      end
     end
 end

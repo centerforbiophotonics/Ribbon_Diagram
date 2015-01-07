@@ -33,19 +33,27 @@
               filter_types[key] = "number";
             } else if (demographics[key] == null) {
               demographics[key] = "Not Specified";  // Rare problem here if the value in the first record is null and then not null in any other record.
+              filter[key] = null;
             }
           }
         } else {
           for (var key in demographics){
-            if (typeof demographics[key] == "string" && filter[key].indexOf(demographics[key]) == -1){
+            if (typeof demographics[key] == "string" && (filter[key] == null || filter[key].indexOf(demographics[key]) == -1) ){
+              if (filter[key] == null) filter[key] = [];
               filter[key].push(demographics[key]);
             } else if (typeof demographics[key] == "number"){
+              if (filter[key] == null) filter[key] = [demographics[key],demographics[key]];
+
               if (parseFloat(demographics[key]) < parseFloat(filter[key][0]))
                 filter[key][0] = parseFloat(demographics[key]);
 
               if (parseFloat(demographics[key]) > parseFloat(filter[key][1]))
                 filter[key][1] = parseFloat(demographics[key]);
+            } else if (typeof demographics[key] == "boolean"){
+              if (filter[key] == null) filter[key] = "Included";
             } else if (demographics[key] == null){
+              if (filter[key] == null) filter[key] = [demographics[key],demographics[key]];
+
               demographics[key] = "Not Specified";
               if (filter_types[key] == "string" && filter[key].indexOf("Not Specified") == -1)
                 filter[key].push(demographics[key]);
