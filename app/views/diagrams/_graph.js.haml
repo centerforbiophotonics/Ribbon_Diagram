@@ -205,12 +205,13 @@
           links = {};
 
       //TEMPORARY remove after TEA
-      starting_cohort["STUDENTS"].forEach(function(student){
-        student["RECORDS"].forEach(function(record){
-          if (record["GROUPS"][2]["major"] == '0000')
-            record["GROUPS"][1]["discipline"] = 'ACOLW';
+      if (#{current_user.institution.name == "UC Davis"})
+        starting_cohort["STUDENTS"].forEach(function(student){
+          student["RECORDS"].forEach(function(record){
+            if (record["GROUPS"][2]["major"] == '0000')
+              record["GROUPS"][1]["discipline"] = 'ACOLW';
+          });
         });
-      });
       //END TEMPORARY
 
       starting_cohort["STUDENTS"].forEach(function(student){

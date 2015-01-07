@@ -1,14 +1,30 @@
-file = File.read('/Users/steinwam/Desktop/TEA Data for testing/BUSTEMribbon-Original.JSON')
+#Bennett
+file = File.read('/Users/steinwam/Desktop/TEA Data for testing/BUonlySTEMribbon2.JSON')
 
 data_hash = JSON.parse(file)
 
 new_object = {:"STUDENTS" => []}
 
 data_hash.each do |key, val|
+
+  puts "******"
+  puts val.inspect
+
+  val["RECORDS"].each do |r|
+    new_groups = []
+
+    r["GROUPS"].each do|key, val|
+      new_groups << { key => val }
+    end
+
+    r["GROUPS"] = new_groups
+
+  end
+
   new_object[:"STUDENTS"] << val
 end
 
-File.open("/Users/steinwam/Desktop/TEA Data for testing/BUSTEMribbon.JSON", 'w') { |file| file.write(new_object.to_json) }
+File.open("/Users/steinwam/Desktop/TEA Data for testing/BUonlySTEMribbon2-fixed.JSON", 'w') { |file| file.write(new_object.to_json) }
 
 
 
