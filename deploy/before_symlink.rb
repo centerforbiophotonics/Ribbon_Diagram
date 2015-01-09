@@ -1,8 +1,6 @@
 rails_env = new_resource.environment["RAILS_ENV"]
 
-Chef::Log.info("********************************")
 Chef::Log.info("Precompiling assets for RAILS_ENV=#{rails_env} in #{release_path}.")
-Chef::Log.info("********************************")
 
 execute "rake assets:precompile" do
   cwd release_path
