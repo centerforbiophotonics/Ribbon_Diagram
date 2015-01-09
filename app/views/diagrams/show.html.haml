@@ -28,7 +28,7 @@
 %hr{:style => "clear:both;"}
 #control_container
   #control_toggle_container
-    %img#control_toggle{:src => "/assets/wrench.png", :height => "24", :width => "24", :style => "display:inline"}
+    %img#control_toggle{:src => asset_path("wrench.png"), :height => "24", :width => "24", :style => "display:inline"}
     <---- Click here to hide/show this menu.
   #controls
     #download_link
@@ -88,7 +88,7 @@
     %h2#loadingMsg
       This visualization may take several minutes to fetch the data it requires. Please be patient and do not refresh the page.
       %br
-      =image_tag("spinner.gif")
+      =image_tag(asset_path("spinner.gif"))
       Loading
 
 -##color_key_div{:style => "float:right; display:none; margin-left:10px;"}

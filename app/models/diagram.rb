@@ -28,4 +28,3 @@ class Diagram < ActiveRecord::Base
   end
 
 end
-#/#{ institution.name }

@@ -17,8 +17,9 @@
 //= require dataTables/jquery.dataTables
 //= require jquery.csv.js
 //= require select2
-//= require d3
-//= require_tree .
+//= require jquery.slicknav.js
+
+
 
 function ready(){
     $("#menu").slicknav({

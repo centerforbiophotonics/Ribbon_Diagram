@@ -83,11 +83,14 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 
-##Local
+#Local
+production:
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  database: ribbon_diagram_production
+  host: "localhost"
+
 #production:
 #  <<: *default
-#  database: ribbon_diagram_production
-
-production:
-  <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
+#  url: <%= ENV['DATABASE_URL'] %>
