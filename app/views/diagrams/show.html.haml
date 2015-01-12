@@ -32,7 +32,7 @@
     <---- Click here to hide/show this menu.
   #controls
     #download_link
-      =link_to "Download Original Data", download_diagram_path(@diagram)
+      =link_to "Download Original Data", download_diagram_path(@diagram, :data_file_id => "33")
 
     #link_selectors{:style => "margin-top:10px; margin-bottom:10px;"}
       %label{:for => "hide_unselected", :style => "font-weight:bold"} Hide Unselected Links:
@@ -88,7 +88,7 @@
     %h2#loadingMsg
       This visualization may take several minutes to fetch the data it requires. Please be patient and do not refresh the page.
       %br
-      =image_tag(asset_path("spinner.gif"))
+      =image_tag("spinner.gif")
       Loading
 
 -##color_key_div{:style => "float:right; display:none; margin-left:10px;"}

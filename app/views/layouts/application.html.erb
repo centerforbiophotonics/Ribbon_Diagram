@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>RibbonDiagram <%= Rails.env == "development" ? "Development" : ""%></title>
+  <title><%= Rails.env == "development" ? "Dev" : ""%> RibbonDiagram</title>
   <%= stylesheet_link_tag    'application', :media => 'all' %>
   <%= stylesheet_link_tag params[:controller] %>
   <%= javascript_include_tag 'application' %>

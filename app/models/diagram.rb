@@ -1,30 +1,8 @@
 class Diagram < ActiveRecord::Base
   belongs_to :institution
   has_many :users, :through => :user_diagrams
+  has_many :data_files, :dependent => :destroy
 
-  before_create :get_institution
-
-  has_attached_file :data_file,
-                    :storage => :s3,
-                    :s3_permissions => :private,
-                    :s3_server_side_encryption => :aes256,
-                    :s3_credentials => S3_CREDENTIALS,
-                    :path => "data_files#{Rails.env == "development" ? "_dev":""}/:institution/:creator_id/:filename"
-
-  validates_attachment_content_type :data_file, :content_type => ["application/json", "text/plain", "text/csv"]
-
-  private
-
-  def get_institution
-    self.institution = institution
-  end
-
-  Paperclip.interpolates :institution  do |attachment, style|
-    attachment.instance.institution.name
-  end
-
-  Paperclip.interpolates :creator_id  do |attachment, style|
-    attachment.instance.created_by
-  end
+  accepts_nested_attributes_for :data_files, :reject_if => :all_blank
 
 end

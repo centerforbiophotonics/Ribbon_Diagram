@@ -14,6 +14,9 @@ class DiagramsController < ApplicationController
 
   def new
     @diagram = Diagram.new
+    2.times do
+      @diagram.data_files.build
+    end
     respond_with(@diagram)
   end
 
@@ -48,7 +51,11 @@ class DiagramsController < ApplicationController
   end
 
   def download
-    redirect_to @diagram.data_file.expiring_url(10), :filename => @diagram.data_file.original_filename
+    puts "#####################"
+    puts params[:data_file_id]
+    puts "#####################"
+
+    redirect_to @diagram.data_files.find(params[:data_file_id].to_i).data_file.expiring_url(10), :filename => @diagram.data_files.find(params[:data_file_id].to_i).data_file.original_filename
   end
 
   private
@@ -65,7 +72,7 @@ class DiagramsController < ApplicationController
     end
 
     def diagram_params
-      params.require(:diagram).permit(:data_file, :data_format,  :name, :category)
+      params.require(:diagram).permit(:data_format, :name, :category, :data_files_attributes => [:id, :data_file, :name])
     end
 
     def user_can_access_diagram
