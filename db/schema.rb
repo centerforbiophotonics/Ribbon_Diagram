@@ -36,15 +36,10 @@ ActiveRecord::Schema.define(version: 20150110000557) do
   end
 
   create_table "diagrams", force: true do |t|
-    t.integer  "users_id"
     t.integer  "institution_id"
-    t.integer  "created_by",             null: false
+    t.integer  "creator_id",     null: false
     t.string   "name"
     t.string   "category"
-    t.string   "data_file_file_name"
-    t.string   "data_file_content_type"
-    t.integer  "data_file_file_size"
-    t.datetime "data_file_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "data_format"

@@ -54,4 +54,5 @@ gem 'devise'
 # Markup
 gem 'haml-rails'
 
-
+#Rails Admin
+gem 'rails_admin'

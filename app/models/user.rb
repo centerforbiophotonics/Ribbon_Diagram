@@ -10,7 +10,10 @@ class User < ActiveRecord::Base
   validates_presence_of :institution
   validates_presence_of :name
 
-  has_many :diagrams, :through => :user_diagrams
   has_many :user_diagrams
+  has_many :diagrams, :through => :user_diagrams
+
+  has_many :diagrams, :foreign_key => :creator_id
+
 
 end

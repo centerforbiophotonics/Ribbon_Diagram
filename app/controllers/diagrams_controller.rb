@@ -26,7 +26,7 @@ class DiagramsController < ApplicationController
   def create
     @diagram = Diagram.new(diagram_params)
     @diagram.institution = current_user.institution
-    @diagram.created_by = current_user.id
+    @diagram.creator_id = current_user.id
 
     if @diagram.save
       UserDiagram.new(:diagram => @diagram, :user => current_user).save!
