@@ -4,13 +4,13 @@
     this.graph = null;
     this.filter = null;
     this.data = null;
-    this.data_string = #{Paperclip.io_adapters.for(@diagram.data_file).read.inspect};
+    this.data_strings = #{@diagram.data_files.map do |df| Paperclip.io_adapters.for(df.data_file).read end.to_json };
     this.data_format = #{@diagram.data_format.inspect};
 
     if (this.data_format.split("-")[0] == "csv"){
       this.data = $.csv.toObjects(this.data_string);
     } else if (this.data_format.split("-")[0] == "json") {
-      this.data = JSON.parse(this.data_string);
+      this.data = JSON.parse(this.data_strings[0]);
       this.filter = new UCDRibbonGraphFilter(this.data);
     }
 
