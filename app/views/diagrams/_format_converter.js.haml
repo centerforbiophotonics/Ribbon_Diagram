@@ -55,6 +55,10 @@
 
       "json": {
         "convert": function(data_in){
+          if (JSON.parse(data_in[0]["data"])["STUDENTS"] == undefined ){
+            alert("Your data does not have a top level \"STUDENTS\" attribute. It will not work :(");
+
+          }
           return JSON.parse(data_in[0]["data"]);
         }
       }
