@@ -27,7 +27,7 @@
       = render "data_file_form", :f => builder
 
   .actions
-    = f.submit 'Save', :id => "new_diagram_submit"
+    = f.submit 'Save', :id => "diagram_submit"
 
 :javascript
   //TODO: Hide second file field and set labels according to data_format.  Show second file field and change labels when data_format is changed.\
@@ -63,17 +63,20 @@
 
     $("#diagram_data_format").change();
 
-    $("#new_diagram_submit").click(function(e){
+    $("#diagram_submit").click(function(e){
       var format = $("#diagram_data_format").val();
-
-      if (format === "json" && $("#diagram_data_files_attributes_0_data_file").val() === "") {
-        alert("You must choose a file.");
-        return false;
-      } else if (format === "csv" && $("#diagram_data_files_attributes_0_data_file").val() === ""){
-        alert("A records file is required to create a diagram.");
-        e.preventDefault();
-        return false;
+      var action = #{params[:action].inspect};
+      if (action != "edit"){
+        if (format === "json" && $("#diagram_data_files_attributes_0_data_file").val() === "") {
+          alert("You must choose a file.");
+          return false;
+        } else if (format === "csv" && $("#diagram_data_files_attributes_0_data_file").val() === ""){
+          alert("A records file is required to create a diagram.");
+          e.preventDefault();
+          return false;
+        }
       }
+
 
 
     });

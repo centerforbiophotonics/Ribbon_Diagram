@@ -79,7 +79,7 @@
 
       $("#time_1_title").text("Starting Cohort from "+graph.time_1);
       $("#time_2_title").text("Status in "+graph.time_2);
-      $("#vis_title").text("#{@diagram.category}: #{@diagram.name} ");
+      $("#vis_title").text("#{@diagram.category.blank? ? "Uncategorized" : @diagram.category}: #{@diagram.name} ");
 
       $('#control_container').show();
 
