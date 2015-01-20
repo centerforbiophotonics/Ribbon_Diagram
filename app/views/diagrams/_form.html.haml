@@ -7,35 +7,74 @@
           %li= msg
 
   .field
-    = f.label :name
+    = f.label :name, "Name: "
     = f.text_field :name
 
   .field
-    = f.label :category
+    = f.label :category, "Category: "
     = f.text_field :category
 
   .field
-    = f.label :data_format
-    = f.select :data_format, options_for_select(["json-individual", "csv-individual"], :selected => "json-individual") #,"json-aggregate", "csv-aggregate"]
-    = link_to "Format Description", "#"
+    = f.label :data_format, "Data Format: "
+    = f.select :data_format, options_for_select(["json", "csv"], :selected => @diagram.data_format || "json")
+
+    = link_to "Format Description", {}, :id => "format_description_link"
 
   .field
+    - if params[:action] == "edit"
+      %h3 Upload new files (if left blank existing file will be kept):
     = f.fields_for :data_files do |builder|
       = render "data_file_form", :f => builder
 
   .actions
-    = f.submit 'Save'
+    = f.submit 'Save', :id => "new_diagram_submit"
 
 :javascript
   //TODO: Hide second file field and set labels according to data_format.  Show second file field and change labels when data_format is changed.\
   window.onload = function(){
-    var format_descriptions = {
-
-    }
+    var format_description_links = {
+      "json": "#{asset_path("json_format.pdf")}",
+      "csv": "#{asset_path("csv_format.pdf")}"
+    };
     
     $("#diagram_data_format").change(function(){
-      console.log("people changes");
+      var format = $(this).val();
+
+      $("#format_description_link").attr("href", format_description_links[format]);
+      $("#diagram_data_files_attributes_1_data_file").val("");
+      $("#diagram_data_files_attributes_0_data_file").val("");
+
+      if (format === "json") {
+        $("label[for='diagram_data_files_attributes_0_data_file']").text("Data File: ");
+        $("#file_field_1").hide();
+
+        $("#diagram_data_files_attributes_0_name").val("data");
+        $("#diagram_data_files_attributes_1_name").val("");
+
+      } else if (format === "csv"){
+        $("label[for='diagram_data_files_attributes_0_data_file']").text("Record File: ");
+        $("label[for='diagram_data_files_attributes_1_data_file']").text("Demographic File (Optional): ");
+        $("#file_field_1").show();
+
+        $("#diagram_data_files_attributes_0_name").val("records");
+        $("#diagram_data_files_attributes_1_name").val("demographics");
+      }
     });
 
     $("#diagram_data_format").change();
+
+    $("#new_diagram_submit").click(function(e){
+      var format = $("#diagram_data_format").val();
+
+      if (format === "json" && $("#diagram_data_files_attributes_0_data_file").val() === "") {
+        alert("You must choose a file.");
+        return false;
+      } else if (format === "csv" && $("#diagram_data_files_attributes_0_data_file").val() === ""){
+        alert("A records file is required to create a diagram.");
+        e.preventDefault();
+        return false;
+      }
+
+
+    });
   }

@@ -20,17 +20,20 @@
 //= require jquery.slicknav.js
 
 
-
 function ready(){
     $("#menu").slicknav({
         prependTo:'.slicknav',
-        label: "Navigation"
+        label: "Navigation",
+        duration: 50
     });
 
     $('.datatable').DataTable({
         responsive: true,
         autoWidth: false,
-        pageLength: 100
+        pageLength: 100,
+        "aoColumnDefs": [
+            { 'bSortable': false, 'aTargets': [ -1 ] }
+        ]
     });
 
     $('.select2').select2({ placeholder: 'Search for your institution.'});

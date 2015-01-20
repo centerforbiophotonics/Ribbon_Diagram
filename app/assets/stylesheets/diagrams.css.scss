@@ -9,8 +9,20 @@
   display: none;
 }
 
+#create_diagram_link{
+  margin-top:10px;
+  margin-bottom:10px;
+  float:right;
+
+}
+
 #controls{
   padding: 10px;
+}
+
+.diagram_controls{
+  width: 175px;
+  max-width: 175px;
 }
 
 #filters{

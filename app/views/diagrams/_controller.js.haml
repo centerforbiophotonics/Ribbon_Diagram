@@ -1,24 +1,20 @@
 :javascript
-  function UCDRibbonGraphController(){
+  function RibbonController(){
     this.diagram = null;
     this.graph = null;
     this.filter = null;
-    this.data = null;
-    this.data_strings = #{@diagram.data_files.map do |df| Paperclip.io_adapters.for(df.data_file).read end.to_json };
     this.data_format = #{@diagram.data_format.inspect};
+    this.format_converter = new RibbonFormatConverter(this.data_format);
 
-    if (this.data_format.split("-")[0] == "csv"){
-      this.data = $.csv.toObjects(this.data_string);
-    } else if (this.data_format.split("-")[0] == "json") {
-      this.data = JSON.parse(this.data_strings[0]);
-      this.filter = new UCDRibbonGraphFilter(this.data);
-    }
+    this.data = this.format_converter.convert(#{@diagram.data_files.map do |df| { "name" => df.name, "data" => Paperclip.io_adapters.for(df.data_file).read } end.to_json });
+
+    this.filter = new RibbonFilter(this.data);
 
     this.initialize();
     this.register_form_events();
   }
 
-  UCDRibbonGraphController.prototype = {
+  RibbonController.prototype = {
     register_form_events: function(){
       var controller = this;
 
@@ -63,7 +59,7 @@
       });
 
       $("#time_1_select").change(function(){
-        controller.populate_time_2_from_time_1($("#time_1_select").val());
+        controller.filter.update_time_selectors($("#time_1_select").val());
         $(".apply_filter").click();
       });
 
@@ -76,14 +72,12 @@
       $(".select_all").click(function(){
         $("#" + $(this).attr("id").replace("_select_all", "") + " option").attr('selected', true);
         $("#" + $(this).attr("id").replace("_select_all", "")).focus();
-        //$("#" + $(this).attr("id").replace("_select_all", "")).change();
         return false;
       });
 
       $(".select_none").click(function(){
         $("#" + $(this).attr("id").replace("_select_none", "") + " option").attr('selected', false);
         $("#" + $(this).attr("id").replace("_select_none", "")).focus();
-        //$("#" + $(this).attr("id").replace("_select_none", "")).change();
         return false;
       });
 
@@ -98,7 +92,7 @@
 
       $(".apply_filter").click(function(){
         controller.graph.reset_node_and_link_values();
-        controller.graph.create_graph_from_individual_json(controller.data);
+        controller.graph.build();
         controller.diagram.draw();
       });
 
@@ -119,72 +113,21 @@
     },
 
     initialize: function(){
-
-      this.initialize_time_selectors();
+      this.filter.build_time_selectors();
 
       //Create the graph and the diagram
-      this.graph = new UCDRibbonGraph(this.data, this.data_format, this.filter);
-      this.diagram = new UCDRibbonGraphDiagram(this.graph);
+      this.graph = new RibbonGraph(this.data, this.filter);
+      this.diagram = new RibbonDiagram(this.graph);
 
       //Draw the diagram
       this.diagram.draw();
-    },
-
-    initialize_time_selectors : function(){
-      var data = this.data;
-      var data_format = this.data_format;
-
-      var start_times = [];
-      data["STUDENTS"].forEach(function(student){
-        var start_time = student["RECORDS"][0]["TIME"];
-        if (start_times.indexOf(start_time) == -1)
-          start_times.push(start_time);
-      });
-
-      //Creates the time_1 selector and selects the first time in the list (not guaranteed to be earliest
-      $("#time_1_select").html("");
-      start_times.forEach(function(t, index){
-        $("#time_1_select").append('<option value="'+t+'" '+(index == 0 ? 'selected' : '')+'>'+t+'</option>');
-      });
-
-      this.populate_time_2_from_time_1(start_times[0]);
-
-
-      //if (this.data_format == "json-individual"){
-      //
-      //} else if (this.data_format == "json-aggregate"){
-      //
-      //
-      //} else if (this.data_format == "csv-aggregate"){
-      //
-      //}
-    },
-
-    populate_time_2_from_time_1 : function(time_1){
-      var data = this.data;
-      var times_for_starting_group = [];
-      data["STUDENTS"].forEach(function(student){
-        var start_time = student["RECORDS"][0]["TIME"];
-        if (start_time == time_1){
-          student["RECORDS"].forEach(function(r,index){
-            if (index != 0 && times_for_starting_group.indexOf(r["TIME"]) == -1)
-              times_for_starting_group.push(r["TIME"]);
-          });
-        }
-      });
-
-      $("#time_2_select").html("");
-      times_for_starting_group.forEach(function(t, index){
-        $("#time_2_select").append('<option value="'+t+'" '+(index == (times_for_starting_group.length-1) ? 'selected' : '')+'>'+t+'</option>');
-      });
     }
-
   }
 
   var ribbon_controller = null;
 
   window.onload = function(){
-    ribbon_controller = new UCDRibbonGraphController();
+    ribbon_controller = new RibbonController();
   }
 
 

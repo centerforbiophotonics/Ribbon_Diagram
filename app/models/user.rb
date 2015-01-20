@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   has_many :user_diagrams
   has_many :diagrams, :through => :user_diagrams
 
-  has_many :diagrams, :foreign_key => :creator_id
+  has_many :authored_diagrams, :class_name => "Diagram", :foreign_key => :creator_id
 
 
 end

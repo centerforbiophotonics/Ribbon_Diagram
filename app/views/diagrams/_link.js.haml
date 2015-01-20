@@ -1,5 +1,5 @@
 :javascript
-  function UCDRibbonGraphLink(src_node, tgt_node){
+  function RibbonLink(src_node, tgt_node){
     this.source = src_node;
     this.target = tgt_node;
 
@@ -9,7 +9,7 @@
     this.selected = (src_node.selected || tgt_node.selected);
   }
 
-  UCDRibbonGraphLink.prototype = {
+  RibbonLink.prototype = {
     increment_value : function(){
       this.value++;
       this.source.value++;

@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   resources :diagrams do
     member do
       get 'download'
+      post 'share_with_institution'
+      post 'share_with_only_me'
     end
   end
 

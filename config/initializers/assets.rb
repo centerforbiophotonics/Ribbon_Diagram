@@ -5,6 +5,7 @@
   institutions
   user_diagrams
   users
+  devise/sessions
 ).each do |controller|
   Rails.application.config.assets.precompile += ["#{controller}.js", "#{controller}.css"]
 end

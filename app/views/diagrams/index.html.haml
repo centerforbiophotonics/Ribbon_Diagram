@@ -1,27 +1,45 @@
 %h2 Listing diagrams
 
+#create_diagram_link
+  = link_to 'Create a New Diagram', new_diagram_path, :style => "font-size: x-large;"
+
 %table.datatable.responsive.no-wrap
   %thead
     %tr
       %th Name
       %th Category
-      %th
-      %th
-      %th
+      %th Creator
       %th
   %tbody
     - @diagrams.each do |diagram|
       %tr
-        %td= diagram.name
+        %td= link_to diagram.name, diagram
         %td= diagram.category
-        %td{:style => "font-size:x-large;"}= link_to 'Show', diagram
-        %td
-          - diagram.data_files.each do |df|
-            = link_to "Download #{df.name}", download_diagram_path(diagram, :data_file_id => df.id)
-            %br
-        %td= link_to 'Edit', edit_diagram_path(diagram)
-        %td= link_to 'Destroy', diagram, :method => :delete, :data => { :confirm => 'Are you sure?' }
+        %td= diagram.creator == current_user ? "Me": diagram.creator.name
+        %td.diagram_controls{:id => "control_cell_#{diagram.id}"}
+          %ul.control_menu{:id => "control_menu_#{diagram.id}", :style => "display:none;"}
+            %li= link_to 'Show', diagram
+            %li
+              Download
+              %ul
+                - diagram.data_files.each do |df|
+                  %li= link_to "Download #{df.name}", download_diagram_path(diagram, :data_file_id => df.id)
+            - if current_user == diagram.creator || current_user.super_admin
+              - if diagram.users.length == 1 && diagram.users.first == diagram.creator
+                %li= link_to 'Share With My Institution', share_with_institution_diagram_path(diagram), :method=> :post, :data => { :confirm => 'Are you sure?' }
+              - else
+                %li= link_to 'Share With Only Me', share_with_only_me_diagram_path(diagram), :method=> :post, :data => { :confirm => 'Are you sure?' }
+              %li= link_to 'Edit', edit_diagram_path(diagram)
+              %li= link_to 'Destroy', diagram, :method => :delete, :data => { :confirm => 'Are you sure?' }
+  %br
 
-%br
+:javascript
+  $(".control_menu").each(function(){
+    $(this).slicknav({
+      prependTo: ("#control_cell_"+$(this).attr("id").split("_")[2]),
+      label: "Actions",
+      duration: 50
+    });
+  });
 
-= link_to 'New Diagram', new_diagram_path, :style => "font-size: x-large"
+

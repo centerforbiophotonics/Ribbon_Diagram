@@ -1,28 +1,23 @@
 :javascript
-  //Accepts a JSON string that is a flat array of statues or a JSON representation of another graph
-  function UCDRibbonGraph(data, data_format, filter){
+  function RibbonGraph(data,filter){
+    this.filter = filter;
+    this.data = data;
+
     this.nodes = [];  //nested
     this.links = [];  //flat
-    this.filter = filter;
 
     this.time_1 = null;
     this.time_2 = null;
+
+    //Used primarily for status messages
+    this.total_count = null;
     this.starting_cohort_count = null;
     this.not_specified_count = 0;
 
-    this.data = data;
-    this.data_format = data_format;
-
-    if (this.data_format == "json-individual"){
-      this.create_graph_from_individual_json(this.data);
-    } else if (this.data_format == "json-aggregate"){
-
-    } else if (this.data_format == "csv-aggregate"){
-      this.create_graph_from_aggregate_csv(this.data);
-    }
+    this.build();
   }
 
-  UCDRibbonGraph.prototype = {
+  RibbonGraph.prototype = {
     find_node_recursive : function(name, type, time){
       var existing_node = this.find_toplevel_node(name[0], type[0], time);
 
@@ -57,7 +52,7 @@
     },
 
     create_top_level_node : function(name, type, time){
-      var new_node = new UCDRibbonGraphNode(name,type,time,null,this);
+      var new_node = new RibbonNode(name,type,time,null,this);
       this.nodes.push(new_node);
       return new_node;
     },
@@ -74,7 +69,7 @@
 
         return existing_node;
       } else {
-        var new_node = new UCDRibbonGraphNode(name[0], type[0], time, null, this);
+        var new_node = new RibbonNode(name[0], type[0], time, null, this);
         new_node.value++;
         new_node.showing = true;
         if (name.length > 1){
@@ -91,7 +86,7 @@
       var existing_link = this.find_link(src_node, tgt_node);
 
       if (existing_link == null){
-        var new_link = new UCDRibbonGraphLink(src_node, tgt_node);
+        var new_link = new RibbonLink(src_node, tgt_node);
         this.links.push(new_link);
         return new_link;
       } else {
@@ -178,19 +173,41 @@
       return link_or_node.value > 0;
     },
 
-    create_graph_from_individual_json : function(data){
-      var raw_data_total = data["STUDENTS"].length;
-      var filtered_data = this.filter.filter_data(data);
 
-      console.log("FILTERED DATA:");
-      console.log(filtered_data);
 
+    end_of_nth_year_from_fall_term : function(term,n){
+      return (Math.floor(term/100)+n)*100+3
+    },
+
+    reset_node_and_link_values : function(){
+      this.links.forEach(function(l){
+        l.reset_value();
+      });
+    },
+
+    select_none : function(){
+      this.nodes.forEach(function(n){
+        n.set_selection(false);
+      });
+    },
+
+    array_equal : function(a, b){
+      var i = Math.max(a.length, b.length, 1);
+      while(i-- >= 0 && a[i] === b[i]);
+      return (i === -2);
+    },
+
+    build : function(){
       var graph = this;
+      var data = graph.data;
+      var filtered_data = graph.filter.filter_data();
 
       var time_1 = $("#time_1_select").val();
       var time_2 = $("#time_2_select").val();
-      this.time_1 = time_1;
-      this.time_2 = time_2;
+
+      graph.time_1 = time_1;
+      graph.time_2 = time_2;
+      graph.raw_data_total = data["STUDENTS"].length;
 
       var starting_cohort = {
         "STUDENTS" : filtered_data["STUDENTS"].filter(function(student){
@@ -198,8 +215,8 @@
         })
       }
 
-      this.starting_cohort_count = starting_cohort["STUDENTS"].length;
-      this.not_specified_count = 0;
+      graph.starting_cohort_count = starting_cohort["STUDENTS"].length;
+      graph.not_specified_count = 0;
 
       var nodes = {},
           links = {};
@@ -257,67 +274,13 @@
       });
 
       $("#vis_filter_desc").html(
-        "<p>The raw data contains "+raw_data_total+" people.</p>\n"+
-        "<p>The selected cohort includes "+this.starting_cohort_count+" people.</p>\n"+
-        "<p>"+this.not_specified_count+" people had an unspecified status during "+time_2+".</p>\n"
+        "<p>The raw data contains "+graph.raw_data_total+" people.</p>\n"+
+        "<p>The selected cohort includes "+graph.starting_cohort_count+" people.</p>\n"+
+        "<p>"+graph.not_specified_count+" people had an unspecified status during "+time_2+".</p>\n"
       );
 
-      this.update_link_showing();
-    },
+      graph.update_link_showing();
 
-    create_graph_from_aggregate_csv : function(data){
-      var graph = this;
-
-      var time_2 = $("#time_2_select").val();
-      this.time_2 = time_2;
-
-      var nodes = {},
-          links = {};
-
-      var first_record = true;
-      data.forEach(function(record){
-
-        var time = record["TIME"];
-        var group_types = null;
-        var group_vals = null;
-
-        if (first_record)
-          this.time_1 = time;
-
-        for(var i = 0; i < record["NUMBER"]; i++){
-          graph.create_leaf_node(
-            fr_group_vals,
-            fr_group_types,
-            fr_time
-          );
-        }
-
-        graph.create_or_increment_link_and_parent_node_links(source_node, target_node);
-      });
-
-      this.update_link_showing();
-    },
-
-    end_of_nth_year_from_fall_term : function(term,n){
-      return (Math.floor(term/100)+n)*100+3
-    },
-
-    reset_node_and_link_values : function(){
-      this.links.forEach(function(l){
-        l.reset_value();
-      });
-    },
-
-    select_none : function(){
-      this.nodes.forEach(function(n){
-        n.set_selection(false);
-      });
-    },
-
-    array_equal : function(a, b){
-      var i = Math.max(a.length, b.length, 1);
-      while(i-- >= 0 && a[i] === b[i]);
-      return (i === -2);
     },
 
     /*

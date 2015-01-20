@@ -1,15 +1,16 @@
 :javascript
-  function UCDRibbonGraphFilter(data){
+  function RibbonFilter(data){
     this.data = data;
     this.filter = {};
     this.filter_types = {};
-    //Set tasks
-    this.generate_menu();
+
+    //Initialization Tasks
+    this.build_filter_menu();
     this.update_filter_hash();
   }
 
-  UCDRibbonGraphFilter.prototype = {
-    generate_menu : function(){
+  RibbonFilter.prototype = {
+    build_filter_menu: function(){
       var first_time = true;
 
       var filter = this.filter;
@@ -62,13 +63,13 @@
         }
       });
 
-      for (var key in this.filter){
-        if (this.filter_types[key] == "string"){
-          this.generate_string_menu_item(key, this.filter[key]);
-        } else if (this.filter_types[key] == "boolean"){
-          this.generate_boolean_menu_item(key, this.filter[key]);
-        } else if (this.filter_types[key] == "number"){
-          this.generate_numeric_menu_item(key, this.filter[key]);
+      for (var key in filter){
+        if (filter_types[key] == "string"){
+          this.generate_string_menu_item(key, filter[key]);
+        } else if (filter_types[key] == "boolean"){
+          this.generate_boolean_menu_item(key, filter[key]);
+        } else if (filter_types[key] == "number"){
+          this.generate_numeric_menu_item(key, filter[key]);
         }
       }
     },
@@ -148,8 +149,6 @@
 
       this.update_filter_hash();
 
-
-
       this.data["STUDENTS"].forEach(function(student){
         var demographics = student["DEMOGRAPHICS"];
         var push = true;
@@ -190,6 +189,40 @@
       });
 
       return filtered_data;
+    },
 
-    }
+    update_time_selectors: function(time_1){
+      var times_for_starting_group = [];
+      this.data["STUDENTS"].forEach(function(student){
+        var start_time = student["RECORDS"][0]["TIME"];
+        if (start_time == time_1){
+          student["RECORDS"].forEach(function(r,index){
+            if (index != 0 && times_for_starting_group.indexOf(r["TIME"]) == -1)
+              times_for_starting_group.push(r["TIME"]);
+          });
+        }
+      });
+
+      $("#time_2_select").html("");
+      times_for_starting_group.forEach(function(t, index){
+        $("#time_2_select").append('<option value="'+t+'" '+(index == (times_for_starting_group.length-1) ? 'selected' : '')+'>'+t+'</option>');
+      });
+    },
+
+    build_time_selectors: function(){
+      var start_times = [];
+      this.data["STUDENTS"].forEach(function(student){
+        var start_time = student["RECORDS"][0]["TIME"];
+        if (start_times.indexOf(start_time) == -1)
+          start_times.push(start_time);
+      });
+
+      //Creates the time_1 selector and selects the first time in the list (not guaranteed to be earliest
+      $("#time_1_select").html("");
+      start_times.forEach(function(t, index){
+        $("#time_1_select").append('<option value="'+t+'" '+(index == 0 ? 'selected' : '')+'>'+t+'</option>');
+      });
+
+      this.update_time_selectors(start_times[0]);
+    },
   }

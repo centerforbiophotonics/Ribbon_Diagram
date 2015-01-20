@@ -9,5 +9,8 @@ class Diagram < ActiveRecord::Base
 
   belongs_to :creator, :class_name => "User"
 
-  accepts_nested_attributes_for :data_files, :reject_if => :all_blank
+  accepts_nested_attributes_for :data_files, :reject_if => proc { |attributes| attributes['data_file'].blank? || attributes['name'].blank? }
+
+  validates_presence_of :name
+  validates_presence_of :data_files
 end

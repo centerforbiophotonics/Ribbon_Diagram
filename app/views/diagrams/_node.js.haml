@@ -1,5 +1,5 @@
 :javascript
-  function UCDRibbonGraphNode(name, type, time, parent, graph){
+  function RibbonNode(name, type, time, parent, graph){
     this.parent_node = parent;
     this.subnodes = [];
 
@@ -19,7 +19,7 @@
     this.graph = graph;
   }
 
-  UCDRibbonGraphNode.prototype = {
+  RibbonNode.prototype = {
     add_or_increment_subnode : function(name, type, time){
       var existing_node = this.find_subnode(name[0], type[0], time);
 
@@ -30,7 +30,7 @@
         }
         return existing_node;
       } else {
-        var new_node = new UCDRibbonGraphNode(name[0], type[0], time, this, this.graph);
+        var new_node = new RibbonNode(name[0], type[0], time, this, this.graph);
         new_node.value++;
         if (name.length > 1){
           new_node.add_or_increment_subnode(name.slice(1), type.slice(1), time);
@@ -67,13 +67,13 @@
     },
 
     add_source_link : function(tgt_node){
-      var new_link = new UCDRibbonGraphLink(this, tgt_node);
+      var new_link = new RibbonLink(this, tgt_node);
       this.sourceLinks.push(new_link);
       return new_link;
     },
 
     add_target_link : function(src_node){
-      var new_link = new UCDRibbonGraphLink(src_node, this);
+      var new_link = new RibbonLink(src_node, this);
       this.targetLinks.push(new_link);
       return new_link;
     },

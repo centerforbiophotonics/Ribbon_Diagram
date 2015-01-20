@@ -31,4 +31,9 @@ RailsAdmin.config do |config|
     # history_index
     # history_show
   end
+
+
+  config.authorize_with do
+    redirect_to root_path unless current_user.super_admin
+  end
 end

@@ -1,0 +1,68 @@
+:javascript
+  function RibbonFormatConverter(format){
+    this.format = format;
+
+    this.handlers = {
+      "csv": {
+        "convert": function(data_in){
+          var data_out_lookup = {};
+          var data_out = { "STUDENTS": [] };
+          data_in.forEach(function(d){
+            data_arrays = $.csv.toArrays(d.data);
+            data_obj = {"name": d.name, "data": {}};
+            headers = data_arrays[0];
+
+            data_arrays.forEach(function(row, r_ind){
+              if (r_ind > 0){
+                var student = null;
+
+                if (data_out_lookup[row[0]] === undefined){
+                  student = {"ID": row[0], "DEMOGRAPHICS":{}, "RECORDS":[]}
+                  data_out["STUDENTS"].push(student);
+                  data_out_lookup[row[0]] = data_out["STUDENTS"].length - 1;
+                } else {
+                  student = data_out["STUDENTS"][data_out_lookup[row[0]]];
+                }
+
+                if (d.name === "records"){
+                  var new_record = {"TIME":null, "GROUPS":[]};
+                  row.forEach(function(cell, c_ind){
+                    if (c_ind == 1){
+                      new_record["TIME"] = cell;
+                    } else if (c_ind > 1){
+                      var new_group = {};
+                      new_group[headers[c_ind]] = cell;
+                      new_record["GROUPS"].push(new_group);
+                    }
+                  });
+                  student["RECORDS"].push(new_record);
+
+                } else if (d.name === "demographics"){
+                  row.forEach(function(cell, c_ind){
+                    if (c_ind > 0){
+                      student["DEMOGRAPHICS"][headers[c_ind]] = cell;
+                    }
+                  });
+
+                }
+              }
+            });
+          });
+
+          return data_out;
+        }
+      },
+
+      "json": {
+        "convert": function(data_in){
+          return JSON.parse(data_in[0]["data"]);
+        }
+      }
+    };
+  };
+
+  RibbonFormatConverter.prototype = {
+    "convert": function(data_in){
+      return this.handlers[this.format]["convert"](data_in);
+    }
+  };
