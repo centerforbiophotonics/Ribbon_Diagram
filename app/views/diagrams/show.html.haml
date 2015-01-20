@@ -31,8 +31,12 @@
     %img#control_toggle{:src => asset_path("wrench.png"), :height => "24", :width => "24", :style => "display:inline"}
     <---- Click here to hide/show this menu.
   #controls
-    #download_link
-      =link_to "Download Original Data", download_diagram_path(@diagram, :data_file_id => "33")
+    #download_links
+      Download:
+      %div{:style => "margin-left: 20px;"}
+        - @diagram.data_files.each do |df|
+          = link_to "#{df.name}", download_diagram_path(@diagram, :data_file_id => df.id)
+          %br
 
     #link_selectors{:style => "margin-top:10px; margin-bottom:10px;"}
       %label{:for => "hide_unselected", :style => "font-weight:bold"} Hide Unselected Links:
