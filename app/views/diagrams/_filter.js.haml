@@ -81,7 +81,6 @@
     },
 
     generate_string_menu_item : function(key, safe_key, values){
-      console.log(key);
       var html_string = '<div class="filter-form-item">\n'+
         '<label for="'+safe_key+'" class="filter-label">'+key+':</label>\n<br>\n'+
         '<div class="indent">'+
@@ -162,8 +161,7 @@
 
         for (var key in demographics){
           var safe_key = css_safe(key);
-          console.log(key);
-          console.log(safe_key);
+
           if (filter_types[safe_key] == "string"){
             if ($("#"+safe_key).val().indexOf(demographics[key]) == -1)
               push = false;
