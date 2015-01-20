@@ -5,16 +5,10 @@
   }
 
   RibbonDiagram.prototype = {
-
-
     draw : function(){
 
 
       var unselected_link_opacity = 0.1;
-
-
-
-
 
       var graph = this.graph,
           //majors = this.majors,
@@ -26,6 +20,7 @@
       var shift_key_down = false;
       var ctrl_key_down = false;
       var alt_key_down = false;
+
       function record_key_state(e){
         shift_key_down = e.shiftKey;
         ctrl_key_down = e.ctrlKey;
@@ -80,13 +75,15 @@
         return disc_node.value/sum;
       }
 
+      this.clear();
+
       $("#time_1_title").text("Starting Cohort from "+graph.time_1);
       $("#time_2_title").text("Status in "+graph.time_2);
       $("#vis_title").text("#{@diagram.category}: #{@diagram.name} ");
 
       $('#control_container').show();
 
-      $('#ribbon_diagram_chart').html('');
+
 
       var margin = {top: 10, right: 200, bottom: 6, left: 200},
           width = 940 - margin.left - margin.right,
@@ -151,11 +148,11 @@
 
 
       //build table
-      filtered_links.forEach(function(l){
-        if (l.source.type != "Discipline" && l.target.type != "Discipline"){
-          $("#"+l.source.name+"-"+l.target.name).html(l.value);
-        }
-      });
+      //filtered_links.forEach(function(l){
+      //  if (l.source.type != "Discipline" && l.target.type != "Discipline"){
+      //    $("#"+l.source.name+"-"+l.target.name).html(l.value);
+      //  }
+      //});
 
       var hovered_link = null;
 
@@ -225,8 +222,8 @@
                   d.parent_node.collapse();
 
               } else {
-
-                d.expand();
+                if (d.subnodes.length > 0)
+                  d.expand();
               }
 
               diagram.draw();
@@ -309,47 +306,47 @@
 
 
       function create_csv_from_selected(graph){
-        var selected = sankey_object.links.filter(isSelected);
-
-        var start_majors = [];
-        var start_disciplines = [];
-        var end_majors = [];
-
-        selected.forEach(function(l){
-          if (start_majors.indexOf(l.source.name) == -1){
-            start_majors.push(l.source.name);
-            start_disciplines.push(l.source.discipline);
-          }
-
-          if (end_majors.indexOf(l.target.name) == -1){
-            end_majors.push(l.target.name);
-          }
-        });
-
-        var csv = ",";
-
-        end_majors.forEach(function(m){
-          csv += ","+m
-        });
-
-        start_majors.forEach(function(sm,i){
-          csv += "\n"+sm+","+start_disciplines[i]
-          end_majors.forEach(function(em){
-            var found = false;
-            selected.forEach(function(sel){
-              if (sel.source.name == sm && sel.target.name == em){
-                found = true;
-                csv += ","+sel.value;
-              }
-            });
-
-            if(!found)
-              csv += ",";
-          });
-        });
-
-        $("#subselect_csv").text("");
-        $("#subselect_csv").text(csv);
+        //var selected = sankey_object.links.filter(isSelected);
+        //
+        //var start_majors = [];
+        //var start_disciplines = [];
+        //var end_majors = [];
+        //
+        //selected.forEach(function(l){
+        //  if (start_majors.indexOf(l.source.name) == -1){
+        //    start_majors.push(l.source.name);
+        //    start_disciplines.push(l.source.discipline);
+        //  }
+        //
+        //  if (end_majors.indexOf(l.target.name) == -1){
+        //    end_majors.push(l.target.name);
+        //  }
+        //});
+        //
+        //var csv = ",";
+        //
+        //end_majors.forEach(function(m){
+        //  csv += ","+m
+        //});
+        //
+        //start_majors.forEach(function(sm,i){
+        //  csv += "\n"+sm+","+start_disciplines[i]
+        //  end_majors.forEach(function(em){
+        //    var found = false;
+        //    selected.forEach(function(sel){
+        //      if (sel.source.name == sm && sel.target.name == em){
+        //        found = true;
+        //        csv += ","+sel.value;
+        //      }
+        //    });
+        //
+        //    if(!found)
+        //      csv += ",";
+        //  });
+        //});
+        //
+        //$("#subselect_csv").text("");
+        //$("#subselect_csv").text(csv);
       }
 
 
@@ -362,7 +359,6 @@
     },
 
     clear : function(){
-
-
+      $('#ribbon_diagram_chart').html('');
     }
   }

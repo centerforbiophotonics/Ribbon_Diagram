@@ -3,6 +3,7 @@
     this.data = data;
     this.filter = {};
     this.filter_types = {};
+    this.filter_names = {};
 
     //Initialization Tasks
     this.build_filter_menu();
@@ -15,6 +16,7 @@
 
       var filter = this.filter;
       var filter_types = this.filter_types;
+      var filter_names = this.filter_names;
 
       this.data["STUDENTS"].forEach(function(student){
         var demographics = student["DEMOGRAPHICS"];
@@ -23,62 +25,67 @@
           first_time = false;
 
           for (var key in demographics){
+            var safe_key = css_safe(key);
+            filter_names[safe_key] = key;
             if (typeof demographics[key] == "string"){
-              filter[key] = [demographics[key]];
-              filter_types[key] = "string";
+              filter[safe_key] = [demographics[key]];
+              filter_types[safe_key] = "string";
             } else if (typeof demographics[key] == "boolean"){
-              filter[key] = "Included";
-              filter_types[key] = "boolean";
+              filter[safe_key] = "Included";
+              filter_types[safe_key] = "boolean";
             } else if (typeof demographics[key] == "number"){
-              filter[key] = [demographics[key],demographics[key]];
-              filter_types[key] = "number";
+              filter[safe_key] = [demographics[key],demographics[key]];
+              filter_types[safe_key] = "number";
             } else if (demographics[key] == null) {
               demographics[key] = "Not Specified";  // Rare problem here if the value in the first record is null and then not null in any other record.
-              filter[key] = null;
+              filter[safe_key] = null;
             }
           }
         } else {
           for (var key in demographics){
-            if (typeof demographics[key] == "string" && (filter[key] == null || filter[key].indexOf(demographics[key]) == -1) ){
-              if (filter[key] == null) filter[key] = [];
-              filter[key].push(demographics[key]);
+            var safe_key = css_safe(key);
+            if (typeof demographics[key] == "string" && (filter[safe_key] == null || filter[safe_key].indexOf(demographics[key]) == -1) ){
+              if (filter[safe_key] == null) filter[safe_key] = [];
+              filter[safe_key].push(demographics[key]);
             } else if (typeof demographics[key] == "number"){
-              if (filter[key] == null) filter[key] = [demographics[key],demographics[key]];
+              if (filter[safe_key] == null) filter[safe_key] = [demographics[key],demographics[key]];
 
-              if (parseFloat(demographics[key]) < parseFloat(filter[key][0]))
-                filter[key][0] = parseFloat(demographics[key]);
+              if (parseFloat(demographics[key]) < parseFloat(filter[safe_key][0]))
+                filter[safe_key][0] = parseFloat(demographics[key]);
 
-              if (parseFloat(demographics[key]) > parseFloat(filter[key][1]))
-                filter[key][1] = parseFloat(demographics[key]);
+              if (parseFloat(demographics[key]) > parseFloat(filter[safe_key][1]))
+                filter[safe_key][1] = parseFloat(demographics[key]);
             } else if (typeof demographics[key] == "boolean"){
-              if (filter[key] == null) filter[key] = "Included";
+              if (filter[safe_key] == null) filter[safe_key] = "Included";
             } else if (demographics[key] == null){
-              if (filter[key] == null) filter[key] = [demographics[key],demographics[key]];
+              if (filter[safe_key] == null) filter[safe_key] = [demographics[key],demographics[key]];
 
               demographics[key] = "Not Specified";
-              if (filter_types[key] == "string" && filter[key].indexOf("Not Specified") == -1)
-                filter[key].push(demographics[key]);
+              if (filter_types[safe_key] == "string" && filter[safe_key].indexOf("Not Specified") == -1)
+                filter[safe_key].push(demographics[key]);
             }
           }
         }
       });
 
-      for (var key in filter){
-        if (filter_types[key] == "string"){
-          this.generate_string_menu_item(key, filter[key]);
-        } else if (filter_types[key] == "boolean"){
-          this.generate_boolean_menu_item(key, filter[key]);
-        } else if (filter_types[key] == "number"){
-          this.generate_numeric_menu_item(key, filter[key]);
+      for (var safe_key in filter){
+        var key = this.filter_names[safe_key];
+        if (filter_types[safe_key] == "string"){
+          this.generate_string_menu_item(key, safe_key, filter[safe_key]);
+        } else if (filter_types[safe_key] == "boolean"){
+          this.generate_boolean_menu_item(key, safe_key, filter[safe_key]);
+        } else if (filter_types[safe_key] == "number"){
+          this.generate_numeric_menu_item(key, safe_key, filter[safe_key]);
         }
       }
     },
 
-    generate_string_menu_item : function(key,values){
+    generate_string_menu_item : function(key, safe_key, values){
+      console.log(key);
       var html_string = '<div class="filter-form-item">\n'+
-        '<label for="'+key+'" class="filter-label">'+key+':</label>\n<br>\n'+
+        '<label for="'+safe_key+'" class="filter-label">'+key+':</label>\n<br>\n'+
         '<div class="indent">'+
-        '<select id="'+key+'" multiple>\n';
+        '<select id="'+safe_key+'" multiple>\n';
 
       values.forEach(function(val){
         html_string += '<option value="'+val+'" selected>'+val+'</option>\n';
@@ -86,8 +93,8 @@
 
       html_string += (
         '</select>\n<br>\n'+
-          '<a class="select_all" href="" id="'+key+'_select_all">Select All</a> / '+
-          '<a class="select_none" href="" id="'+key+'_select_none">Select None</a>'+
+          '<a class="select_all" href="" id="'+safe_key+'_select_all">Select All</a> / '+
+          '<a class="select_none" href="" id="'+safe_key+'_select_none">Select None</a>'+
         '</div>'+
         '</div>\n'
       );
@@ -96,33 +103,33 @@
 
     },
 
-    generate_boolean_menu_item : function(key,values){
+    generate_boolean_menu_item : function(key, safe_key, values){
       var html_string = '<div class="filter-form-item">\n'+
-        '<label for="'+key+'"  class="filter-label">'+key+':</label>\n<br>\n'+
+        '<label for="'+safe_key+'"  class="filter-label">'+key+':</label>\n<br>\n'+
         '<div class="indent">'+
-          '<select id="'+key+'">\n'+
+          '<select id="'+safe_key+'">\n'+
             '<option value="Included" selected>Included</option>\n'+
             '<option value="Excluded">Excluded</option>\n'+
             '<option value="Only">Only</option>\n'+
           '</select>\n<br>\n'+
-          '<label for="'+key+'_include_nulls">Include Nulls:</label>\n'+
-          '<input type="checkbox" id="'+key+'_include_nulls" checked>'+
+          '<label for="'+safe_key+'_include_nulls">Include Nulls:</label>\n'+
+          '<input type="checkbox" id="'+safe_key+'_include_nulls" checked>'+
         '</div>'+
       '</div>\n';
 
       $("#filters").append(html_string);
     },
 
-    generate_numeric_menu_item : function(key,values){
+    generate_numeric_menu_item : function(key, safe_key, values){
       var html_string = '<div class="filter-form-item">\n'+
         '<p class="filter-label">'+key+':<p>'+
         '<div class="indent">'+
-          '<label for="'+key+'_min">Min:</label>\n'+
-          '<input type="number" id="'+key+'_min" min="'+values[0]+'" max="'+values[1]+'" value="'+values[0]+'" step="any">\n'+
-          '<label for="'+key+'_max">Max:</label>\n'+
-          '<input type="number" id="'+key+'_max" min="'+values[0]+'" max="'+values[1]+'" value="'+values[1]+'" step="any">\n<br>'+
-          '<label for="'+key+'_include_nulls">Include Nulls:</label>\n'+
-          '<input type="checkbox" id="'+key+'_include_nulls" checked>'+
+          '<label for="'+safe_key+'_min">Min:</label>\n'+
+          '<input type="number" id="'+safe_key+'_min" min="'+values[0]+'" max="'+values[1]+'" value="'+values[0]+'" step="any">\n'+
+          '<label for="'+safe_key+'_max">Max:</label>\n'+
+          '<input type="number" id="'+safe_key+'_max" min="'+values[0]+'" max="'+values[1]+'" value="'+values[1]+'" step="any">\n<br>'+
+          '<label for="'+safe_key+'_include_nulls">Include Nulls:</label>\n'+
+          '<input type="checkbox" id="'+safe_key+'_include_nulls" checked>'+
         '</div>'+
       '</div>\n';
 
@@ -154,31 +161,34 @@
         var push = true;
 
         for (var key in demographics){
-          if (filter_types[key] == "string"){
-            if ($("#"+key).val().indexOf(demographics[key]) == -1)
+          var safe_key = css_safe(key);
+          console.log(key);
+          console.log(safe_key);
+          if (filter_types[safe_key] == "string"){
+            if ($("#"+safe_key).val().indexOf(demographics[key]) == -1)
               push = false;
 
-          } else if (filter_types[key] == "boolean"){
-            if ($("#"+key).val() == "Only" && demographics[key] == false)
+          } else if (filter_types[safe_key] == "boolean"){
+            if ($("#"+safe_key).val() == "Only" && demographics[key] == false)
               push = false;
 
-            if ($("#"+key).val() == "Excluded" && demographics[key] == true)
+            if ($("#"+safe_key).val() == "Excluded" && demographics[key] == true)
               push = false;
 
-            if ($("#"+key+"_include_nulls").prop('checked') == false && demographics[key] == "Not Specified")
+            if ($("#"+safe_key+"_include_nulls").prop('checked') == false && demographics[key] == "Not Specified")
               push = false;
 
-          } else if (filter_types[key] == "number"){
-            if (demographics[key] != "Not Specified" && parseFloat($("#"+key+"_min").val()) > parseFloat(demographics[key])){
-              push = false;
-            }
-
-
-            if (demographics[key] != "Not Specified" && parseFloat($("#"+key+"_max").val()) < parseFloat(demographics[key])){
+          } else if (filter_types[safe_key] == "number"){
+            if (demographics[key] != "Not Specified" && parseFloat($("#"+safe_key+"_min").val()) > parseFloat(demographics[key])){
               push = false;
             }
 
-            if ($("#"+key+"_include_nulls").prop('checked') == false && demographics[key] == "Not Specified")
+
+            if (demographics[key] != "Not Specified" && parseFloat($("#"+safe_key+"_max").val()) < parseFloat(demographics[key])){
+              push = false;
+            }
+
+            if ($("#"+safe_key+"_include_nulls").prop('checked') == false && demographics[key] == "Not Specified")
               push = false;
           }
         }
