@@ -215,6 +215,8 @@
       times_for_starting_group.forEach(function(t, index){
         $("#time_2_select").append('<option value="'+t+'" '+(index == (times_for_starting_group.length-1) ? 'selected' : '')+'>'+t+'</option>');
       });
+
+      //$('#time_2_select').select2({ width: 'resolve' });
     },
 
     build_time_selectors: function(){
