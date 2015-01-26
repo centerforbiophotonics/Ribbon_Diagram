@@ -56,3 +56,7 @@ gem 'haml-rails'
 
 #Rails Admin
 gem 'rails_admin'
+
+group :development, :test do
+  gem 'railroady'
+end
