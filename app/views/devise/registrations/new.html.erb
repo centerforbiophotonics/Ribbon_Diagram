@@ -25,11 +25,11 @@
 
   <div class="field">
     <%= f.label :institution_id, "I belong to the following institution: "%>
-    <%= f.select(:institution_id, Institution.all.order(:name).map{|u| [u.name, u.id]}.unshift(["Choose an Institution", nil]), {}, {:class => "select2"}) %>
+    <%= f.select(:institution_id, Institution.all.order(:name).map{|u| [u.name, u.id]}.unshift(["Choose an Institution", nil]), {}) %>
   </div>
 
 
-  <br/>
+
 
   <div class="field">
     <%= f.label :password %>
@@ -49,5 +49,6 @@
   </div>
 <% end %>
 
+<%= render "institution_select.js" %>
 
 <!--<%= render "devise/shared/links" %>-->

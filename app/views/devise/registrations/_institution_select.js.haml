@@ -1,0 +1,28 @@
+:javascript
+  $("#user_institution_id").select2({
+      width:'240px',
+      allowClear:true,
+      formatNoMatches: function(term) {
+          /* customize the no matches output */
+          return "<input class='form-control' id='newTerm' value='"+term+"'><a href='#' id='addNew' class='btn btn-default'>Create</a>"
+      }
+  })
+      .parent().find('.select2-with-searchbox').on('click','#addNew',function(){
+          /* add the new term */
+          var newTerm = $('#newTerm').val();
+          //alert('adding:'+newTerm);
+
+          $.ajax({
+            url: "#{institutions_url}",
+            type: "POST",
+            dataType: "json",
+            data: {institution: {name: newTerm}},
+            success: function(data, textStatus){
+              $('<option value="'+data.id+'">'+newTerm+'</option>').appendTo('#user_institution_id');
+              $('#user_institution_id').select2('val',data.id); // select the new term
+              $("#user_institution_id").select2('close');       // close the dropdown
+            }
+          });
+
+
+      })

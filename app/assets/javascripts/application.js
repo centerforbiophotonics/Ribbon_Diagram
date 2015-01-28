@@ -20,6 +20,7 @@
 //= require jquery.slicknav.js
 
 
+
 function ready(){
     $("#menu").slicknav({
         prependTo:'.slicknav',
@@ -35,8 +36,6 @@ function ready(){
             { 'bSortable': false, 'aTargets': [ -1 ] }
         ]
     });
-
-    $('.select2').select2({ placeholder: 'Search for your institution.'});
 }
 
 $(document).ready(ready);

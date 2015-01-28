@@ -25,3 +25,5 @@ credentials.csv
 
 # Secrets
 /ignore
+
+/public/assets

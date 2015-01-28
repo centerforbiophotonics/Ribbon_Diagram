@@ -1,6 +1,12 @@
 class InstitutionsController < ApplicationController
   before_action :set_institution, :only => [:show, :edit, :update, :destroy]
-  before_filter :user_is_super_admin
+  before_filter :user_is_super_admin, :except => :create
+
+  skip_before_action :authenticate_user!, :only => :create
+  skip_before_action :user_signed_in?, :only => :create
+  skip_before_action :current_user, :only => :create
+  skip_before_action :user_session, :only => :create
+
 
   def index
     @institutions = Institution.all
@@ -20,6 +26,7 @@ class InstitutionsController < ApplicationController
   end
 
   def create
+    puts "Test"
     @institution = Institution.new(institution_params)
     if @institution.save
       AccessLevel.new(:institution => @institution, :code => 100, :description => "Institution Admin").save!
