@@ -15,6 +15,13 @@
         <p>You are: <%= current_user.email %></p>
     <% end %>
 
+    <div id="flash">
+        <% flash.each do |name, msg| %>
+          <%= content_tag :div, msg, :id => name %>
+        <% end %>
+    </div>
+
+
     <h1 id="site_title">
         Ribbon Tool
     </h1>

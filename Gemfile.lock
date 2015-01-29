@@ -107,6 +107,8 @@ GEM
       mime-types
     pg (0.17.1)
     polyglot (0.3.5)
+    pundit (0.3.0)
+      activesupport (>= 3.0.0)
     rack (1.5.2)
     rack-pjax (0.8.0)
       nokogiri (~> 1.5)
@@ -209,6 +211,7 @@ DEPENDENCIES
   jquerycsv-rails
   paperclip (~> 4.2)
   pg
+  pundit
   railroady
   rails (= 4.1.1)
   rails_admin

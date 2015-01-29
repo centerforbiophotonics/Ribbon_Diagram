@@ -2,7 +2,7 @@ class Diagram < ActiveRecord::Base
   belongs_to :institution
 
 
-  has_many :user_diagrams
+  has_many :user_diagrams, :dependent => :delete_all
   has_many :users, :through => :user_diagrams
 
   has_many :data_files, :dependent => :destroy

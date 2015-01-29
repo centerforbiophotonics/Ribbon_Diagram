@@ -50,6 +50,7 @@ gem 'aws-sdk'
 
 # Authentication
 gem 'devise'
+gem 'pundit'
 
 # Markup
 gem 'haml-rails'

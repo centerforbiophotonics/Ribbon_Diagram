@@ -1,8 +1,15 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_action :set_users, only: [:index]
+  before_action :set_user, :only => [:show, :edit, :update, :destroy]
+  before_action :set_users, :only => [:index]
+
+  #Enforces access right checks for individuals resources
+  after_filter :verify_authorized
+
+  # Enforces access right checks for collections
+  after_filter :verify_policy_scoped, :only => :index
 
   def index
+    authorize User
     respond_with(@users)
   end
 
@@ -12,6 +19,9 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+
+    authorize @user
+
     respond_with(@user)
   end
 
@@ -20,7 +30,10 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+
+    authorize @user
     @user.save
+
     respond_with(@user)
   end
 
@@ -37,14 +50,11 @@ class UsersController < ApplicationController
   private
     def set_user
       @user = User.find(params[:id])
+      authorize @user
     end
 
     def set_users
-      if current_user.super_admin
-        @users = User.all
-      else
-        @users = User.where(:institution_id => current_user.institution_id)
-      end
+      @users = policy_scope(User)
     end
 
     def user_params

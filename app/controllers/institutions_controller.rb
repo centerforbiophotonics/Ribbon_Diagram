@@ -1,5 +1,7 @@
 class InstitutionsController < ApplicationController
   before_action :set_institution, :only => [:show, :edit, :update, :destroy]
+  before_action :set_institutions, :only => [:index]
+
   before_filter :user_is_super_admin, :except => :create
 
   skip_before_action :authenticate_user!, :only => :create
@@ -7,9 +9,15 @@ class InstitutionsController < ApplicationController
   skip_before_action :current_user, :only => :create
   skip_before_action :user_session, :only => :create
 
+  #Enforces access right checks for individuals resources
+  after_filter :verify_authorized
+
+  # Enforces access right checks for collections
+  after_filter :verify_policy_scoped, :only => :index
+
 
   def index
-    @institutions = Institution.all
+    authorize Institution
     respond_with(@institutions)
   end
 
@@ -19,6 +27,7 @@ class InstitutionsController < ApplicationController
 
   def new
     @institution = Institution.new
+    authorize @institution
     respond_with(@institution)
   end
 
@@ -26,13 +35,13 @@ class InstitutionsController < ApplicationController
   end
 
   def create
-    puts "Test"
     @institution = Institution.new(institution_params)
+    authorize @institution
+
     if @institution.save
       AccessLevel.new(:institution => @institution, :code => 100, :description => "Institution Admin").save!
       AccessLevel.new(:institution => @institution, :code => 1, :description => "Institution User").save!
     end
-
 
     respond_with(@institution)
   end
@@ -50,6 +59,11 @@ class InstitutionsController < ApplicationController
   private
     def set_institution
       @institution = Institution.find(params[:id])
+      authorize @diagram
+    end
+
+    def set_institutions
+      @institutions = policy_scope(Institution)
     end
 
     def institution_params

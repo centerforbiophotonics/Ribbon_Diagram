@@ -1,8 +1,15 @@
 class UserDiagramsController < ApplicationController
-  before_action :set_user_diagram, only: [:show, :edit, :update, :destroy]
-  before_action :set_user_diagrams, only: [:index]
+  before_action :set_user_diagram, :only => [:show, :edit, :update, :destroy]
+  before_action :set_user_diagrams, :only => [:index]
+
+  #Enforces access right checks for individuals resources
+  after_filter :verify_authorized
+
+  # Enforces access right checks for collections
+  after_filter :verify_policy_scoped, :only => :index
 
   def index
+    authorize Diagram
     respond_with(@user_diagrams)
   end
 
@@ -12,6 +19,9 @@ class UserDiagramsController < ApplicationController
 
   def new
     @user_diagram = UserDiagram.new
+
+    authorize @user_diagram
+
     respond_with(@user_diagram)
   end
 
@@ -20,7 +30,10 @@ class UserDiagramsController < ApplicationController
 
   def create
     @user_diagram = UserDiagram.new(user_diagram_params)
+
+    authorize @user_diagram
     @user_diagram.save
+
     respond_with(@user_diagram)
   end
 
@@ -37,15 +50,11 @@ class UserDiagramsController < ApplicationController
   private
     def set_user_diagram
       @user_diagram = UserDiagram.find(params[:id])
+      authorize @user_diagram
     end
 
     def set_user_diagrams
-      @user_diagrams = UserDiagram.all
-      #if current_user.super_admin
-      #  @user_diagrams = UserDiagram.all
-      #else
-      #  @user_diagrams = UserDiagram.where(:institution_id => current_user.institution_id)
-      #end
+      @user_diagrams = policy_scope(UserDiagram)
     end
 
     def user_diagram_params

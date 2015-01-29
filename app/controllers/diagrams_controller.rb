@@ -2,14 +2,19 @@ class DiagramsController < ApplicationController
   before_action :set_diagram, :only => [:show, :edit, :update, :destroy, :download, :share_with_institution, :share_with_only_me]
   before_action :set_diagrams, :only => [:index]
 
-  before_action :user_can_access_diagram, :only => [:show, :download]
-  before_action :user_created_diagram, :only => [:destroy, :share_with_institution, :edit, :update, :share_with_only_me]
+  #Enforces access right checks for individuals resources
+  after_filter :verify_authorized
+
+  # Enforces access right checks for collections
+  after_filter :verify_policy_scoped, :only => :index
 
   def index
+    authorize Diagram
     respond_with(@diagrams)
   end
 
   def show
+    authorize @diagram
     respond_with(@diagram)
   end
 
@@ -18,6 +23,9 @@ class DiagramsController < ApplicationController
     2.times do
       @diagram.data_files.build
     end
+
+    authorize @diagram
+
     respond_with(@diagram)
   end
 
@@ -28,6 +36,8 @@ class DiagramsController < ApplicationController
     @diagram = Diagram.new(diagram_params)
     @diagram.institution = current_user.institution
     @diagram.creator = current_user
+
+    authorize @diagram
 
     if @diagram.save
       UserDiagram.new(:diagram => @diagram, :user => current_user).save!
@@ -68,11 +78,6 @@ class DiagramsController < ApplicationController
     respond_with(@diagram)
   end
 
-  def local
-
-
-  end
-
   def download
     puts "#####################"
     puts params[:data_file_id]
@@ -84,29 +89,14 @@ class DiagramsController < ApplicationController
   private
     def set_diagram
       @diagram = Diagram.find(params[:id])
+      authorize @diagram
     end
 
     def set_diagrams
-      if current_user.super_admin
-        @diagrams = Diagram.all
-      else
-        @diagrams = current_user.diagrams
-      end
+      @diagrams = policy_scope(Diagram)
     end
 
     def diagram_params
       params.require(:diagram).permit(:data_format, :name, :category, :data_files_attributes => [:id, :data_file, :name])
-    end
-
-    def user_can_access_diagram
-      unless current_user.diagrams.include?(@diagram) || current_user.super_admin
-        render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found
-      end
-    end
-
-    def user_created_diagram
-      unless @diagram.creator == current_user || current_user.super_admin
-        render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found
-      end
     end
 end
