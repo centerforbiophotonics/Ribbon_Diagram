@@ -20,6 +20,8 @@
       var filter_types = this.filter_types;
       var filter_names = this.filter_names;
 
+      //TODO: Fix error caused by missing demographics on the first student in the array
+
       this.data["STUDENTS"].forEach(function(student){
         var demographics = student["DEMOGRAPHICS"];
 

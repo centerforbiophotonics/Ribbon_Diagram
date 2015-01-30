@@ -7,7 +7,7 @@
     this.format_converter = new RibbonFormatConverter(this.data_format);
 
     this.data = this.format_converter.convert(#{@diagram.data_files.map do |df| { "name" => df.name, "data" => Paperclip.io_adapters.for(df.data_file).read } end.to_json });
-    //this.clean_data();
+    this.clean_data();
 
     this.filter = new RibbonFilter(this.data);
 
