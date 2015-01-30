@@ -12,17 +12,20 @@
             data_obj = {"name": d.name, "data": {}};
             headers = data_arrays[0];
 
+            console.log(headers);
+
             data_arrays.forEach(function(row, r_ind){
               if (r_ind > 0){
                 var student = null;
+                var id = row[0];
 
-                if (data_out_lookup[row[0]] === undefined){
-                  student = {"ID": row[0], "DEMOGRAPHICS":{}, "RECORDS":[]}
-                  data_out["STUDENTS"].push(student);
-                  data_out_lookup[row[0]] = data_out["STUDENTS"].length - 1;
-                } else {
-                  student = data_out["STUDENTS"][data_out_lookup[row[0]]];
+                if (data_out_lookup[id] === undefined){
+                  var new_student = {"ID": id, "DEMOGRAPHICS":{}, "RECORDS":[]}
+                  data_out["STUDENTS"].push(new_student);
+                  data_out_lookup[id] = data_out["STUDENTS"].length - 1;
                 }
+
+                student = data_out["STUDENTS"][data_out_lookup[id]];
 
                 if (d.name === "records"){
                   var new_record = {"TIME":null, "GROUPS":[]};
@@ -38,16 +41,28 @@
                   student["RECORDS"].push(new_record);
 
                 } else if (d.name === "demographics"){
+                  if (row.length > 3) console.log(id);
+
                   row.forEach(function(cell, c_ind){
                     if (c_ind > 0){
                       student["DEMOGRAPHICS"][headers[c_ind]] = cell;
+                      data_out["STUDENTS"][data_out_lookup[id]] = student;
+
+
+                      //console.log(data_out["STUDENTS"][data_out_lookup[id]]);
                     }
                   });
+
+                  //console.log(student);
 
                 }
               }
             });
+
+            console.log(data_out);
           });
+
+          console.log(data_out);
 
           return data_out;
         }

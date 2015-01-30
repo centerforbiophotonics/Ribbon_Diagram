@@ -1,4 +1,6 @@
 :javascript
+  var outside_data = null;
+
   function RibbonFilter(data){
     this.data = data;
     this.filter = {};
@@ -221,6 +223,7 @@
 
     build_time_selectors: function(){
       var start_times = [];
+      outside_data = this.data;
       this.data["STUDENTS"].forEach(function(student){
         var start_time = student["RECORDS"][0]["TIME"];
         if (start_times.indexOf(start_time) == -1)

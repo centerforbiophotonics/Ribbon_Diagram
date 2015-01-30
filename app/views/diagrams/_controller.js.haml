@@ -7,6 +7,7 @@
     this.format_converter = new RibbonFormatConverter(this.data_format);
 
     this.data = this.format_converter.convert(#{@diagram.data_files.map do |df| { "name" => df.name, "data" => Paperclip.io_adapters.for(df.data_file).read } end.to_json });
+    //this.clean_data();
 
     this.filter = new RibbonFilter(this.data);
 
@@ -121,6 +122,29 @@
 
       //Draw the diagram
       this.diagram.draw();
+    },
+
+    clean_data: function(){
+      var students_with_no_records = []
+
+      this.data["STUDENTS"].forEach(function(s){
+        if (s["RECORDS"].length == 0)
+          students_with_no_records.push(s);
+      });
+
+      if (students_with_no_records.length > 0){
+        var swnr_ids = [];
+
+        students_with_no_records.forEach(function(s){
+          swnr_ids.push(s["ID"]);
+        });
+
+        $("#flash").append('<div id="error">Warning: '+swnr_ids.length+' students in your dataset did not have any records. They have not been included in the diagram. Their IDs are:'+swnr_ids.join(",")+'</div>');
+
+        this.data["STUDENTS"] = this.data["STUDENTS"].filter(function(s){
+          return s["RECORDS"].length > 0;
+        });
+      }
     }
   }
 

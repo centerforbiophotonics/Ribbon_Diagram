@@ -8,7 +8,7 @@ class DataFile < ActiveRecord::Base
                     :s3_credentials => S3_CREDENTIALS,
                     :path => "data_files#{Rails.env == "development" ? "_dev":""}/:institution/:creator_id/:diagram_id/:data_file_id/:filename"
 
-  validates_attachment_content_type :data_file, :content_type => ["application/json", "text/plain", "text/csv", "application/vnd.ms-excel, application/octet-stream"]
+  validates_attachment_content_type :data_file, :content_type => ["application/json", "text/plain", "text/csv", "application/vnd.ms-excel", "application/octet-stream"]
 
   private
 
