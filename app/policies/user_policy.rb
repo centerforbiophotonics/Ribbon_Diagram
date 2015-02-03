@@ -48,7 +48,7 @@ class UserPolicy < ApplicationPolicy
     end
 
     def resolve
-      if user_is_super_admin
+      if current_user.super_admin
         scope.all
       else
         scope.where(:institution_id => current_user.institution_id)

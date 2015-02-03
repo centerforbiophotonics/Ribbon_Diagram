@@ -1,18 +1,18 @@
 class AccessLevelPolicy < ApplicationPolicy
-  attr_reader :user, :record
+  attr_reader :user, :access_level
 
-  def initialize(user, record)
+  def initialize(user, access_level)
     raise Pundit::NotAuthorizedError, "must be logged in" unless user
     @user = user
-    @record = record
+    @access_level = access_level
   end
 
   def index?
-    false
+    user_is_super_admin
   end
 
   def show?
-    scope.where(:id => record.id).exists?
+    scope.where(:id => access_level.id).exists?
   end
 
   def create?
@@ -37,7 +37,7 @@ class AccessLevelPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if user_is_super_admin
+      if user.super_admin
         scope.all
       else
         scope.where(:institution_id => current_user.institution_id)

@@ -2,6 +2,17 @@ Rails.application.routes.draw do
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
   devise_for :users
+
+  devise_scope :user do
+    authenticated :user do
+      # Rails 4 users must specify the 'as' option to give it a unique name
+      root :to => "diagrams#index", :as => :authenticated_root
+    end
+
+    unauthenticated :user do
+      root :to => 'devise/sessions#new'
+    end
+  end
   
   resources :user_diagrams
 
@@ -23,7 +34,7 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'diagrams#index'
+  #root 'devise/sessions#new'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

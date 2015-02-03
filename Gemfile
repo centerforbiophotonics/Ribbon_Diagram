@@ -60,4 +60,6 @@ gem 'rails_admin'
 
 group :development, :test do
   gem 'railroady'
+  gem 'metric_fu'
 end
+

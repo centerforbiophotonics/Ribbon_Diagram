@@ -1,14 +1,27 @@
 :javascript
   function RibbonFormatConverter(format){
     this.format = format;
+    this.canonical_format = "json"  //This is format all the others convert to
+
 
     this.handlers = {
+      "json": {
+        "convert": function(data_in){
+          if (JSON.parse(data_in[0]["data"])["STUDENTS"] == undefined ){
+            alert("Your data does not have a top level \"STUDENTS\" attribute. It will not work :(");
+
+          }
+          return JSON.parse(data_in[0]["data"]);
+        }
+      },
+
+
       "csv": {
         "convert": function(data_in){
           var data_out_lookup = {};
           var data_out = { "STUDENTS": [] };
           data_in.forEach(function(d){
-            data_arrays = $.csv.toArrays(d.data);
+            data_arrays = $.csv.toArrays(d.data.replace(/[\r|\r\n]/g, "\n"));
             data_obj = {"name": d.name, "data": {}};
             headers = data_arrays[0];
 
@@ -66,17 +79,9 @@
 
           return data_out;
         }
-      },
-
-      "json": {
-        "convert": function(data_in){
-          if (JSON.parse(data_in[0]["data"])["STUDENTS"] == undefined ){
-            alert("Your data does not have a top level \"STUDENTS\" attribute. It will not work :(");
-
-          }
-          return JSON.parse(data_in[0]["data"]);
-        }
       }
+
+
     };
   };
 

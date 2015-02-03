@@ -1,5 +1,7 @@
 :javascript
-  $("#user_institution_id").select2({
+  var selector = "#user_institution_id"
+
+  $(selector).select2({
       width:'240px',
       allowClear:true,
       formatNoMatches: function(term) {
@@ -18,9 +20,9 @@
             dataType: "json",
             data: {institution: {name: newTerm}},
             success: function(data, textStatus){
-              $('<option value="'+data.id+'">'+newTerm+'</option>').appendTo('#user_institution_id');
-              $('#user_institution_id').select2('val',data.id); // select the new term
-              $("#user_institution_id").select2('close');       // close the dropdown
+              $('<option value="'+data.id+'">'+newTerm+'</option>').appendTo(selector);
+              $(selector).select2('val',data.id); // select the new term
+              $(selector).select2('close');       // close the dropdown
             }
           });
 
