@@ -172,7 +172,7 @@ d3.sankey = function() {
 
         var nodesByBreadthAndDisc = d3.nest()
             .key(function(d) { return d.x; })
-            .key(function(d) { return d.discipline; })
+            .key(function(d) { return d.name; })
             .sortKeys(d3.ascending)
             .entries(nodes)
             .map(function(d) { return d.values; });
