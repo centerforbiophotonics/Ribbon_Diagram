@@ -28,6 +28,7 @@ class UsersController < ApplicationController
   def edit
   end
 
+  #Not called. Replaced by
   def create
     @user = User.new(user_params)
 
@@ -39,6 +40,9 @@ class UsersController < ApplicationController
 
   def update
     @user.update(user_params)
+    if policy(current_user).set_roles?
+      set_roles
+    end
     respond_with(@user)
   end
 
@@ -57,7 +61,18 @@ class UsersController < ApplicationController
       @users = policy_scope(User)
     end
 
+    def set_roles
+      puts "************* Test *************"
+      @user.role_list.each do |role|
+        @user.remove_role role
+      end
+
+      params[:roles].each do |role|
+        @user.add_role role
+      end
+    end
+
     def user_params
-      params.require(:user).permit(:institution_id, :access_level, :access_level_desc, :name, :email, :title, :department)
+      params.require(:user).permit(:institution_id, :name, :email, :title, :department)
     end
 end

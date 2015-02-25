@@ -3,9 +3,6 @@
 %p
   %b Institution:
   = @user.institution.name
-%p
-  %b Access level:
-  = @user.access_level
 
 %p
   %b Name:
@@ -19,6 +16,14 @@
 %p
   %b Department:
   = @user.department
+
+- if policy(current_user).set_roles?
+  %p
+    %b Roles:
+    %ul
+    - @user.roles.each do |role|
+      %li= role
+
 
 = link_to 'Edit', edit_user_path(@user)
 \|

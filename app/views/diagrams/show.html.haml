@@ -1,8 +1,3 @@
-%h2#ribbon_diagram_title Ribbon Diagram
-
-%p{:style => "font-size:12px; font-weight: bold"}
-  This graph visualizes the migration of students between various statuses over time.
-
 #top_info
   %a{:href => "", :id => "toggle_instructions", :style => "font-size:12px; font-weight:bold;"} Hide Instructions
   #instructions
@@ -31,12 +26,13 @@
     %img#control_toggle{:src => asset_path("wrench.png"), :height => "24", :width => "24", :style => "display:inline"}
     <---- Click here to hide/show this menu.
   #controls
-    #download_links
-      Download:
-      %div{:style => "margin-left: 20px;"}
-        - @diagram.data_files.each do |df|
-          = link_to "#{df.name}", download_diagram_path(@diagram, :data_file_id => df.id)
-          %br
+    - if policy(@diagram).download?
+      #download_links
+        Download:
+        %div{:style => "margin-left: 20px;"}
+          - @diagram.data_files.each do |df|
+            = link_to "#{df.name}", download_diagram_path(@diagram, :data_file_id => df.id)
+            %br
 
     #link_selectors{:style => "margin-top:10px; margin-bottom:10px;"}
       %label{:for => "hide_unselected", :style => "font-weight:bold"} Hide Unselected Links:
@@ -55,6 +51,7 @@
   #vis_header{:style => "display:none;"}
     #vis_title{:style => "margin:0 auto; font-size:x-large;"}
     %br
+    #vis_desc{:style => "margin:0 auto;"}= @diagram.description
     #vis_filter_desc{:style => "margin:0 auto; font-size:x-large;"}
 
     #current_hovered_feedback

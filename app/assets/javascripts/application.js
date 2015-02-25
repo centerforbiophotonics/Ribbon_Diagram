@@ -18,6 +18,7 @@
 //= require jquery.csv.js
 //= require select2
 //= require jquery.slicknav.js
+//= require google_analytics.js.coffee
 
 
 

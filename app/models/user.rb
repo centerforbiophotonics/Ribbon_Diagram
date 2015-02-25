@@ -4,8 +4,22 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable#, :confirmable
 
+  royce_roles %w[
+    institution-admin
+
+    user-update
+    user-destroy
+    user-view
+    user-set-roles
+    user-approve
+
+    diagram-update
+    diagram-create
+    diagram-destroy
+    diagram-download
+  ]
+
   belongs_to :institution
-  belongs_to :access_level
 
   validates_presence_of :institution
   validates_presence_of :name

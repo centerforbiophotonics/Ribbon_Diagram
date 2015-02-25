@@ -6,25 +6,46 @@
         - @diagram.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
-    = f.label :name, "Name: "
-    = f.text_field :name
+  .indent
+    .field
+      = f.label :name, "Name: "
+      = f.text_field :name
 
-  .field
-    = f.label :category, "Category: "
-    = f.text_field :category
+    .field
+      = f.label :category, "Category: "
+      = f.text_field :category
 
-  .field
-    = f.label :data_format, "Data Format: "
-    = f.select :data_format, options_for_select(["json", "csv"], :selected => @diagram.data_format || "json")
+    .field
+      = f.label :description, "Description: "
+      = f.text_area :description
 
-    = link_to "Format Description", {}, :id => "format_description_link"
+  - if params[:action] == "edit"
+    %h3 Replace Data Files (if left blank existing file will be kept):
+  - elsif params[:action] == "new"
+    %h3 Upload Data Files):
+  .indent
+    .field
+      = f.label :data_format, "Data Format: "
+      = f.select :data_format, options_for_select(["json", "csv"], :selected => @diagram.data_format || "json")
 
-  .field
-    - if params[:action] == "edit"
-      %h3 Upload new files (if left blank existing file will be kept):
-    = f.fields_for :data_files do |builder|
-      = render "data_file_form", :f => builder
+      = link_to "Format Description", {}, :id => "format_description_link"
+    .field
+      = f.fields_for :data_files do |builder|
+        = render "data_file_form", :f => builder
+
+  %h3 Sharing and Permissions:
+  .indent
+    .field
+      = f.label :downloadable, "Allow users to download data file: "
+      = f.check_box :downloadable
+
+    .field
+      = label_tag :user_diagrams, "Share With:"
+      - source_for_users = (params[:action] == "new" ? current_user : @diagram)
+      = select_tag :user_diagrams,
+          options_for_select(source_for_users.institution.users.select{|u| u != current_user}.map{|u| [u.name, u.id  ]},
+                              :selected => @diagram.users.map(&:id)),
+          {:multiple => true}
 
   .actions
     = f.submit 'Save', :id => "diagram_submit"

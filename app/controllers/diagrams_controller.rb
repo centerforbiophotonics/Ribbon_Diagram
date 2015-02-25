@@ -40,7 +40,7 @@ class DiagramsController < ApplicationController
     authorize @diagram
 
     if @diagram.save
-      UserDiagram.new(:diagram => @diagram, :user => current_user).save!
+      share
     end
 
     respond_with(@diagram)
@@ -68,6 +68,7 @@ class DiagramsController < ApplicationController
   def update
     @diagram.update(diagram_params)
 
+    share
     #Check diagram data_format and remove data_files that don't belong to the format
     
     respond_with(@diagram)
@@ -96,7 +97,16 @@ class DiagramsController < ApplicationController
       @diagrams = policy_scope(Diagram)
     end
 
+    def share
+      @diagram.users = []
+      params[:user_diagrams].each do |user_id|
+        if @diagram.institution.users.map(&:id).include?(user_id.to_i)
+          UserDiagram.new(:diagram_id => @diagram.id, :user_id => user_id.to_i).save!
+        end
+      end
+    end
+
     def diagram_params
-      params.require(:diagram).permit(:data_format, :name, :category, :data_files_attributes => [:id, :data_file, :name])
+      params.require(:diagram).permit(:data_format, :name, :category, :description, :downloadable, :data_files_attributes => [:id, :data_file, :name])
     end
 end

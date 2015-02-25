@@ -12,41 +12,85 @@ class DiagramPolicy < ApplicationPolicy
   end
 
   def show?
-    diagram_is_shared_with_user || diagram_is_created_by_user || user_is_super_admin
+    (
+      (
+        (
+          diagram_is_shared_with_user ||
+          diagram_is_created_by_user  ||
+          user_is_institution_admin
+        ) &&
+        diagram_belongs_to_users_institution
+      ) ||
+      user_is_super_admin
+    )
   end
 
   def create?
-    true
+    (
+      user.has_role? 'diagram-create' ||
+      user_is_institution_admin ||
+      user_is_super_admin
+    )
   end
 
   def new?
-    true
+    create?
   end
 
   def update?
-    diagram_is_created_by_user || user_is_super_admin
+    (
+      (
+        (
+          (
+            (
+              diagram_is_shared_with_user ||
+              diagram_is_created_by_user
+            ) && user.has_role?('diagram-update')
+          ) ||
+          user_is_institution_admin
+        ) && diagram_belongs_to_users_institution
+      ) ||
+      user_is_super_admin
+    )
   end
 
   def edit?
-    diagram_is_created_by_user || user_is_super_admin
+    update?
   end
 
   def destroy?
-    diagram_is_created_by_user || user_is_super_admin
+    (
+      (
+        (
+          (
+            diagram_is_created_by_user &&
+            user.has_role?('diagram-destroy')
+          ) ||
+          user_is_institution_admin
+        ) &&
+        diagram_belongs_to_users_institution
+      ) ||
+      user_is_super_admin
+    )
   end
 
 
   # custom actions
-  def share_with_only_me?
-    diagram_is_created_by_user || user_is_super_admin
-  end
-
-  def share_with_institution?
-    diagram_is_created_by_user || user_is_super_admin
-  end
-
   def download?
-    diagram_is_shared_with_user || user_is_super_admin
+    (
+      (
+        (
+          (
+            diagram_is_shared_with_user &&
+            user.has_role?('diagram-download') &&
+            diagram.downloadable
+          ) ||
+          diagram_is_created_by_user ||
+          user_is_institution_admin
+        ) && diagram_belongs_to_users_institution
+      ) ||
+      user_is_super_admin
+    )
   end
 
 
@@ -59,11 +103,20 @@ class DiagramPolicy < ApplicationPolicy
     diagram.creator == user
   end
 
+  def diagram_belongs_to_users_institution
+    user.institution == diagram.institution
+  end
+
 
 
   class Scope < Scope
     def resolve
-      user.diagrams | user.authored_diagrams
+      if user.has_role? 'institution-admin'
+        user.institution.diagrams
+      else
+        user.diagrams | user.authored_diagrams
+      end
+
     end
   end
 end

@@ -19,17 +19,15 @@
         %td.diagram_controls{:id => "control_cell_#{diagram.id}"}
           %ul.control_menu{:id => "control_menu_#{diagram.id}", :style => "display:none;"}
             %li= link_to 'Show', diagram
-            %li
-              Download
-              %ul
-                - diagram.data_files.each do |df|
-                  %li= link_to "Download #{df.name}", download_diagram_path(diagram, :data_file_id => df.id)
-            - if current_user == diagram.creator || current_user.super_admin
-              - if diagram.users.length == 1 && diagram.users.first == diagram.creator
-                %li= link_to 'Share With My Institution', share_with_institution_diagram_path(diagram), :method=> :post, :data => { :confirm => 'Are you sure?' }
-              - else
-                %li= link_to 'Share With Only Me', share_with_only_me_diagram_path(diagram), :method=> :post, :data => { :confirm => 'Are you sure?' }
+            - if policy(diagram).download?
+              %li
+                Download
+                %ul
+                  - diagram.data_files.each do |df|
+                    %li= link_to "Download #{df.name}", download_diagram_path(diagram, :data_file_id => df.id)
+            - if policy(diagram).edit?
               %li= link_to 'Edit', edit_diagram_path(diagram)
+            - if policy(diagram).destroy?
               %li= link_to 'Destroy', diagram, :method => :delete, :data => { :confirm => 'Are you sure?' }
   %br
 

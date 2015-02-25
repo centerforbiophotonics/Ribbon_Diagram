@@ -28,14 +28,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def access_level_at_least(access_level)
-    #puts "Before Filter: access_level_at_least"
-
-    unless current_user.access_level >= access_level
-      redirect_to user_path(@current_user), :status => :unauthorized
-    end
-  end
-
   def user_is_super_admin
     unless current_user.super_admin
       redirect_to diagrams_path, :status => :unauthorized
@@ -44,9 +36,9 @@ class ApplicationController < ActionController::Base
 
   protected
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :password, :password_confirmation, :remember_me, :institution_id, :access_level, :access_level_desc, :name, :title, :department) }
-    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :username, :email, :password, :remember_me, :institution_id, :access_level, :access_level_desc, :name, :title, :department) }
-    devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :email, :password, :password_confirmation, :current_password, :institution_id, :access_level, :access_level_desc, :name, :title, :department) }
+    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :password, :password_confirmation, :remember_me, :institution_id, :name, :title, :department) }
+    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :username, :email, :password, :remember_me, :institution_id, :name, :title, :department) }
+    devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :email, :password, :password_confirmation, :current_password, :institution_id, :name, :title, :department) }
   end
 
   private

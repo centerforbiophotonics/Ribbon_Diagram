@@ -43,6 +43,10 @@ class ApplicationPolicy
     user.super_admin
   end
 
+  def user_is_institution_admin
+    user.has_role? 'institution-admin'
+  end
+
   class Scope
     attr_reader :user, :scope
 

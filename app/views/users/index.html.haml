@@ -6,20 +6,22 @@
       %th Name
       %th Email
       %th Institution
-      -#%th Access level
       %th
-      %th
-      %th
+      - if policy(current_user).edit?
+        %th
+      - if policy(current_user).destroy?
+        %th
   %tbody
     - @users.each do |user|
       %tr
         %td= user.name
         %td= user.email
         %td= user.institution.name
-        -#%td= user.access_level.code
         %td= link_to 'Show', user
-        %td= link_to 'Edit', edit_user_path(user)
-        %td= link_to 'Destroy', user, :method => :delete, :data => { :confirm => 'Are you sure?' }
+        - if policy(current_user).edit?
+          %td= link_to 'Edit', edit_user_path(user)
+        - if policy(current_user).destroy?
+          %td= link_to 'Destroy', user, :method => :delete, :data => { :confirm => 'Are you sure?' }
 
 %br
 

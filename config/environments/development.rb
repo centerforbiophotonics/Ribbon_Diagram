@@ -39,18 +39,18 @@ Rails.application.configure do
   Rails.application.routes.default_url_options[:host] = 'localhost'
   Rails.application.routes.default_url_options[:port] = 3000
 
-  #ActionMailer config for Gmail
+  #ActionMailer config
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.delivery_method = :smtp
   config.action_mailer.raise_delivery_errors = true
 
+  #SES SMTP Settings
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-      :address =>              'smtp.gmail.com',
-      :port =>                 587,
-      :domain =>               'gmail.com',
-      :user_name =>            'ribbon.tool@gmail.com',
-      :password =>             'forgHETT5%',
-      :authentication =>       'plain',
-      :enable_starttls_auto =>  true
+      :address => 'email-smtp.us-west-2.amazonaws.com',
+      :authentication => :login,
+      :user_name => ENV["SES_USER"],#Rails.application.secrets.ses_user_name,
+      :password => ENV["SES_SECRET"],#Rails.application.secrets.ses_secret_key,
+      :enable_starttls_auto => true,
+      :port => 465
   }
 end

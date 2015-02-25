@@ -32,18 +32,25 @@
 
   </div>
   <ul id="menu" style="display:none;">
-      <li><%= link_to 'Users', users_path %></li>
-      <li><%= link_to 'AccessLevels (WORK IN PROGRESS)', access_levels_path %></li>
-      <li> Diagrams
-          <ul>
-              <li><%= link_to 'List', diagrams_path %></li>
-              <li><%= link_to 'Create', new_diagram_path %></li>
-          </ul>
-      </li>
+      <% if policy(User).index? %>
+        <li><%= link_to 'Users', users_path %></li>
+      <% end %>
+
+      <% if policy(Diagram).create? %>
+        <li> Diagrams
+            <ul>
+                <li><%= link_to 'List', diagrams_path %></li>
+                <li><%= link_to 'Create', new_diagram_path %></li>
+            </ul>
+        </li>
+      <% else %>
+        <li><%= link_to 'Diagrams', diagrams_path %></li>
+      <% end %>
+
       <% if current_user.super_admin %>
         <li><%= link_to 'Institutions', institutions_path %></li>
-        <li><%= link_to 'UserDiagrams', user_diagrams_path %></li>
       <% end %>
+
       <li><%= link_to 'Sign out', destroy_user_session_path, :method => :delete %></li>
   </ul>
 <% end %>

@@ -10,15 +10,18 @@
     = f.label :institution_id, "Institution: "
     = f.select(:institution_id,  options_for_select(Institution.all.map{|u| [u.name, u.id]}, :selected => @user.institution.id))
 
-  -#.field
-  -#  = f.label :access_level_id
-  -#  = f.number_field :access_level
-
   .field
     = f.label :name
     = f.text_field :name
+
   .field
     = f.label :email
     = f.text_field :email
+
+  - if policy(current_user).set_roles?
+    .field
+      = label_tag :roles, "Roles:"
+      = select_tag :roles, options_for_select(User.available_role_names, :selected => @user.roles), { :multiple => true, :class => 'role-select' }
+
   .actions
     = f.submit 'Save'

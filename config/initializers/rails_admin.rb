@@ -27,6 +27,8 @@ RailsAdmin.config do |config|
     delete
     show_in_app
 
+    import                        # RailAdminImport Gem
+
     ## With an audit adapter, you can add:
     # history_index
     # history_show

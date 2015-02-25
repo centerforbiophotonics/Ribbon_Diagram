@@ -4,7 +4,7 @@ ruby "2.0.0"
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.1.1'
+gem 'rails', '~> 4.1.1'
 # Use postgresql as the database for Active Record
 gem 'pg'
 # Use SCSS for stylesheets
@@ -50,13 +50,22 @@ gem 'aws-sdk'
 
 # Authentication
 gem 'devise'
+
+# Authorization
 gem 'pundit'
+
+# Roles
+gem 'royce'
 
 # Markup
 gem 'haml-rails'
 
 #Rails Admin
 gem 'rails_admin'
+gem 'rails_admin_import'
+
+# Email through AWS SES
+gem "aws-ses", "~> 0.6.0", :require => 'aws/ses'
 
 group :development, :test do
   gem 'railroady'

@@ -1,9 +1,7 @@
 # This must be updated for each new controller (TODO: create custom generator that gets run after generate scaffold)
 %w(
-  access_levels
   diagrams
   institutions
-  user_diagrams
   users
   devise/sessions
   devise/registrations

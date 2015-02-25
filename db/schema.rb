@@ -11,18 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150121195051) do
+ActiveRecord::Schema.define(version: 20150206225839) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "access_levels", force: true do |t|
-    t.integer  "code"
-    t.string   "description"
-    t.integer  "institution_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "data_files", force: true do |t|
     t.integer  "diagram_id"
@@ -37,12 +29,14 @@ ActiveRecord::Schema.define(version: 20150121195051) do
 
   create_table "diagrams", force: true do |t|
     t.integer  "institution_id"
-    t.integer  "creator_id",     null: false
+    t.integer  "creator_id",                     null: false
     t.string   "name"
     t.string   "category"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "data_format"
+    t.text     "description"
+    t.boolean  "downloadable",   default: false
   end
 
   add_index "diagrams", ["institution_id"], name: "index_diagrams_on_institution_id", using: :btree
@@ -52,6 +46,25 @@ ActiveRecord::Schema.define(version: 20150121195051) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "royce_connector", force: true do |t|
+    t.integer  "roleable_id",   null: false
+    t.string   "roleable_type", null: false
+    t.integer  "role_id",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "royce_connector", ["role_id"], name: "index_royce_connector_on_role_id", using: :btree
+  add_index "royce_connector", ["roleable_id", "roleable_type"], name: "index_royce_connector_on_roleable_id_and_roleable_type", using: :btree
+
+  create_table "royce_role", force: true do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "royce_role", ["name"], name: "index_royce_role_on_name", using: :btree
 
   create_table "user_diagrams", force: true do |t|
     t.integer  "user_id"
@@ -65,7 +78,6 @@ ActiveRecord::Schema.define(version: 20150121195051) do
 
   create_table "users", force: true do |t|
     t.integer  "institution_id"
-    t.integer  "access_level_id"
     t.boolean  "super_admin",            default: false
     t.string   "name"
     t.datetime "created_at"
@@ -88,7 +100,6 @@ ActiveRecord::Schema.define(version: 20150121195051) do
     t.string   "unconfirmed_email"
   end
 
-  add_index "users", ["access_level_id"], name: "index_users_on_access_level_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["institution_id"], name: "index_users_on_institution_id", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
