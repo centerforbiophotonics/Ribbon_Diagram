@@ -79,6 +79,19 @@ class UserPolicy < ApplicationPolicy
     )
   end
 
+  def approve?
+    (
+      (
+        (
+          current_user.has_role?('user-approve') ||
+          current_user_is_institution_admin
+        ) &&
+        user_in_same_institution_as_current_user
+      ) ||
+      current_user_is_super_admin
+    )
+  end
+
   def user_in_same_institution_as_current_user
     user.institution == current_user.institution
   end

@@ -1,0 +1,12 @@
+:javascript
+  $('.role-select').select2({
+    width: '200px',
+    placeholder: 'This user has no assigned roles.'
+  });
+
+
+  $('#toggle-role-docs').click(function(e){
+    $('#role-docs').slideToggle();
+    e.preventDefault();
+    return false;
+  });

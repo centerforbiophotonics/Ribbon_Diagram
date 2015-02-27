@@ -1,5 +1,11 @@
 %h2 Listing users
 
+= link_to "All Users", :action => "index"
+- if policy(current_user).approve?
+  |
+  = link_to "Users awaiting approval", :action => "index", :approved => "false"
+
+
 %table.datatable.responsive.no-wrap
   %thead
     %tr

@@ -38,11 +38,6 @@ class InstitutionsController < ApplicationController
     @institution = Institution.new(institution_params)
     authorize @institution
 
-    if @institution.save
-      AccessLevel.new(:institution => @institution, :code => 100, :description => "Institution Admin").save!
-      AccessLevel.new(:institution => @institution, :code => 1, :description => "Institution User").save!
-    end
-
     respond_with(@institution)
   end
 

@@ -48,8 +48,8 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
       :address => 'email-smtp.us-west-2.amazonaws.com',
       :authentication => :login,
-      :user_name => ENV["SES_USER"],#Rails.application.secrets.ses_user_name,
-      :password => ENV["SES_SECRET"],#Rails.application.secrets.ses_secret_key,
+      :user_name => Rails.application.secrets.ses_user_name,
+      :password => Rails.application.secrets.ses_secret_key,
       :enable_starttls_auto => true,
       :port => 465
   }

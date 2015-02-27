@@ -5,23 +5,42 @@
       %ul
         - @user.errors.full_messages.each do |msg|
           %li= msg
+  .indent
+    - if current_user.super_admin
+      .field
+        = f.label :institution_id, "Institution"
+        = f.select(:institution_id,  options_for_select(Institution.all.map{|u| [u.name, u.id]}, :selected => @user.institution.id))
 
-  .field
-    = f.label :institution_id, "Institution: "
-    = f.select(:institution_id,  options_for_select(Institution.all.map{|u| [u.name, u.id]}, :selected => @user.institution.id))
-
-  .field
-    = f.label :name
-    = f.text_field :name
-
-  .field
-    = f.label :email
-    = f.text_field :email
-
-  - if policy(current_user).set_roles?
     .field
-      = label_tag :roles, "Roles:"
-      = select_tag :roles, options_for_select(User.available_role_names, :selected => @user.roles), { :multiple => true, :class => 'role-select' }
+      = f.label :name
+      = f.text_field :name
+
+    .field
+      = f.label :email
+      = f.text_field :email
+
+  .indent
+    - if policy(current_user).set_roles?
+      .field
+        %h2
+          Roles (
+          = link_to '?', '#', :id => 'toggle-role-docs'
+          )
+        #role-docs
+          = render "role_docs.html"
+
+        .indent
+          = select_tag :roles, options_for_select(User.available_role_names, :selected => @user.roles), { :multiple => true, :class => 'role-select' }
+  .indent
+    - if policy(current_user).approve?
+      %h2 Approval
+      .indent
+        .field
+          = f.label :approved, "Approved:"
+          = f.check_box :approved
 
   .actions
     = f.submit 'Save'
+
+- if policy(current_user).set_roles?
+  = render "role_select.js"

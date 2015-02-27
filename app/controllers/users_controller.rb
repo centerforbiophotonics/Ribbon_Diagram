@@ -10,6 +10,10 @@ class UsersController < ApplicationController
 
   def index
     authorize User
+    if params[:approved] == "false"
+      @users = @users.where(:approved => false)
+    end
+
     respond_with(@users)
   end
 
@@ -39,10 +43,19 @@ class UsersController < ApplicationController
   end
 
   def update
+
+    was_approved = @user.approved
     @user.update(user_params)
     if policy(current_user).set_roles?
       set_roles
     end
+
+    if policy(current_user).approve?
+      if !was_approved && @user.approved && @user.confirmed?
+        AdminMailer.approved_notify(@user).deliver
+      end
+    end
+
     respond_with(@user)
   end
 
@@ -62,17 +75,25 @@ class UsersController < ApplicationController
     end
 
     def set_roles
-      puts "************* Test *************"
       @user.role_list.each do |role|
         @user.remove_role role
       end
 
-      params[:roles].each do |role|
-        @user.add_role role
+      if params[:roles]
+        params[:roles].each do |role|
+          if current_user.super_admin || current_user.has_role?('institution-admin') || current_user.has_role?(role)  # Users can't set roles that they don't already have.
+            puts "Adding Role #{role} to user #{@user.name}"
+            @user.add_role role
+          end
+        end
       end
     end
 
     def user_params
-      params.require(:user).permit(:institution_id, :name, :email, :title, :department)
+      if current_user.super_admin
+        params.require(:user).permit(:institution_id, :name, :email, :title, :department, :approved)
+      else
+        params.require(:user).permit(:name, :email, :title, :department, :approved)
+      end
     end
 end
