@@ -6,8 +6,6 @@
   %li
     %p Institution admins and users with the 'user-approve' role will be emailed by the system when a new user registers.
   %li
-    %p A non-admin user can only approve other users if they have both 'user-update' and 'user-approve'
-  %li
-    %p A non-admin user can only set other user's roles if they have both 'user-update' and 'user-set-roles'.
-  %li
     %p Users who aren't institution admins can only grant roles to users that they also possess.
+  %li
+    %p Some roles functionally depend on other roles.  For instance, it would be pretty hard to update a user if you can't view the user list.  When a role with a dependency is added the application will automatically add the required roles and notify the user.

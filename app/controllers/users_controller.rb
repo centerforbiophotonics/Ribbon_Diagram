@@ -81,8 +81,7 @@ class UsersController < ApplicationController
 
       if params[:roles]
         params[:roles].each do |role|
-          if current_user.super_admin || current_user.has_role?('institution-admin') || current_user.has_role?(role)  # Users can't set roles that they don't already have.
-            puts "Adding Role #{role} to user #{@user.name}"
+          if policy(:role).set_role?(role)
             @user.add_role role
           end
         end

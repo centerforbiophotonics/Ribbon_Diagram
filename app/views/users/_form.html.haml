@@ -30,7 +30,10 @@
           = render "role_docs.html"
 
         .indent
+          #role-messages
           = select_tag :roles, options_for_select(User.available_role_names, :selected => @user.roles), { :multiple => true, :class => 'role-select' }
+          %br
+          = button_tag "Remove All Roles", :type => "button", :id => "clear_roles"
   .indent
     - if policy(current_user).approve?
       %h2 Approval

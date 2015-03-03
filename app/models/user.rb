@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
     diagram-download
   ]
 
+
   belongs_to :institution
 
   validates_presence_of :institution
@@ -47,4 +48,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def role_dependencies
+    {
+      "user-update" => "user-view",
+      "user-destroy" => "user-view",
+      "user-approve" => "user-update",
+      "user-set-roles" => "user-update"
+    }
+  end
 end
