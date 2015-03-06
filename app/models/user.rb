@@ -7,14 +7,14 @@ class User < ActiveRecord::Base
   royce_roles %w[
     institution-admin
 
-    user-update
-    user-destroy
     user-view
+    user-update
     user-set-roles
     user-approve
+    user-destroy
 
-    diagram-update
     diagram-create
+    diagram-update
     diagram-destroy
     diagram-download
   ]
