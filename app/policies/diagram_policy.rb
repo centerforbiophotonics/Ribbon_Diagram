@@ -27,7 +27,7 @@ class DiagramPolicy < ApplicationPolicy
 
   def create?
     (
-      user.has_role? 'diagram-create' ||
+      user.has_role?('diagram-create') ||
       user_is_institution_admin ||
       user_is_super_admin
     )

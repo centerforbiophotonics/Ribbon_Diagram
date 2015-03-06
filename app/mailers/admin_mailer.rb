@@ -14,6 +14,10 @@ class AdminMailer < ActionMailer::Base
       end
     end
 
+    if recipients.length = 0
+      recipients.concat User.where(:super_admin => true).pluck(:email)
+    end
+
     mail(:to => recipients, :subject => "Ribbon Tool - New User Approval Needed")
   end
 
