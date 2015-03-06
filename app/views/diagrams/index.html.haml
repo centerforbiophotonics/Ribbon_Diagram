@@ -1,7 +1,8 @@
 %h2 Listing diagrams
 
-#create_diagram_link
-  = link_to 'Create a New Diagram', new_diagram_path, :style => "font-size: x-large;"
+- if policy(Diagram).create?
+  #create_diagram_link
+    = link_to 'Create a New Diagram', new_diagram_path, :style => "font-size: x-large;"
 
 %table.datatable.responsive.no-wrap
   %thead
