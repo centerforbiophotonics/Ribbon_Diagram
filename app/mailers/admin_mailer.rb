@@ -14,7 +14,7 @@ class AdminMailer < ActionMailer::Base
       end
     end
 
-    if recipients.length = 0
+    if recipients.length == 0
       recipients.concat User.where(:super_admin => true).pluck(:email)
     end
 

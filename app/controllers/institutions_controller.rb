@@ -38,7 +38,9 @@ class InstitutionsController < ApplicationController
     @institution = Institution.new(institution_params)
     authorize @institution
 
-    respond_with(@institution)
+    @institution.save!
+
+    render json: @institution
   end
 
   def update

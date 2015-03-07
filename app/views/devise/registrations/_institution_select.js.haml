@@ -9,7 +9,7 @@
           return "<input class='form-control' id='newTerm' value='"+term+"'><a href='#' id='addNew' class='btn btn-default'>Create</a>"
       }
   })
-  .parent().find('.select2-with-searchbox').on('click','#addNew',function(){
+  .parent().find('.select2-with-searchbox').on('click','#addNew',function(e){
       /* add the new term */
       var newTerm = $('#newTerm').val();
       //alert('adding:'+newTerm);
@@ -20,11 +20,15 @@
         dataType: "json",
         data: {institution: {name: newTerm}},
         success: function(data, textStatus){
+          console.log(data);
           $('<option value="'+data.id+'">'+newTerm+'</option>').appendTo(selector);
           $(selector).select2('val',data.id); // select the new term
           $(selector).select2('close');       // close the dropdown
         }
       });
+
+      e.preventDefault();
+      return false;
 
 
   });

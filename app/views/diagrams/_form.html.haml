@@ -38,6 +38,8 @@
     .field
       = f.label :downloadable, "Allow users to download data file: "
       = f.check_box :downloadable
+      .indent
+        %p{:style => "color:red;"} For a user to download data they must have the 'diagram-download' role, the diagram must be downloadable, and the diagram must be shared with them.
 
     .field
       = label_tag :user_diagrams, "Share With:"
@@ -97,8 +99,10 @@
           return false;
         }
       }
-
-
-
     });
+
+    $("#user_diagrams").select2({
+        width:'240px',
+        allowClear:true
+    })
   }
