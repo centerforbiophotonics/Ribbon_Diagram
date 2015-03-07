@@ -10,51 +10,54 @@
   %li
     %p Some roles functionally depend on other roles.  For instance, it would be pretty hard to update a user if you can't view the user list.  When a role with a dependency is added the application will automatically add the required roles and notify the user.
 
-%table
-  %thead
-    %tr
-      %th Role
-      %th Description
-      %th Required by
-  %tbody
-    %tr
-      %td <strong> institution-admin </strong>
-      %td This role is equivalent to being granted all roles.  In addition a institution-admin can view, edit, and delete all diagrams and data created by all users in the institution regardless of if they were shared with her or him.
-      %td None
-    %tr
-      %td <strong> user-view </strong>
-      %td This role grants the user access to the user list and the user show page with more information about the user.
-      %td user-update, user-delete
-    %tr
-      %td <strong> user-update </strong>
-      %td This role grants the user access to the user edit page.
-      %td user-approve, user-set-roles
-    %tr
-      %td <strong> user-set-roles </strong>
-      %td This role allows a user to edit the roles of other users.  A user can only grant roles that he or she also possesses.
-      %td None
-    %tr
-      %td <strong> user-approve </strong>
-      %td This role allows a user to approve new users for your institution.  Users with this role will automatically be sent notification emails when a new user signs up.
-      %td None
-    %tr
-      %td <strong> user-destroy </strong>
-      %td This role allows a user to delete other users.
-      %td None
-    %tr
-      %td <strong> diagram-create </strong>
-      %td This role allows a user to create diagrams. A diagram's creator can always edit the diagram, download its data files, and view it.  Users can not delete diagrams unless they have the diagram-destroy role.
-      %td None
-    %tr
-      %td <strong> diagram-update </strong>
-      %td This role allows a user to edit existing diagrams.  This includes changing a diagram's name, description, replacing its data files, and sharing the diagram with other users.
-      %td None
-    %tr
-      %td <strong> diagram-destroy </strong>
-      %td This role allows a user to delete diagrams they have created.
-      %td None
-    %tr
-      %td <strong> diagram-download </strong>
-      %td This role allows a user to download diagrams that have been shared with them and that have been marked as downloadable by their creator.
-      %td None
+.indent
+  %h3 Role Descriptions
+  %table
+    %thead
+      %tr
+        %th Role
+        %th Description
+        %th Required by
+    %tbody
+      %tr
+        %td <strong> institution-admin </strong>
+        %td This role is equivalent to being granted all roles.  In addition a institution-admin can view, edit, and delete all diagrams and data created by all users in the institution regardless of if they were shared with her or him.
+        %td None
+      %tr
+        %td <strong> user-view </strong>
+        %td This role grants the user access to the user list and the user show page with more information about the user.
+        %td user-update, user-delete
+      %tr
+        %td <strong> user-update </strong>
+        %td This role grants the user access to the user edit page.
+        %td user-approve, user-set-roles
+      %tr
+        %td <strong> user-set-roles </strong>
+        %td This role allows a user to edit the roles of other users.  A user can only grant roles that he or she also possesses.
+        %td None
+      %tr
+        %td <strong> user-approve </strong>
+        %td This role allows a user to approve new users for your institution.  Users with this role will automatically be sent notification emails when a new user signs up.
+        %td None
+      %tr
+        %td <strong> user-destroy </strong>
+        %td This role allows a user to delete other users.
+        %td None
+      %tr
+        %td <strong> diagram-create </strong>
+        %td This role allows a user to create diagrams. A diagram's creator can always edit the diagram, download its data files, and view it.  Users can not delete diagrams unless they have the diagram-destroy role.
+        %td None
+      %tr
+        %td <strong> diagram-update </strong>
+        %td This role allows a user to edit existing diagrams.  This includes changing a diagram's name, description, replacing its data files, and sharing the diagram with other users.
+        %td None
+      %tr
+        %td <strong> diagram-destroy </strong>
+        %td This role allows a user to delete diagrams they have created.
+        %td None
+      %tr
+        %td <strong> diagram-download </strong>
+        %td This role allows a user to download diagrams that have been shared with them and that have been marked as downloadable by their creator.
+        %td None
 
+  %p{:style => "color:red;"}  If these roles do not meet all the requirements for your university, please contact us so we can improve them.
