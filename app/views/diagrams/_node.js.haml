@@ -78,6 +78,7 @@
       return new_link;
     },
 
+    //Moved to view object
     //Shows subnodes 1 level down and hides this node
     expand : function(){
       this.showing = false;
@@ -142,7 +143,7 @@
     is_nonzero : function(){
       return this.value > 0;
     },
-
+    //End of moved to view objecet
 
 
     //returns this if the node is showing(collapsed) or returns an array of subnodes if not showing(expanded)

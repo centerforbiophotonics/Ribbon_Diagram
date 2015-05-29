@@ -18,6 +18,10 @@ class AdminMailer < ActionMailer::Base
       recipients.concat User.where(:super_admin => true).pluck(:email)
     end
 
+    if recipients.length == 0
+      recipients.concat ["matt.steinwachs@iamstem.ucdavis.edu"]
+    end
+
     mail(:to => recipients, :subject => "Ribbon Tool - New User Approval Needed")
   end
 

@@ -37,32 +37,38 @@
         });
       });
 
-      $("#time_2_forward_button").click(function(){
-        $('#time_2_select option:selected').next().attr('selected', 'selected');
-        $(".apply_filter").click();
-      });
+      //$("#time_2_forward_button").click(function(){
+      //  $('#time_2_select option:selected').next().attr('selected', 'selected');
+      //  $(".apply_filter").click();
+      //});
+      //
+      //$("#time_2_back_button").click(function(){
+      //  $('#time_2_select option:selected').prev().attr('selected', 'selected');
+      //  $(".apply_filter").click();
+      //});
+      //
+      //$("#time_2_select").change(function(){
+      //  $(".apply_filter").click();
+      //});
+      //
+      //$("#time_1_forward_button").click(function(){
+      //  $('#time_1_select option:selected').next().attr('selected', 'selected');
+      //  $(".apply_filter").click();
+      //});
+      //
+      //$("#time_1_back_button").click(function(){
+      //  $('#time_1_select option:selected').prev().attr('selected', 'selected');
+      //  $(".apply_filter").click();
+      //});
+      //
+      //$("#time_1_select").change(function(){
+      //  controller.filter.update_time_selectors($("#time_1_select").val());
+      //  $(".apply_filter").click();
+      //});
 
-      $("#time_2_back_button").click(function(){
-        $('#time_2_select option:selected').prev().attr('selected', 'selected');
-        $(".apply_filter").click();
-      });
-
-      $("#time_2_select").change(function(){
-        $(".apply_filter").click();
-      });
-
-      $("#time_1_forward_button").click(function(){
-        $('#time_1_select option:selected').next().attr('selected', 'selected');
-        $(".apply_filter").click();
-      });
-
-      $("#time_1_back_button").click(function(){
-        $('#time_1_select option:selected').prev().attr('selected', 'selected');
-        $(".apply_filter").click();
-      });
-
-      $("#time_1_select").change(function(){
-        controller.filter.update_time_selectors($("#time_1_select").val());
+      $("#time_select").change(function(){
+        controller.graph.views = $("#time_select").val();
+        controller.diagram.total_width = controller.graph.views.length * 300;
         $(".apply_filter").click();
       });
 
@@ -94,9 +100,16 @@
       });
 
       $(".apply_filter").click(function(){
-        controller.graph.reset_node_and_link_values();
-        controller.graph.build();
-        controller.diagram.draw();
+        $("#loading_spinner").show();
+
+        setTimeout(function(){
+          controller.graph.reset_node_and_link_values();
+          controller.graph.build();
+          controller.diagram.draw();
+          $("#loading_spinner").hide();
+        }, 0);
+
+
       });
 
       var instructions_showing = true;
@@ -116,7 +129,7 @@
     },
 
     initialize: function(){
-      this.filter.build_time_selectors();
+      //this.filter.build_time_selectors();
 
       //Create the graph and the diagram
       this.graph = new RibbonGraph(this.data, this.filter);

@@ -34,6 +34,13 @@
             = link_to "#{df.name}", download_diagram_path(@diagram, :data_file_id => df.id)
             %br
 
+    #time_selector{:style => "margin-top:10px; margin-bottom:10px;"}
+      %label{:for => "time_select", :style => "font-weight:bold"} Select Times to View:
+      %br
+      = select_tag "time_select", [], :multiple => true, :style => "height:200px;"
+      %p Note: The first selected time defines the starting cohort.
+
+
     #link_selectors{:style => "margin-top:10px; margin-bottom:10px;"}
       %label{:for => "hide_unselected", :style => "font-weight:bold"} Hide Unselected Links:
       = check_box_tag "hide_unselected"
@@ -51,6 +58,9 @@
   #vis_header{:style => "display:none;"}
     #vis_title{:style => "margin:0 auto; font-size:x-large;"}
     %br
+    #loading_spinner{:style => "display:none;"}
+      %p{:style => "color:red;"} Recalculating Graph
+
     #vis_desc{:style => "margin:0 auto;"}= @diagram.description
     #vis_filter_desc{:style => "margin:0 auto; font-size:x-large;"}
 
@@ -60,28 +70,29 @@
 
     %br{:style => "clear:both;"}
 
-    #time_1_header{:style => "float: left; width:50%;"}
-      #time_1_title{:style => "font-size:large; text-align:center; margin-left:5px; margin-right:5px;"}
-      %br
+    -##time_1_header{:style => "float: left; width:50%;"}
+    -#  #time_1_title{:style => "font-size:large; text-align:center; margin-left:5px; margin-right:5px;"}
+    -#  %br
+    -#
+    -#  #time_1_back{:style => "display: inline;"}
+    -#    = button_tag "<", {:id => "time_1_back_button"}
+    -#  #time_1{:style => "display: inline;"}
+    -#    = select_tag :time_1_select, []
+    -#  #time_1_forward{:style => "display: inline;"}
+    -#    = button_tag ">", {:id => "time_1_forward_button"}
+    -#
+    -#
+    -##time_2_header{:style => "float: right; width:50%;"}
+    -#  #time_2_title{:style => "font-size:large; text-align:center; margin-left:5px; margin-right:5px;"}
+    -#  %br
+    -#
+    -#  #time_2_back{:style => "display: inline;"}
+    -#    = button_tag "<", {:id => "time_2_back_button"}
+    -#  #time_2{:style => "display: inline;"}
+    -#    = select_tag :time_2_select, []
+    -#  #time_2_forward{:style => "display: inline;"}
+    -#    = button_tag ">", {:id => "time_2_forward_button"}
 
-      #time_1_back{:style => "display: inline;"}
-        = button_tag "<", {:id => "time_1_back_button"}
-      #time_1{:style => "display: inline;"}
-        = select_tag :time_1_select, []
-      #time_1_forward{:style => "display: inline;"}
-        = button_tag ">", {:id => "time_1_forward_button"}
-
-
-    #time_2_header{:style => "float: right; width:50%;"}
-      #time_2_title{:style => "font-size:large; text-align:center; margin-left:5px; margin-right:5px;"}
-      %br
-
-      #time_2_back{:style => "display: inline;"}
-        = button_tag "<", {:id => "time_2_back_button"}
-      #time_2{:style => "display: inline;"}
-        = select_tag :time_2_select, []
-      #time_2_forward{:style => "display: inline;"}
-        = button_tag ">", {:id => "time_2_forward_button"}
 
 
 

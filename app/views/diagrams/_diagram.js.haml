@@ -2,17 +2,18 @@
   function RibbonDiagram(graph){
     this.graph = graph;
     this.color = d3.scale.category20();
+
+    this.total_width = 1200;
+    this.total_height = 800;
   }
 
   RibbonDiagram.prototype = {
     draw : function(){
-
+      console.log("draw");
 
       var unselected_link_opacity = 0.1;
 
       var graph = this.graph,
-          //majors = this.majors,
-          //starting_term = this.starting_term,
           sankey_object = graph.to_sankey_object(),
           color = this.color,
           diagram = this;
@@ -77,27 +78,16 @@
 
       this.clear();
 
-      $("#time_1_title").text("Starting Cohort from "+graph.time_1);
-      $("#time_2_title").text("Status in "+graph.time_2);
       $("#vis_title").text("#{@diagram.category.blank? ? "Uncategorized" : @diagram.category}: #{@diagram.name} ");
 
       $('#control_container').show();
 
 
 
-      var margin = {top: 10, right: 200, bottom: 6, left: 200},
-          width = 940 - margin.left - margin.right,
-          height = 800 - margin.top - margin.bottom;
+      var margin = {top: 30, right: 200, bottom: 6, left: 200},
+          width = this.total_width - margin.left - margin.right,
+          height = this.total_height - margin.top - margin.bottom;
 
-      //disciplines.forEach(function(d){
-      //
-      //  start_side_num_expanded = 0;
-      //  end_side_num_expanded = 0;
-      //  if (start_disc_expanded[d]) start_side_num_expanded++;
-      //  if (end_disc_expanded[d]) end_side_num_expanded++;
-      //
-      //  height += Math.max(start_side_num_expanded, end_side_num_expanded) * 400;
-      //});
 
       $("#major_in_outs_chart").height(height + margin.top + margin.bottom);
 
@@ -209,8 +199,60 @@
           return d.source.time + " in " + d.source.name + " (" +formatNumber(source_links_percentage) + "%) → " + d.target.time + " in " + d.target.name + " (" +formatNumber(target_links_percentage) + "%)"+ "\n" + format(d.value);
         });
 
+      var column_header_data = [];
+      var column_header_x_positions = [];
+      filtered_nodes.forEach(function(n){
+        var obj = {x:n.x, time:n.time};
 
-      var node = svg.append("g").selectAll(".node")
+        if (column_header_x_positions.indexOf(n.x) == -1) {
+          column_header_x_positions.push(n.x);
+          column_header_data.push(obj);
+        }
+      });
+
+      var column_headers = svg.append("g").attr("class","col_headers").selectAll(".col_header")
+          .data(column_header_data)
+        .enter().append("g")
+          .attr("class", "col_header")
+          .append("text")
+            .attr("x", function(d) { return d.x - 20; })
+            .attr("y", -10)
+            .attr("dy", ".35em")
+            .attr("text-anchor", "start")
+            .attr("transform", null)
+            .style("font-weight", "bold")
+            .text(function(d) { return d.time; })
+
+      //d3.selectAll(".col_header")
+      //    .append("text")
+      //      .attr("class","go_forward")
+      //      .attr("x", function(d) { return d.x + 40; })
+      //      .attr("y", -6)
+      //      .style("cursor","pointer")
+      //      .text("->")
+      //      .on('mouseover', function(d){
+      //          var testSelection = d3.select(this).style("font-weight",'bold');
+      //      })
+      //      .on('mouseout', function(d){
+      //        var testSelection = d3.select(this).style("font-weight",'normal');
+      //      })
+      //
+      //d3.selectAll(".col_header")
+      //  .append("text")
+      //    .attr("class","go_backward")
+      //    .attr("x", function(d) { return d.x - 40; })
+      //    .attr("y", -6)
+      //    .style("cursor","pointer")
+      //    .text("<-")
+      //    .on('mouseover', function(d){
+      //        var testSelection = d3.select(this).style("font-weight",'bold');
+      //    })
+      //    .on('mouseout', function(d){
+      //      var testSelection = d3.select(this).style("font-weight",'normal');
+      //    })
+
+
+      var node = svg.append("g").attr("class", "nodes").selectAll(".node")
           .data(filtered_nodes)
         .enter().append("g")
           .attr("class", "node")

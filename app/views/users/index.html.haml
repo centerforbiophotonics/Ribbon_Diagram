@@ -1,5 +1,9 @@
 %h2 Listing users
+%p Users with <strong>bold</strong> names are admins.
+%p Users with <strong style="color:red;">red</strong> names are waiting for approval from an admin.
 
+
+Show:
 = link_to "All Users", :action => "index"
 - if policy(current_user).approve?
   |
@@ -20,7 +24,13 @@
   %tbody
     - @users.each do |user|
       %tr
-        %td= user.name
+        %td
+          - if user.approved == false
+            #not-approved-name= user.name
+          - elsif user.has_role? 'institution-admin'
+            #admin-name= user.name
+          - else
+            = user.name
         %td= user.email
         %td= user.institution.name
         %td= link_to 'Show', user
@@ -29,6 +39,3 @@
         - if policy(current_user).destroy?
           %td= link_to 'Destroy', user, :method => :delete, :data => { :confirm => 'Are you sure?' }
 
-%br
-
-= link_to 'New User', new_user_path

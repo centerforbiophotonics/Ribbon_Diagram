@@ -64,8 +64,6 @@ gem 'haml-rails'
 gem 'rails_admin'
 gem 'rails_admin_import'
 
-# Email through AWS SES
-gem "aws-ses", "~> 0.6.0", :require => 'aws/ses'
 
 group :development, :test do
   gem 'railroady'

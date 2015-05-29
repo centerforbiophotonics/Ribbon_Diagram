@@ -41,11 +41,6 @@ GEM
     aws-sdk-v1 (1.57.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
-    aws-ses (0.6.0)
-      builder
-      mail (> 2.2.5)
-      mime-types
-      xml-simple
     bcrypt (3.1.9)
     builder (3.2.2)
     cane (2.6.2)
@@ -301,14 +296,12 @@ GEM
       procto (~> 0.0.2)
     warden (1.2.3)
       rack (>= 1.0)
-    xml-simple (1.1.4)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   aws-sdk
-  aws-ses (~> 0.6.0)
   coffee-rails (~> 4.0.0)
   d3-rails
   devise

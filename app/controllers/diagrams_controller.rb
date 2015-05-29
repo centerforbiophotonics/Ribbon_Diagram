@@ -99,9 +99,11 @@ class DiagramsController < ApplicationController
 
     def share
       @diagram.users = []
-      params[:user_diagrams].each do |user_id|
-        if @diagram.institution.users.map(&:id).include?(user_id.to_i)
-          UserDiagram.new(:diagram_id => @diagram.id, :user_id => user_id.to_i).save!
+      if params[:user_diagrams]
+        params[:user_diagrams].each do |user_id|
+          if @diagram.institution.users.map(&:id).include?(user_id.to_i)
+            UserDiagram.new(:diagram_id => @diagram.id, :user_id => user_id.to_i).save!
+          end
         end
       end
     end
