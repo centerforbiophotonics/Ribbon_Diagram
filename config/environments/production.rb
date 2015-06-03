@@ -83,7 +83,7 @@ Rails.application.configure do
   Rails.application.config.middleware.use ExceptionNotification::Rack,
     :email => {
         :email_prefix => "[Ribbon Tool Exception Notification] ",
-        :sender_address => %{"Ribbon Tool Notifier" <ribbon@iamstem.ucdavis.edu>},
+        :sender_address => %{"Ribbon Tool Notifier" <ribbon-tool@iamstem.ucdavis.edu>},
         :exception_recipients => %w{matt.steinwachs@iamstem.ucdavis.edu}
     }
 
