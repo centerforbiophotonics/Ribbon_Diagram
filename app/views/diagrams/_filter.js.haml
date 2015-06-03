@@ -7,6 +7,8 @@
     this.filter_types = {};
     this.filter_names = {};
 
+    this.isolate = [];
+
     //Initialization Tasks
     this.build_filter_menu();
     this.update_filter_hash();
@@ -156,6 +158,7 @@
 
       var filter = this.filter;
       var filter_types = this.filter_types;
+      var isolate = this.isolate;
 
       this.update_filter_hash();
 
@@ -195,6 +198,43 @@
           }
         }
 
+        isolate.forEach(function(isolate_node){
+          var node_time = isolate_node.time;
+          var node_signature = [{name: isolate_node.name, type: isolate_node.type}];
+
+          var parent_node = isolate_node.parent_node;
+
+          while (parent_node != null){
+            node_signature.push({name: parent_node.name, type: parent_node.type});
+            parent_node = parent_node.parent_node;
+          }
+
+          node_signature.reverse();
+
+          var has_record_at_node_time = false;
+          for (var i = 0; i < student["RECORDS"].length; i++){
+            if (student["RECORDS"][i]["TIME"] == node_time){
+
+              for (var j = 0; j < node_signature.length; j++){
+                if (node_signature[j].name != student["RECORDS"][i]["GROUPS"][j][node_signature[j].type]){
+                  console.log("group name mismatch");
+                  push = false;
+                }
+
+              }
+
+              has_record_at_node_time = true;
+              break;
+            }
+          }
+
+          if (!has_record_at_node_time)
+            push = false;
+
+        });
+
+
+
         if (push)
           filtered_data["STUDENTS"].push(student);
 
@@ -202,6 +242,29 @@
 
       return filtered_data;
     },
+
+    isolate_by_group: function(node){
+      this.isolate.push(node);
+    },
+
+    undo_isolate_by_group: function(index){
+      this.isolate.splice(index,1);
+    },
+
+    isolate_description: function(){
+      var description = "";
+
+      if (this.isolate.length > 0){
+        description += "<p>Isolating students who were:<\p>";
+
+        this.isolate.forEach(function(node,index){
+          description += (
+            "<p>"+node.get_unique_name() +" in "+ node.time + " <a href='#' id='remove-isolate-"+index+"' class='remove-isolate'>X</a><\p>"
+          );
+        });
+      }
+      return description;
+    }
 
     //update_time_selectors: function(time_1){
     //  var times_for_starting_group = [];

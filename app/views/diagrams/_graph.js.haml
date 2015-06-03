@@ -12,7 +12,7 @@
 
     //Used primarily for status messages
     this.total_count = null;
-    this.starting_cohort_count = null;
+    this.filtered_starting_cohort_count = null;
     this.not_specified_count = {};
 
 
@@ -223,6 +223,10 @@
     build : function(){
       var graph = this;
       var data = graph.data;
+      var unfiltered_starting_cohort_count = data["STUDENTS"].filter(function(student){
+        return (student["RECORDS"][0]["TIME"]+"") == graph.views[0];
+      }).length
+
       var filtered_data = graph.filter.filter_data();
 
       //var time_1 = $("#time_1_select").val();
@@ -232,13 +236,13 @@
       //graph.time_2 = time_2;
       graph.raw_data_total = data["STUDENTS"].length;
 
-      var starting_cohort = {
+      var filtered_starting_cohort = {
         "STUDENTS" : filtered_data["STUDENTS"].filter(function(student){
           return (student["RECORDS"][0]["TIME"]+"") == graph.views[0];
         })
       }
 
-      graph.starting_cohort_count = starting_cohort["STUDENTS"].length;
+      graph.filtered_starting_cohort_count = filtered_starting_cohort["STUDENTS"].length;
       graph.not_specified_count = {};
 
       graph.views.forEach(function(view_time){
@@ -248,7 +252,7 @@
       var nodes = {},
           links = {};
 
-      starting_cohort["STUDENTS"].forEach(function(student){
+      filtered_starting_cohort["STUDENTS"].forEach(function(student){
         var records = [];
 
         var no_undefined = true;
@@ -297,8 +301,11 @@
 
 
       //Print helpful information above the graph.
-      var filter_desc = "<p>The raw data contains "+graph.raw_data_total+" people.</p>\n"+
-        "<p>The starting cohort from "+graph.views[0]+" contains "+graph.starting_cohort_count+" people.</p>\n"
+      var filter_desc = "<p>The raw data contains "+graph.raw_data_total+" people.</p>\n";
+      filter_desc += graph.filter.isolate_description();
+      filter_desc += "<p>The unfiltered starting cohort from "+graph.views[0]+" contains "+graph.unfiltered_starting_cohort_count+" people.</p>\n";
+      filter_desc += "<p>Filtering based on the options in the menu to the left</p>";
+      filter_desc += "<p>The filtered cohort contains "+graph.filtered_starting_cohort_count+" people.</p>";
 
       for (var key in graph.not_specified_count) {
         if (graph.not_specified_count[key] > 0)
@@ -306,6 +313,14 @@
       }
 
       $("#vis_filter_desc").html(filter_desc);
+
+      $(".remove-isolate").off("click").on("click",function(){
+        var isolate_index = $(this).attr("id").split('-')[2];
+
+        graph.filter.undo_isolate_by_group(isolate_index);
+
+        $(".apply_filter").click();
+      });
 
       graph.update_link_showing();
 

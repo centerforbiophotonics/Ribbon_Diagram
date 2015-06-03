@@ -68,7 +68,7 @@
 
       $("#time_select").change(function(){
         controller.graph.views = $("#time_select").val();
-        controller.diagram.total_width = controller.graph.views.length * 300;
+        controller.diagram.total_width = controller.graph.views.length * 300 + 300;
         $(".apply_filter").click();
       });
 
@@ -97,6 +97,18 @@
 
         $(this).change();
         return false;
+      });
+
+      $("#toggle_vis_desc").click(function(){
+        $("#vis_desc").slideToggle(500, function(){
+          if ($("#vis_desc").is(':visible')){
+            $("#toggle_vis_desc").html("Hide Description");
+          } else {
+            $("#toggle_vis_desc").html("Show Description");
+          }
+        });
+
+
       });
 
       $(".apply_filter").click(function(){

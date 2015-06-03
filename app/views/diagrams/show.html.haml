@@ -61,12 +61,11 @@
     #loading_spinner{:style => "display:none;"}
       %p{:style => "color:red;"} Recalculating Graph
 
-    #vis_desc{:style => "margin:0 auto;"}= @diagram.description
-    #vis_filter_desc{:style => "margin:0 auto; font-size:x-large;"}
-
-    #current_hovered_feedback
-      This node or link represents:
-      #current_hovered_item{:style => "height:50px;"}
+    %a{:href => "#", :id =>'toggle_vis_desc'} Hide Description
+    #vis_desc{:style => "margin:0 auto;"}
+      Description:
+      = @diagram.description
+      #vis_filter_desc{:style => "margin:0 auto; font-size:x-large;"}
 
     %br{:style => "clear:both;"}
 

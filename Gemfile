@@ -64,6 +64,11 @@ gem 'haml-rails'
 gem 'rails_admin'
 gem 'rails_admin_import'
 
+group :production do
+  gem 'exception_notification'
+end
+
+
 
 group :development, :test do
   gem 'railroady'

@@ -3,7 +3,7 @@
     this.graph = graph;
     this.color = d3.scale.category20();
 
-    this.total_width = 1200;
+    this.total_width = 900;
     this.total_height = 800;
   }
 
@@ -31,7 +31,7 @@
 
 
       function color_from_discipline(d){
-        var label = d.source == undefined ? d.get_unique_name() : d.source.get_unique_name();
+        var label = d.source == undefined ? d.get_name() : d.source.get_name();
 
         if (label == "Left")
           return "#000000";
@@ -111,6 +111,44 @@
       var path = sankey.link();
 
 
+      var node_context_menu = [
+          {
+              title: 'Expand This Group',
+              action: function(elm, d, i) {
+              console.log(d);
+                if (d.subnodes.length > 0){
+                  d.expand();
+                  diagram.draw();
+                }
+
+              }
+          },
+          {
+              title: 'Collapse This Group',
+              action: function(elm, d, i) {
+                if (d.parent_node != null){
+                  d.parent_node.collapse();
+                  diagram.draw();
+                }
+              }
+          },
+          {
+              title: 'Isolate This Group',
+              action: function(elm, d, i) {
+                graph.filter.isolate_by_group(d);
+                $(".apply_filter").click();
+              }
+          },
+          {
+              title: 'Deselect All',
+              action: function(elm, d, i) {
+                graph.select_none();
+                diagram.draw();
+              }
+          }
+      ]
+
+
       graph.links.forEach(function(l){
         if(l.target.selected || l.source.selected)
           l.selected = true;
@@ -144,7 +182,29 @@
       //  }
       //});
 
-      var hovered_link = null;
+      var link_tip = d3.tip().attr("class","tip").html(function(d) {
+
+          var source_links_sum = 0
+          d.source.sourceLinks.forEach(function(l){source_links_sum += l.value})
+          var source_links_percentage = d.value/source_links_sum * 100
+
+          var target_links_sum = 0
+          d.target.targetLinks.forEach(function(l){target_links_sum += l.value})
+          var target_links_percentage = d.value/target_links_sum * 100
+
+          var title = "<p class='tip_text'>"+format(d.value)+"</p>"+
+            "<p class='tip_text'>"+"went from " + d.source.name + " in " + d.source.time + " (" +formatNumber(source_links_percentage) + "%)</p>"+
+            "<p class='tip_text'>to " + d.target.name + " in " + d.target.time + " (" +formatNumber(target_links_percentage) + "%)";
+
+          $("#current_hovered_item").html(title);
+
+
+
+          return title;
+
+      });
+
+      svg.call(link_tip);
 
       var link = svg.append("g").attr("class", "links").selectAll(".link")
           .data(filtered_links)
@@ -158,46 +218,14 @@
             set_opacity_by_selected();
           })
           .sort(function(a, b) { return b.dy - a.dy; })
-          .on("mouseover", function(d) {
-            if(hovered_link == null){
-              var source_links_sum = 0
-              d.source.sourceLinks.forEach(function(l){source_links_sum += l.value})
-              var source_links_percentage = d.value/source_links_sum * 100
-
-              var target_links_sum = 0
-              d.target.targetLinks.forEach(function(l){target_links_sum += l.value})
-              var target_links_percentage = d.value/target_links_sum * 100
-
-              var title = d.source.time + " in " + d.source.name + " (" +formatNumber(source_links_percentage) + "%) → " + d.target.time + " in " + d.target.name + " (" +formatNumber(target_links_percentage) + "%)"+ "\n" + format(d.value);
-
-              $("#current_hovered_item").html(title);
-
-              d3.select(this).style("stroke-dasharray","3,1");
-
-              hovered_link = this;
-            }
-
+          .on("mouseover", function(d){
+            d3.select(this).style("stroke","black");
+            link_tip.show(d);
           })
-          .on("mouseout", function(d) {
-             $("#current_hovered_item").html("");
-
-             d3.select(this).style("stroke-dasharray","");
-
-             hovered_link = null;
+          .on("mouseout", function(d){
+            d3.select(this).style("stroke", color_from_discipline);
+            link_tip.hide(d);
           });
-
-      link.append("title")
-        .text(function(d) {
-          var source_links_sum = 0
-          d.source.sourceLinks.forEach(function(l){source_links_sum += l.value})
-          var source_links_percentage = d.value/source_links_sum * 100
-
-          var target_links_sum = 0
-          d.target.targetLinks.forEach(function(l){target_links_sum += l.value})
-          var target_links_percentage = d.value/target_links_sum * 100
-
-          return d.source.time + " in " + d.source.name + " (" +formatNumber(source_links_percentage) + "%) → " + d.target.time + " in " + d.target.name + " (" +formatNumber(target_links_percentage) + "%)"+ "\n" + format(d.value);
-        });
 
       var column_header_data = [];
       var column_header_x_positions = [];
@@ -251,6 +279,21 @@
       //      var testSelection = d3.select(this).style("font-weight",'normal');
       //    })
 
+      var node_tip = d3.tip().attr("class","tip").html(function(d) {
+        var title = "<p class='tip_text'>"+format(d.value) + "</p>";
+        title += "<p class='tip_text'>"+"are " + d.name + "</p>";
+        title += "<p class='tip_text'>"+"in " + d.time + "</p>";
+
+        if (d.parent_node == null){  //One of the top level nodes
+          title += "<p class='tip_text'>"+"("+formatNumber(d.percent_of_sibling_total()*100)+"% of cohort during "+d.time+")"+"</p>";
+        } else {
+          title += "<p class='tip_text'>"+"("+formatNumber(d.percent_of_sibling_total()*100)+"% of "+d.parent_node.name+")"+"</p>";
+        }
+
+        return title;
+      });
+
+      svg.call(node_tip);
 
       var node = svg.append("g").attr("class", "nodes").selectAll(".node")
           .data(filtered_nodes)
@@ -284,34 +327,9 @@
           .attr("width", sankey.nodeWidth())
           .style("fill", color_from_discipline)
           .style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
-          .on("mouseover", function(d) {
-            var title = format(d.value) + "\n"
-            title += " students are " + d.name + "\n";
-            title += "in " + d.time + "\n"
-
-            if (d.parent_node == null){  //One of the top level nodes
-              title += "("+formatNumber(d.percent_of_sibling_total()*100)+"% of cohort during "+d.time+")";
-            } else {
-              title += "("+formatNumber(d.percent_of_sibling_total()*100)+"% of "+d.parent_node.name+")";
-            }
-
-            $("#current_hovered_item").html(title);
-          })
-          .on("mouseout", function(d) {
-            $("#current_hovered_item").html("");
-          })
-        .append("title")
-          .text(function(d) {
-            var title = ""
-            title += d.time + " in " + d.name + "\n";
-            title += format(d.value) + "\n"
-            if (d.parent_node == null){  //One of the top level nodes
-              title += formatNumber(d.percent_of_sibling_total()*100)+"% of total during "+d.time;
-            } else {
-              title += formatNumber(d.percent_of_sibling_total()*100)+"% of "+d.parent_node.name;
-            }
-            return title;
-          })
+          .on("mouseover", node_tip.show)
+          .on("mouseout", node_tip.hide)
+          .on('contextmenu', d3.contextMenu(node_context_menu))
 
       node.append("text")
           .attr("x", sankey.nodeWidth() + 6)
@@ -320,7 +338,7 @@
           .attr("text-anchor", "start")
           .attr("transform", null)
           .style("font-weight", "bold")
-          .text(function(d) { return d.get_unique_name(); })
+          .text(function(d) { return d.get_name(); })
         .filter(function(d) { return d.x < width / 2; })
           .attr("x", -sankey.nodeWidth() + 6)
           .attr("text-anchor", "end");

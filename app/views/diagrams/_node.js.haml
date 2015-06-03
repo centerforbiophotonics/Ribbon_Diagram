@@ -160,11 +160,18 @@
 
     },
 
-    get_unique_name: function(){
+    get_name: function(){
       if (this.parent_node == null)
         return this.name;
       else
-        return this.parent_node.get_unique_name() + "-" + this.name  ;
+        return this.parent_node.get_name() + "-" + this.name  ;
+    },
+
+    get_unique_name: function(){
+      if (this.parent_node == null)
+        return this.name + "-" + this.time;
+      else
+        return this.parent_node.get_name() + "-" + this.name  ;
     },
 
     percent_of_sibling_total: function(){
