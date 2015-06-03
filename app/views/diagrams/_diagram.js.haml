@@ -5,12 +5,12 @@
 
     this.total_width = 900;
     this.total_height = 800;
+
+    this.hide_unselected = false;
   }
 
   RibbonDiagram.prototype = {
     draw : function(){
-      console.log("draw");
-
       var unselected_link_opacity = 0.1;
 
       var graph = this.graph,
@@ -136,7 +136,7 @@
               title: 'Isolate This Group',
               action: function(elm, d, i) {
                 graph.filter.isolate_by_group(d);
-                $(".apply_filter").click();
+                ribbon_controller.recalculate_and_redraw();
               }
           },
           {
@@ -145,9 +145,45 @@
                 graph.select_none();
                 diagram.draw();
               }
-          }
+          },
+          {
+              title: 'Show/Hide Unselected',
+              action: function(elm, d, i) {
+                diagram.hide_unselected = !diagram.hide_unselected
+
+                d3.selectAll(".link").style("visibility", function(d,i){
+                  if (d.selected) return "visible";
+
+                  if(diagram.hide_unselected) return "hidden";
+                  else return "visible";
+                });
+              }
+          },
       ]
 
+
+      var link_context_menu = [
+        {
+            title: 'Deselect All',
+            action: function(elm, d, i) {
+              graph.select_none();
+              diagram.draw();
+            }
+        },
+        {
+            title: 'Show/Hide Unselected',
+            action: function(elm, d, i) {
+              diagram.hide_unselected = !diagram.hide_unselected
+
+              d3.selectAll(".link").style("visibility", function(d,i){
+                if (d.selected) return "visible";
+
+                if(diagram.hide_unselected) return "hidden";
+                else return "visible";
+              });
+            }
+        },
+      ]
 
       graph.links.forEach(function(l){
         if(l.target.selected || l.source.selected)
@@ -225,7 +261,8 @@
           .on("mouseout", function(d){
             d3.select(this).style("stroke", color_from_discipline);
             link_tip.hide(d);
-          });
+          })
+          .on('contextmenu', d3.contextMenu(link_context_menu));
 
       var column_header_data = [];
       var column_header_x_positions = [];

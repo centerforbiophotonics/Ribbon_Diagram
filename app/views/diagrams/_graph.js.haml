@@ -303,7 +303,7 @@
       //Print helpful information above the graph.
       var filter_desc = "<p>The raw data contains "+graph.raw_data_total+" people.</p>\n";
       filter_desc += graph.filter.isolate_description();
-      filter_desc += "<p>The unfiltered starting cohort from "+graph.views[0]+" contains "+graph.unfiltered_starting_cohort_count+" people.</p>\n";
+      filter_desc += "<p>The unfiltered starting cohort from "+graph.views[0]+" contains "+unfiltered_starting_cohort_count+" people.</p>\n";
       filter_desc += "<p>Filtering based on the options in the menu to the left</p>";
       filter_desc += "<p>The filtered cohort contains "+graph.filtered_starting_cohort_count+" people.</p>";
 
@@ -319,7 +319,7 @@
 
         graph.filter.undo_isolate_by_group(isolate_index);
 
-        $(".apply_filter").click();
+        ribbon_controller.recalculate_and_redraw();
       });
 
       graph.update_link_showing();

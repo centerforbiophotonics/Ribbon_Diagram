@@ -27,15 +27,10 @@
 
       $(".wrap").addClass("wrap-wide").removeClass("wrap");
 
-      $("#hide_unselected").change(function(){
-        var checkbox_checked = $(this).is(":checked")
-        d3.selectAll(".link").style("visibility", function(d,i){
-          if (d.selected) return "visible";
-
-          if(checkbox_checked) return "hidden";
-          else return "visible";
-        });
-      });
+      //$("#hide_unselected").change(function(){
+      //  var checkbox_checked = $(this).is(":checked")
+      //
+      //});
 
       //$("#time_2_forward_button").click(function(){
       //  $('#time_2_select option:selected').next().attr('selected', 'selected');
@@ -66,10 +61,10 @@
       //  $(".apply_filter").click();
       //});
 
-      $("#time_select").change(function(){
+      $("#time_select_update").click(function(){
         controller.graph.views = $("#time_select").val();
         controller.diagram.total_width = controller.graph.views.length * 300 + 300;
-        $(".apply_filter").click();
+        controller.recalculate_and_redraw();
       });
 
       $("#deselect_links").click(function(){
@@ -111,18 +106,7 @@
 
       });
 
-      $(".apply_filter").click(function(){
-        $("#loading_spinner").show();
-
-        setTimeout(function(){
-          controller.graph.reset_node_and_link_values();
-          controller.graph.build();
-          controller.diagram.draw();
-          $("#loading_spinner").hide();
-        }, 0);
-
-
-      });
+      $(".apply_filter").click(controller.recalculate_and_redraw);
 
       var instructions_showing = true;
 
@@ -149,6 +133,19 @@
 
       //Draw the diagram
       this.diagram.draw();
+    },
+
+    recalculate_and_redraw: function(){
+      var controller = this;
+
+      $.blockUI({ message: '<h1>Recalculating Graph</h1>' });
+
+      setTimeout(function(){
+        controller.graph.reset_node_and_link_values();
+        controller.graph.build();
+        controller.diagram.draw();
+        $.unblockUI();
+      }, 500);
     },
 
     clean_data: function(){

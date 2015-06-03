@@ -5,4 +5,5 @@
 //= require d3-context-menu.js
 //= require d3-tip.js
 //= require sankey.js
+//= require jquery.blockUI
 

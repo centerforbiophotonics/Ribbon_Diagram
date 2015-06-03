@@ -38,14 +38,15 @@
       %label{:for => "time_select", :style => "font-weight:bold"} Select Times to View:
       %br
       = select_tag "time_select", [], :multiple => true, :style => "height:200px;"
+      = button_tag "Update", {:id => "time_select_update"}
       %p Note: The first selected time defines the starting cohort.
 
 
-    #link_selectors{:style => "margin-top:10px; margin-bottom:10px;"}
-      %label{:for => "hide_unselected", :style => "font-weight:bold"} Hide Unselected Links:
-      = check_box_tag "hide_unselected"
-      %br
-      %a{:href => "", :id => "deselect_links"} Deselect All Links
+    -##link_selectors{:style => "margin-top:10px; margin-bottom:10px;"}
+    -#  %label{:for => "hide_unselected", :style => "font-weight:bold"} Hide Unselected Links:
+    -#  = check_box_tag "hide_unselected"
+    -#  %br
+    -#  %a{:href => "", :id => "deselect_links"} Deselect All Links
 
     #filter_menu
       %h2{:style => "margin-bottom:3px;"} Filter Options:
@@ -57,9 +58,6 @@
 #ribbon_diagram_container
   #vis_header{:style => "display:none;"}
     #vis_title{:style => "margin:0 auto; font-size:x-large;"}
-    %br
-    #loading_spinner{:style => "display:none;"}
-      %p{:style => "color:red;"} Recalculating Graph
 
     %a{:href => "#", :id =>'toggle_vis_desc'} Hide Description
     #vis_desc{:style => "margin:0 auto;"}

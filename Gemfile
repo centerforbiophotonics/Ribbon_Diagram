@@ -64,6 +64,12 @@ gem 'haml-rails'
 gem 'rails_admin'
 gem 'rails_admin_import'
 
+#Tagging
+gem 'acts-as-taggable-on', '~> 3.4'
+
+#Javascript library for blocking a page to display a message or menu
+gem 'blockuijs-rails',  :git => 'git://github.com/rusanu/blockuijs-rails.git'
+
 group :production do
   gem 'exception_notification'
 end

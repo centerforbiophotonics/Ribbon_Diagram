@@ -9,6 +9,7 @@
     %tr
       %th Name
       %th Category
+      %th Tags
       %th Creator
       %th
   %tbody
@@ -16,6 +17,7 @@
       %tr
         %td= link_to diagram.name, diagram
         %td= diagram.category
+        %td= diagram.tag_list
         %td= diagram.creator == current_user ? "Me": diagram.creator.name
         %td.diagram_controls{:id => "control_cell_#{diagram.id}"}
           %ul.control_menu{:id => "control_menu_#{diagram.id}", :style => "display:none;"}

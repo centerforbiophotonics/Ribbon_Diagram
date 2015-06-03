@@ -109,6 +109,6 @@ class DiagramsController < ApplicationController
     end
 
     def diagram_params
-      params.require(:diagram).permit(:data_format, :name, :category, :description, :downloadable, :data_files_attributes => [:id, :data_file, :name])
+      params.require(:diagram).permit(:data_format, :name, :category, :description, :downloadable, :tag_list, :data_files_attributes => [:id, :data_file, :name])
     end
 end
