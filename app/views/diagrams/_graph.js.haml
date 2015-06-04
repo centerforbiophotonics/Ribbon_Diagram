@@ -220,12 +220,63 @@
       return (i === -2);
     },
 
+    student_in_starting_cohort: function(student){
+      return (student["RECORDS"][0]["TIME"]+"") == this.views[0];
+    },
+
+    create_or_increment_nodes_from_data: function(student){
+      var graph = this;
+
+      var records = [];
+
+      var no_undefined = true;
+
+      graph.views.forEach(function(view_time){
+        var record = student["RECORDS"].filter(function(r){ return (""+r["TIME"]) == view_time })[0];
+
+        if (record == undefined){
+          no_undefined = false;
+          graph.not_specified_count[view_time]++;
+        } else {
+
+        }
+        records.push(record);
+      });
+
+      if (no_undefined){
+        var last_node = null;
+
+        records.forEach(function(record){
+          var group_types = record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
+          var group_vals = record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
+
+
+
+          graph.create_leaf_node(
+            group_vals,
+            group_types,
+            record["TIME"]
+          );
+
+          var new_node = graph.find_node_recursive(
+            group_vals,
+            group_types,
+            record["TIME"]
+          );
+
+          if (last_node != null){
+            graph.create_or_increment_link_and_parent_node_links(last_node, new_node);
+          }
+
+          last_node = new_node;
+        });
+      }
+    },
+
     build : function(){
       var graph = this;
       var data = graph.data;
-      var unfiltered_starting_cohort_count = data["STUDENTS"].filter(function(student){
-        return (student["RECORDS"][0]["TIME"]+"") == graph.views[0];
-      }).length
+      var unfiltered_starting_cohort_count = data["STUDENTS"].filter($.proxy(this.student_in_starting_cohort, this)).length
 
       var filtered_data = graph.filter.filter_data();
 
@@ -237,9 +288,7 @@
       graph.raw_data_total = data["STUDENTS"].length;
 
       var filtered_starting_cohort = {
-        "STUDENTS" : filtered_data["STUDENTS"].filter(function(student){
-          return (student["RECORDS"][0]["TIME"]+"") == graph.views[0];
-        })
+        "STUDENTS" : filtered_data["STUDENTS"].filter($.proxy(this.student_in_starting_cohort, this))
       }
 
       graph.filtered_starting_cohort_count = filtered_starting_cohort["STUDENTS"].length;
@@ -249,56 +298,8 @@
         graph.not_specified_count[view_time] = 0;
       });
 
-      var nodes = {},
-          links = {};
-
-      filtered_starting_cohort["STUDENTS"].forEach(function(student){
-        var records = [];
-
-        var no_undefined = true;
-
-        graph.views.forEach(function(view_time){
-          var record = student["RECORDS"].filter(function(r){ return (""+r["TIME"]) == view_time })[0];
-
-          if (record == undefined){
-            no_undefined = false;
-            graph.not_specified_count[view_time]++;
-          } else {
-
-          }
-          records.push(record);
-        });
-
-        if (no_undefined){
-          var last_node = null;
-
-          records.forEach(function(record){
-            var group_types = record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
-            var group_vals = record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
-
-
-
-            graph.create_leaf_node(
-              group_vals,
-              group_types,
-              record["TIME"]
-            );
-
-            var new_node = graph.find_node_recursive(
-              group_vals,
-              group_types,
-              record["TIME"]
-            );
-
-            if (last_node != null){
-              graph.create_or_increment_link_and_parent_node_links(last_node, new_node);
-            }
-
-            last_node = new_node;
-          });
-        }
-      });
-
+      //Where the real work happens
+      filtered_starting_cohort["STUDENTS"].forEach($.proxy(this.create_or_increment_nodes_from_data,this));
 
       //Print helpful information above the graph.
       var filter_desc = "<p>The raw data contains "+graph.raw_data_total+" people.</p>\n";

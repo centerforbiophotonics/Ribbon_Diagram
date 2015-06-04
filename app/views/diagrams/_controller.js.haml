@@ -85,13 +85,16 @@
         return false;
       });
 
-
-      $('select option').mousedown(function(e){
-        e.preventDefault();
-        $(this).prop("selected", !$(this).prop("selected"));
-
-        $(this).change();
-        return false;
+      $('select').each(function(){
+          var select = $(this), values = {};
+          $('option',select).each(function(i, option){
+              values[option.value] = option.selected;
+          }).click(function(event){
+              values[this.value] = !values[this.value];
+              $('option',select).each(function(i, option){
+                  option.selected = values[option.value];
+              });
+          });
       });
 
       $("#toggle_vis_desc").click(function(){
@@ -138,14 +141,14 @@
     recalculate_and_redraw: function(){
       var controller = ribbon_controller;
 
-      $.blockUI({ message: '<h1>Recalculating Graph</h1>' });
+      $.blockUI({ message: '<h1>Recalculating Graph</h1>', fadeIn: 10 });
 
       setTimeout(function(){
         controller.graph.reset_node_and_link_values();
         controller.graph.build();
         controller.diagram.draw();
         $.unblockUI();
-      }, 500);
+      }, 50);
     },
 
     clean_data: function(){
