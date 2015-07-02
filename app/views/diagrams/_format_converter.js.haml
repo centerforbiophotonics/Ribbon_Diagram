@@ -21,13 +21,19 @@
           var data_out_lookup = {};
           var data_out = { "STUDENTS": [] };
           data_in.forEach(function(d){
-            data_arrays = $.csv.toArrays(d.data.replace(/[\r|\r\n]/g, "\n"));
+            data_arrays = null;
+
+            if(d.data.match(/[\n]/g) == null){
+              data_arrays = $.csv.toArrays(d.data.replace(/[\r|\r\n]/g, "\n"));
+            } else {
+              data_arrays = $.csv.toArrays(d.data);
+            }
+
             data_obj = {"name": d.name, "data": {}};
             headers = data_arrays[0];
 
-            console.log(headers);
-
             data_arrays.forEach(function(row, r_ind){
+              console.log("row", r_ind, row);
               if (r_ind > 0){
                 var student = null;
                 var id = row[0];
@@ -54,34 +60,21 @@
                   student["RECORDS"].push(new_record);
 
                 } else if (d.name === "demographics"){
-                  if (row.length > 3) console.log(id);
 
                   row.forEach(function(cell, c_ind){
                     if (c_ind > 0){
                       student["DEMOGRAPHICS"][headers[c_ind]] = cell;
                       data_out["STUDENTS"][data_out_lookup[id]] = student;
-
-
-                      //console.log(data_out["STUDENTS"][data_out_lookup[id]]);
                     }
                   });
-
-                  //console.log(student);
-
                 }
               }
             });
-
-            console.log(data_out);
           });
-
-          console.log(data_out);
 
           return data_out;
         }
       }
-
-
     };
   };
 

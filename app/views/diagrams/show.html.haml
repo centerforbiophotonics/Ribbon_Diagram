@@ -41,13 +41,6 @@
       = button_tag "Update", {:id => "time_select_update"}
       %p Note: The first selected time defines the starting cohort.
 
-
-    -##link_selectors{:style => "margin-top:10px; margin-bottom:10px;"}
-    -#  %label{:for => "hide_unselected", :style => "font-weight:bold"} Hide Unselected Links:
-    -#  = check_box_tag "hide_unselected"
-    -#  %br
-    -#  %a{:href => "", :id => "deselect_links"} Deselect All Links
-
     #filter_menu
       %h2{:style => "margin-bottom:3px;"} Filter Options:
       %input{:type => :button, :value => "Apply Filter", :class => "apply_filter"}
@@ -66,31 +59,6 @@
       #vis_filter_desc{:style => "margin:0 auto; font-size:x-large;"}
 
     %br{:style => "clear:both;"}
-
-    -##time_1_header{:style => "float: left; width:50%;"}
-    -#  #time_1_title{:style => "font-size:large; text-align:center; margin-left:5px; margin-right:5px;"}
-    -#  %br
-    -#
-    -#  #time_1_back{:style => "display: inline;"}
-    -#    = button_tag "<", {:id => "time_1_back_button"}
-    -#  #time_1{:style => "display: inline;"}
-    -#    = select_tag :time_1_select, []
-    -#  #time_1_forward{:style => "display: inline;"}
-    -#    = button_tag ">", {:id => "time_1_forward_button"}
-    -#
-    -#
-    -##time_2_header{:style => "float: right; width:50%;"}
-    -#  #time_2_title{:style => "font-size:large; text-align:center; margin-left:5px; margin-right:5px;"}
-    -#  %br
-    -#
-    -#  #time_2_back{:style => "display: inline;"}
-    -#    = button_tag "<", {:id => "time_2_back_button"}
-    -#  #time_2{:style => "display: inline;"}
-    -#    = select_tag :time_2_select, []
-    -#  #time_2_forward{:style => "display: inline;"}
-    -#    = button_tag ">", {:id => "time_2_forward_button"}
-
-
 
 
   #ribbon_diagram_chart

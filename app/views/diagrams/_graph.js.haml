@@ -369,7 +369,6 @@
         times.push(record["TIME"]);
       });
 
-
       this.data["STUDENTS"].forEach(function(student, student_index){
         student["RECORDS"].forEach(function(record, i, records){
           if (times.indexOf(record["TIME"]) == -1){
@@ -428,8 +427,6 @@
           }
         }
       }
-
-      //Prompt user to place any remaining undertain times
 
       //Just put them at the end for now
       for (var key in uncertain_times){

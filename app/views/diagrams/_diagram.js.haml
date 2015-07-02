@@ -115,7 +115,6 @@
           {
               title: 'Expand This Group',
               action: function(elm, d, i) {
-              console.log(d);
                 if (d.subnodes.length > 0){
                   d.expand();
                   diagram.draw();
@@ -234,10 +233,7 @@
 
           $("#current_hovered_item").html(title);
 
-
-
           return title;
-
       });
 
       svg.call(link_tip);
