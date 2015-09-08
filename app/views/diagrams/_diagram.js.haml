@@ -7,6 +7,8 @@
     this.total_height = 800;
 
     this.hide_unselected = false;
+
+    this.sortOrder = "ascending";
   }
 
   RibbonDiagram.prototype = {
@@ -106,6 +108,7 @@
       var sankey = d3.sankey()
           .nodeWidth(15)
           .nodePadding(10)
+          .sortType(diagram.sortOrder)
           .size([width, height]);
 
       var path = sankey.link();
@@ -184,6 +187,23 @@
         },
       ]
 
+      var header_context_menu = [
+        {
+            title: 'Sort Descending',
+            action: function(elm, d, i) {
+              diagram.sortOrder = "descending";
+              diagram.draw();
+            }
+        },
+        {
+            title: 'Sort Ascending',
+            action: function(elm, d, i) {
+              diagram.sortOrder = "ascending";
+              diagram.draw();
+            }
+        }
+      ]
+
       graph.links.forEach(function(l){
         if(l.target.selected || l.source.selected)
           l.selected = true;
@@ -196,6 +216,7 @@
       sankey
           .nodes(filtered_nodes)
           .links(filtered_links)
+          .sortType(diagram.sortOrder)
           .layout(32);
 
       //build key
@@ -283,6 +304,7 @@
             .attr("transform", null)
             .style("font-weight", "bold")
             .text(function(d) { return d.time; })
+            .on('contextmenu', d3.contextMenu(header_context_menu));
 
       //d3.selectAll(".col_header")
       //    .append("text")

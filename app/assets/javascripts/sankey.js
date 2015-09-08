@@ -6,14 +6,19 @@ d3.sankey = function() {
         size = [1, 1],
         nodes = [],
         links = [],
-        graphType = "";
+        graphType = "",
+        sortType = "ascending";
+
+    sankey.sortType = function(_) {
+        if (!arguments.length) return sortType;
+        sortType = _;
+        return sankey;
+    };
 
     sankey.graphType = function(_) {
-
         if (!arguments.length) return graphType;
         graphType = _;
         return sankey;
-
     };
 
     sankey.nodeWidth = function(_) {
@@ -164,23 +169,30 @@ d3.sankey = function() {
     }
 
     function computeNodeDepths(iterations) {
+        var sortingOrder = null;
+
+        if (sortType == "ascending"){
+            sortingOrder = d3.ascending
+        } else {
+            sortingOrder = d3.descending
+        }
         var nodesByBreadth = d3.nest()
             .key(function(d) { return d.x; })
-            .sortKeys(d3.ascending)
+            .sortKeys(sortingOrder)
             .entries(nodes)
             .map(function(d) { return d.values; });
 
         var nodesByBreadthAndDisc = d3.nest()
             .key(function(d) { return d.x; })
             .key(function(d) { return d.name; })
-            .sortKeys(d3.ascending)
+            .sortKeys(sortingOrder)
             .entries(nodes)
             .map(function(d) { return d.values; });
 
         var nodesByBreadthAndName = d3.nest()
             .key(function(d) { return d.x; })
             .key(function(d) { return d.name.split(" ")[d.name.split(" ").length - 1]; })
-            .sortKeys(d3.ascending)
+            .sortKeys(sortingOrder)
             .entries(nodes)
             .map(function(d) { return d.values; });
 
