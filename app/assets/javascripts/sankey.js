@@ -182,16 +182,9 @@ d3.sankey = function() {
             .entries(nodes)
             .map(function(d) { return d.values; });
 
-        var nodesByBreadthAndDisc = d3.nest()
+        var nodesByBreadthAndNames = d3.nest()
             .key(function(d) { return d.x; })
-            .key(function(d) { return d.name; })
-            .sortKeys(sortingOrder)
-            .entries(nodes)
-            .map(function(d) { return d.values; });
-
-        var nodesByBreadthAndName = d3.nest()
-            .key(function(d) { return d.x; })
-            .key(function(d) { return d.name.split(" ")[d.name.split(" ").length - 1]; })
+            .key(function(d) { console.log(d); return d.get_unique_name(); })
             .sortKeys(sortingOrder)
             .entries(nodes)
             .map(function(d) { return d.values; });
@@ -210,7 +203,7 @@ d3.sankey = function() {
                 return (size[1] - (nodes.length - 1) * nodePadding - nodes.length * nodeMin) / (d3.sum(nodes, value));
             });
 
-            nodesByBreadthAndDisc.forEach(function(discs) {
+            nodesByBreadthAndNames.forEach(function(discs) {
                 var y_count = 0;
                 discs.forEach(function(disc) {
                     disc.values.forEach(function(node) {
