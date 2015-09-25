@@ -184,7 +184,7 @@ d3.sankey = function() {
 
         var nodesByBreadthAndNames = d3.nest()
             .key(function(d) { return d.x; })
-            .key(function(d) { console.log(d); return d.get_unique_name(); })
+            .key(function(d) { return d.get_unique_name(); })
             .sortKeys(sortingOrder)
             .entries(nodes)
             .map(function(d) { return d.values; });

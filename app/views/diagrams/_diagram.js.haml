@@ -9,6 +9,8 @@
     this.hide_unselected = false;
 
     this.sortOrder = "ascending";
+    this.colorGroup = null;
+    this.fontSize = 13;
   }
 
   RibbonDiagram.prototype = {
@@ -33,18 +35,22 @@
 
 
       function color_from_discipline(d){
-        var label = d.source == undefined ? d.get_name() : d.source.get_name();
+        var group_index = $("#color_group_select").val();
 
-        if (label == "Left")
-          return "#000000";
-        else if (label == "Enrolled")
-          return "#555555";
-        else if (label == "Dismissed")
-          return "#FF0000";
-        else if (label == "PELP")
-          return "#FFFF00";
-        else
-          return color(label);
+        var name = (d.source == undefined ?
+          d.get_unique_name().split("-") :
+          d.source.get_unique_name().split("-")
+        );
+
+        var label = ""
+
+        if (group_index >= name.length){
+          label = name[name.length - 1];
+        } else {
+          label = name[group_index];
+        }
+
+        return color(label);
       }
 
       function isShowing(element, index, array){
@@ -303,6 +309,7 @@
             .attr("text-anchor", "start")
             .attr("transform", null)
             .style("font-weight", "bold")
+            .style("font-size", diagram.fontSize+"px")
             .text(function(d) { return d.time; })
             .on('contextmenu', d3.contextMenu(header_context_menu));
 
@@ -393,6 +400,7 @@
           .attr("text-anchor", "start")
           .attr("transform", null)
           .style("font-weight", "bold")
+          .style("font-size", diagram.fontSize+"px")
           .text(function(d) { return d.get_name(); })
         .filter(function(d) { return d.x < width / 2; })
           .attr("x", -sankey.nodeWidth() + 6)

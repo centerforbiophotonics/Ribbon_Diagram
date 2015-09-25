@@ -41,6 +41,17 @@
       = button_tag "Update", {:id => "time_select_update"}
       %p Note: The first selected time defines the starting cohort.
 
+    #color_and_font
+      %label{:for => "color_group_select", :style => "font-weight:bold"} Color Nodes by Group:
+      %br
+      = select_tag "color_group_select", []
+      %br
+      %label{:for => "font_size", :style => "font-weight:bold"} Font Size:
+      %br
+      = text_field_tag "font_size", "13"
+      %br
+      = button_tag "Update", {:id => "color_group_select_update"}
+
     #filter_menu
       %h2{:style => "margin-bottom:3px;"} Filter Options:
       %input{:type => :button, :value => "Apply Filter", :class => "apply_filter"}

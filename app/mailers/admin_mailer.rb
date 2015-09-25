@@ -1,5 +1,5 @@
 class AdminMailer < ActionMailer::Base
-  default from: "ribbon-tool@iamstem.ucdavis.edu"
+  default from: "tea@ucdavis.edu"
 
   helper :application
 

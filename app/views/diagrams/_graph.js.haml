@@ -9,7 +9,6 @@
     this.views = [];  //This times being viewed. The first time defines the starting cohort.
     this.times = [];  //The times available
 
-
     //Used primarily for status messages
     this.total_count = null;
     this.filtered_starting_cohort_count = null;
@@ -31,6 +30,15 @@
     this.times.forEach(function(time,i, array){
       $("#time_select").append('<option value="'+time+'" '+(views.indexOf(time) != -1 ? "selected" : "")+'>'+time+'</option>')
     });
+
+    $("#color_group_select").html("");
+    this.data["STUDENTS"][0]["RECORDS"][0]["GROUPS"].forEach(function(group, i){
+      for (var key in group){
+        $("#color_group_select").append('<option value="'+i+'">'+key+'</option>');
+      }
+    });
+
+    $("#color_group_select option").first().prop('selected',true);
 
     this.build();
   }

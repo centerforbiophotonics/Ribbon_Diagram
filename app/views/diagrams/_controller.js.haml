@@ -34,6 +34,20 @@
         controller.recalculate_and_redraw();
       });
 
+      $("#font_size").change(function(){
+        if (isNaN($(this).val())){
+          $(this).val(controller.diagram.fontSize);
+        } else {
+          controller.diagram.fontSize = parseInt($(this).val());
+          controller.recalculate_and_redraw();
+        }
+
+      });
+
+      $("#color_group_select").change(function(){
+         controller.recalculate_and_redraw();
+      });
+
       $("#deselect_links").click(function(){
         controller.graph.select_none();
         controller.diagram.draw();
