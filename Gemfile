@@ -1,12 +1,12 @@
 source 'http://rubygems.org'
 
-ruby "2.0.0"
-
+#ruby "2.1.5"
+gem "2.0.0"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.1.1'
 # Use postgresql as the database for Active Record
-gem 'pg'
+gem 'pg'#, '~> 0.18.3'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -36,7 +36,7 @@ gem 'spring',        group: :development
 # gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
-gem 'unicorn'
+gem 'unicorn', group: :production
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
@@ -59,6 +59,8 @@ gem 'royce'
 
 # Markup
 gem 'haml-rails'
+gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
+
 
 #Rails Admin
 gem 'rails_admin'

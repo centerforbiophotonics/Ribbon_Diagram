@@ -40,7 +40,7 @@ Rails.application.configure do
   Rails.application.routes.default_url_options[:port] = 3000
 
   #ActionMailer config
-  config.action_mailer.perform_deliveries = true
+  config.action_mailer.perform_deliveries = false
   config.action_mailer.raise_delivery_errors = true
 
   #SES SMTP Settings
