@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :reports, :only => [:index]
 
   resources :diagrams do
     member do

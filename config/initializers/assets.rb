@@ -3,6 +3,7 @@
   diagrams
   institutions
   users
+  reports
   devise/sessions
   devise/registrations
   devise/confirmations
