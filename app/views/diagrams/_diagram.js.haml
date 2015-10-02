@@ -44,8 +44,11 @@
 
         var label = ""
 
+        console.log(group_index, name.length);
+
         if (group_index >= name.length){
-          label = name[name.length - 1];
+          console.log("name too short");
+          label = name[0];
         } else {
           label = name[group_index];
         }
