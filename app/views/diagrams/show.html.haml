@@ -58,6 +58,17 @@
       #filters
       %input{:type => :button, :value => "Apply Filter", :class => "apply_filter"}
 
+    #grouping_menu
+      %h2{:style => "margin-bottom:3px;"} Grouping Options:
+
+      Included Groups:
+      #included_groups.group_list
+
+      Other Groups:
+      #other_groups.group_list
+
+      %input{:type => :button, :value => "Apply Groups", :class => "apply_filter"}
+
 
 #ribbon_diagram_container
   #vis_header{:style => "display:none;"}

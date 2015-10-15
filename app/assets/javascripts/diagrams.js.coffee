@@ -6,4 +6,5 @@
 //= require d3-tip.js
 //= require sankey.js
 //= require jquery.blockUI
+//= require html.sortable.js
 

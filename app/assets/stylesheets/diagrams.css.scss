@@ -90,3 +90,16 @@
 .page-content{
   width: 98%;
 }
+
+.group_list{
+  min-height: 100px;
+  border: 1px solid black;
+}
+
+.group_list > div{
+  margin: 5px;
+}
+
+.group_list_hovered{
+  font-weight: bold;
+}

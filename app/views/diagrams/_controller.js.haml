@@ -21,6 +21,15 @@
     register_form_events: function(){
       var controller = this;
 
+      //testing sortable
+      $('#included_groups, #other_groups').sortable({
+        connectWith: 'connected',
+
+        hoverClass: 'group_list_hovered',
+
+        placeholder: '<hr>'
+      });
+
       $("#control_toggle").click(function(){
         $("#controls").animate({width: 'toggle'});
       });

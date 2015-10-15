@@ -255,20 +255,36 @@
         var last_node = null;
 
         records.forEach(function(record){
-          var group_types = record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
-          var group_vals = record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
+          var original_group_types = record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
+          var original_group_vals = record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
 
+          var reordered_group_types = $("#included_groups div").map(function(index) {
+            return this.id.split("-")[1];
+          });
 
+          var reordered_group_vals = [];
+
+          reordered_group_types.each(function(index){
+            var original_types_index = original_group_types.indexOf(reordered_group_types[index])
+
+            if (original_types_index != -1){
+              reordered_group_vals.push(original_group_vals[original_types_index]);
+            } else {
+              reordered_group_vals.push(student["DEMOGRAPHICS"][reordered_group_types[index]]);
+            }
+          });
+
+          //console.log(student, origina;);
 
           graph.create_leaf_node(
-            group_vals,
-            group_types,
+            reordered_group_vals,
+            reordered_group_types,
             record["TIME"]
           );
 
           var new_node = graph.find_node_recursive(
-            group_vals,
-            group_types,
+            reordered_group_vals,
+            reordered_group_types,
             record["TIME"]
           );
 
@@ -288,11 +304,6 @@
 
       var filtered_data = graph.filter.filter_data();
 
-      //var time_1 = $("#time_1_select").val();
-      //var time_2 = $("#time_2_select").val();
-      //
-      //graph.time_1 = time_1;
-      //graph.time_2 = time_2;
       graph.raw_data_total = data["STUDENTS"].length;
 
       var filtered_starting_cohort = {

@@ -9,12 +9,27 @@
 
     this.isolate = [];
 
+    this.grouping_order = [];
+
     //Initialization Tasks
     this.build_filter_menu();
+    this.build_grouping_menu();
     this.update_filter_hash();
   }
 
   RibbonFilter.prototype = {
+    build_grouping_menu: function(){
+      this.data["STUDENTS"][0]["RECORDS"][0]["GROUPS"].forEach(function(group){
+        for (var key in group){
+          $("#included_groups").append('<div id="group-'+key+'">'+key+'</div>');
+        }
+      });
+
+      for (var key in this.data["STUDENTS"][0]["DEMOGRAPHICS"]){
+        $("#other_groups").append('<div id="group-'+key+'">'+key+'</div>');
+      }
+    },
+
     build_filter_menu: function(){
       var first_time = true;
 
