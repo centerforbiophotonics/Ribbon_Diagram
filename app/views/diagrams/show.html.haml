@@ -24,7 +24,7 @@
 #control_container
   #control_toggle_container
     %img#control_toggle{:src => asset_path("wrench.png"), :height => "24", :width => "24", :style => "display:inline"}
-    <---- Click here to hide/show this menu.
+    #menu_toggle_instructions <---- Click here to hide/show this menu.
   #controls
     - if policy(@diagram).download?
       #download_links
