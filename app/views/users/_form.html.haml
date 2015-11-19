@@ -42,8 +42,23 @@
           = f.label :approved, "Approved:"
           = f.check_box :approved
 
+    %h2 Diagram Sharing:
+    .indent
+      .field
+        - source_for_diagrams = (current_user.has_role?('institution-admin') || current_user.super_admin ? current_user.institution : current_user)
+        = select_tag :user_diagrams,
+            options_for_select(source_for_diagrams.diagrams.map{|d| ["#{d.name} -- #{d.category}", d.id  ]},
+                                :selected => @user.diagrams.map(&:id)),
+            {:multiple => true}
+
   .actions
     = f.submit 'Save'
 
 - if policy(current_user).set_roles?
   = render "role_select.js"
+
+:javascript
+  $("#user_diagrams").select2({
+      width:'300px',
+      allowClear:true
+  })

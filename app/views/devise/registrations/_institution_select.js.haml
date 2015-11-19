@@ -20,7 +20,6 @@
         dataType: "json",
         data: {institution: {name: newTerm}},
         success: function(data, textStatus){
-          console.log(data);
           $('<option value="'+data.id+'">'+newTerm+'</option>').appendTo(selector);
           $(selector).select2('val',data.id); // select the new term
           $(selector).select2('close');       // close the dropdown

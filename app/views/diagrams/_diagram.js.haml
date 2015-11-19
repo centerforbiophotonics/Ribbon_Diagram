@@ -42,12 +42,9 @@
           d.source.get_unique_name().split("-")
         );
 
-        var label = ""
-
-        console.log(group_index, name.length);
+        var label = "";
 
         if (group_index >= name.length){
-          console.log("name too short");
           label = name[0];
         } else {
           label = name[group_index];

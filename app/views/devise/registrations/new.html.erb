@@ -28,6 +28,13 @@
     <%= f.select(:institution_id, Institution.all.order(:name).map{|u| [u.name, u.id]}.unshift(["Choose an Institution", nil]), {}) %>
   </div>
 
+  <!--<div class="field">-->
+      <!--<p>If you can't find your institution in the list above <a href="#" id="show_institution_create">click here</a></p>-->
+
+      <!--<%= f.label :institution_id, "I belong to the following institution: "%>-->
+    <!--<%= f.select(:institution_id, Institution.all.order(:name).map{|u| [u.name, u.id]}.unshift(["Choose an Institution", nil]), {}) %>-->
+  <!--</div>-->
+
 
 
 

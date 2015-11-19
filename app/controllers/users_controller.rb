@@ -56,6 +56,8 @@ class UsersController < ApplicationController
       end
     end
 
+    share
+
     respond_with(@user)
   end
 
@@ -83,6 +85,17 @@ class UsersController < ApplicationController
         params[:roles].each do |role|
           if policy(:role).set_role?(role)
             @user.add_role role
+          end
+        end
+      end
+    end
+
+    def share
+      @user.diagrams = []
+      if params[:user_diagrams]
+        params[:user_diagrams].each do |diagrams_id|
+          if @user.institution.diagrams.map(&:id).include?(diagrams_id.to_i)
+            UserDiagram.new(:diagram_id => diagrams_id.to_i, :user_id => @user.id).save!
           end
         end
       end
