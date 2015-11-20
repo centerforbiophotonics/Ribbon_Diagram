@@ -49,11 +49,17 @@
       = f.check_box :downloadable
       .indent
         %p{:style => "color:red;"} For a user to download data they must have the 'diagram-download' role, the diagram must be downloadable, and the diagram must be shared with them.
+
+    - if current_user.super_admin
+      .field
+        = f.label :share_with_all_institutions, "SUPER ADMIN ONLY -- Share this diagram automatically with every user in GORP: "
+        = f.check_box :share_with_all_institutions
+      .indent
+        %h3 - OR -
+
     .field
       = f.label :share_with_all, "Share this diagram with everyone at my institution and any new users automatically: "
       = f.check_box :share_with_all
-
-
 
     .field#share_with
       .indent

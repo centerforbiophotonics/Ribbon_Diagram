@@ -11,7 +11,7 @@ class Diagram < ActiveRecord::Base
 
   accepts_nested_attributes_for :data_files, :reject_if => proc { |attributes| attributes['data_file'].blank? || attributes['name'].blank? }
 
-  validates_presence_of :name
+  validates_presence_of :name, :category
   validates_presence_of :data_files
 
   acts_as_taggable

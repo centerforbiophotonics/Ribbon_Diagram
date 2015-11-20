@@ -1,8 +1,34 @@
-%h2 Listing diagrams
+%h2
+  Listing Diagrams
+  - if params[:category]
+    In Category
+    "#{params[:category]}"
+
+  - if params[:creator]
+    Created By
+    = params[:creator]
 
 - if policy(Diagram).create?
   #create_diagram_link
     = link_to 'Create a New Diagram', new_diagram_path, :style => "font-size: x-large;"
+
+
+.index-nav-links{:style => "position: absolute; right: 20px; top: 20px;"}
+  = form_for :diagrams, :url=> diagrams_path, :html => { :method => 'GET' } do |f|
+    = f.submit "View All Diagrams"
+
+  %h3.diagram_index_nav Browse By Category:
+  = form_for :diagrams, :url=> diagrams_path, :html => { :method => 'GET' } do |f|
+    %div{:style => "display:inline-block"}
+      = select_tag :category, options_for_select(@categories, :selected => params[:category]), :style => "width: 100px;"
+    = f.submit "Go", :style => "width: 100px;"
+
+  %h3.diagram_index_nav Browse By Creator:
+  = form_for :diagrams, :url=> diagrams_path, :html => { :method => 'GET' } do |f|
+    %div{:style => "display:inline-block"}
+      = select_tag :creator, options_for_select(@creators, :selected => params[:creator]), :style => "width: 100px;"
+    = f.submit "Go", :style => "width: 100px;"
+
 
 %table.datatable.responsive.no-wrap
   %thead
@@ -11,6 +37,7 @@
       %th Category
       %th Tags
       %th Creator
+      %th Last Updated
       %th
   %tbody
     - @diagrams.each do |diagram|
@@ -18,7 +45,8 @@
         %td= link_to diagram.name, diagram
         %td= diagram.category
         %td= diagram.tag_list
-        %td= diagram.creator == current_user ? "Me": diagram.creator.name
+        %td= diagram.creator.institution == current_user.institution ? diagram.creator.name : diagram.institution.name
+        %td= diagram.updated_at.strftime("%m/%d/%Y")
         %td.diagram_controls{:id => "control_cell_#{diagram.id}"}
           %ul.control_menu{:id => "control_menu_#{diagram.id}", :style => "display:none;"}
             %li= link_to 'Show', diagram

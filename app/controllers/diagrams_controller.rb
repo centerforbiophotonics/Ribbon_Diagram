@@ -10,6 +10,31 @@ class DiagramsController < ApplicationController
 
   def index
     authorize Diagram
+
+    @categories = @diagrams.map(&:category).uniq
+    @creators = @diagrams.map{|d|
+      if d.creator.institution == current_user.institution
+        d.creator.name
+      else
+        d.creator.institution.name
+      end
+    }.uniq
+
+    if params[:category]
+      @diagrams = @diagrams.select{|d| d.category == params[:category]}
+    end
+
+    if params[:creator]
+      @diagrams = @diagrams.select{|d|
+        if d.creator.institution == current_user.institution
+          return d.creator.name == params[:creator]
+        else
+          return d.creator.institution.name == params[:creator]
+        end
+    }
+
+    end
+
     respond_with(@diagrams)
   end
 
@@ -109,6 +134,6 @@ class DiagramsController < ApplicationController
     end
 
     def diagram_params
-      params.require(:diagram).permit(:data_format, :name, :category, :description, :downloadable, :tag_list, :share_with_all, :data_files_attributes => [:id, :data_file, :name])
+      params.require(:diagram).permit(:data_format, :name, :category, :description, :downloadable, :tag_list, :share_with_all, :share_with_all_institutions, :creator, :data_files_attributes => [:id, :data_file, :name])
     end
 end

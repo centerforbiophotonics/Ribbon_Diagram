@@ -112,9 +112,9 @@ class DiagramPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       if user.has_role? 'institution-admin'
-        user.institution.diagrams
+        user.institution.diagrams | Diagram.where(:share_with_all_institutions => true)
       else
-        user.diagrams | user.authored_diagrams | user.institution.diagrams.where(:share_with_all => true)
+        user.diagrams | user.authored_diagrams | user.institution.diagrams.where(:share_with_all => true)| Diagram.where(:share_with_all_institutions => true)
       end
 
     end
