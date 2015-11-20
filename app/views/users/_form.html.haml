@@ -19,6 +19,14 @@
       = f.label :email
       = f.text_field :email
 
+    .field
+      = f.label :title
+      = f.text_field :title
+
+    .field
+      = f.label :department
+      = f.text_field :department
+
   .indent
     - if policy(current_user).set_roles?
       .field

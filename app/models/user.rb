@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   belongs_to :institution
 
   validates_presence_of :institution
-  validates_presence_of :name
+  validates_presence_of :name, :title, :department
 
   has_many :user_diagrams, :dependent => :delete_all
   has_many :diagrams, :through => :user_diagrams

@@ -19,6 +19,7 @@ class UserPolicy < ApplicationPolicy
     (
       (
         (
+          user_is_current_user ||
           current_user.has_role?('user-view') ||
           current_user_is_institution_admin
         ) &&
@@ -40,6 +41,7 @@ class UserPolicy < ApplicationPolicy
     (
       (
         (
+          user_is_current_user ||
           current_user.has_role?('user-update') ||
           current_user_is_institution_admin
         ) &&
@@ -102,6 +104,10 @@ class UserPolicy < ApplicationPolicy
 
   def current_user_is_institution_admin
     current_user.has_role? 'institution-admin'
+  end
+
+  def user_is_current_user
+    user.id == current_user.id
   end
 
   class Scope < Scope
