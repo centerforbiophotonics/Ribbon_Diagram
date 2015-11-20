@@ -49,8 +49,15 @@
       = f.check_box :downloadable
       .indent
         %p{:style => "color:red;"} For a user to download data they must have the 'diagram-download' role, the diagram must be downloadable, and the diagram must be shared with them.
-
     .field
+      = f.label :share_with_all, "Share this diagram with everyone at my institution and any new users automatically: "
+      = f.check_box :share_with_all
+
+
+
+    .field#share_with
+      .indent
+        %h3 - OR -
       = label_tag :user_diagrams, "Share With:"
       - source_for_users = (params[:action] == "new" ? current_user : @diagram)
       = select_tag :user_diagrams,
@@ -113,5 +120,15 @@
     $("#user_diagrams").select2({
         width:'240px',
         allowClear:true
-    })
+    });
+
+    $("#diagram_share_with_all").change(function(){
+      if ($(this).prop('checked')) {
+        $("#share_with").hide();
+      } else {
+        $("#share_with").show();
+      }
+    });
+
+    $("#diagram_share_with_all").change();
   }

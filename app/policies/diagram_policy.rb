@@ -114,7 +114,7 @@ class DiagramPolicy < ApplicationPolicy
       if user.has_role? 'institution-admin'
         user.institution.diagrams
       else
-        user.diagrams | user.authored_diagrams
+        user.diagrams | user.authored_diagrams | user.institution.diagrams.where(:share_with_all => true)
       end
 
     end

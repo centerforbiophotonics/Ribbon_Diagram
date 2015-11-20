@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150603185717) do
+ActiveRecord::Schema.define(version: 20151120003239) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20150603185717) do
     t.string   "data_format"
     t.text     "description"
     t.boolean  "downloadable",   default: false
+    t.boolean  "share_with_all", default: false
   end
 
   add_index "diagrams", ["institution_id"], name: "index_diagrams_on_institution_id", using: :btree
