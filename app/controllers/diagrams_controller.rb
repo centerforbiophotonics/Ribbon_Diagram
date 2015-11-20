@@ -25,14 +25,18 @@ class DiagramsController < ApplicationController
     end
 
     if params[:creator]
-      @diagrams = @diagrams.select{|d|
-        if d.creator.institution == current_user.institution
-          return d.creator.name == params[:creator]
-        else
-          return d.creator.institution.name == params[:creator]
-        end
-    }
 
+      @diagrams = @diagrams.select{|d|
+        include_diagram = false
+
+        if d.creator.institution == current_user.institution
+          include_diagram = d.creator.name == params[:creator]
+        else
+          include_diagram = d.creator.institution.name == params[:creator]
+        end
+
+        include_diagram
+      }
     end
 
     respond_with(@diagrams)
