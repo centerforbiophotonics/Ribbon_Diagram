@@ -59,8 +59,29 @@
                                 :selected => @user.diagrams.map(&:id)),
             {:multiple => true}
 
+      %p
+        %b New users will automatically be given access to the following diagrams because of the permissions set each diagram:
+        #shared_diagrams_table.indent
+          %table.datatable.responsive.no-wrap{:data => {:paging => 'false'}}
+            %thead
+              %tr
+                %th Name
+                %th Category
+                %th Creator
+                %th Edit
+              %tbody
+                - ( @user.institution.diagrams.where(:share_with_all => true)| Diagram.where(:share_with_all_institutions => true) ).each do |diagram|
+                  %tr
+                    %td= diagram.name
+                    %td= diagram.category
+                    %td= diagram.creator.institution == current_user.institution ? diagram.creator.name : diagram.institution.name
+                    - if policy(diagram).edit?
+                      %td= link_to 'Edit', edit_diagram_path(diagram)
+
+
+
   .actions
-    = f.submit 'Save'
+    = f.submit 'Save', :id => "user_submit"
 
 - if policy(current_user).set_roles?
   = render "role_select.js"
@@ -69,4 +90,5 @@
   $("#user_diagrams").select2({
       width:'300px',
       allowClear:true
-  })
+  });
+

@@ -18,7 +18,7 @@ gem 'therubyracer',  platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-gem 'jquery-datatables-rails', '~> 3.1.1'
+gem 'jquery-datatables-rails'
 gem 'jquerycsv-rails'
 gem 'select2-rails'
 
