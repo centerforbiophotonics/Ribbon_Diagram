@@ -30,11 +30,11 @@
     }
 
     .slicknav{
-        display: inline-block;
-        width: 20%;
-        max-width: 175px;
-        margin-right: 1%;
+        margin-right: 5px;
         vertical-align: top;
+        display: inline-block;
+        z-index: 100;
+        position:relative;
     }
 }
 
@@ -44,4 +44,21 @@
 
 .indent{
     margin-left: 10px;
+}
+
+.slicknav-container{
+    display:inline-block;
+    overflow: visible;
+    height:30px;
+}
+
+#site_title{
+    display:inline-block;
+    vertical-align: top;
+    margin: 12px 0px 12px 0px;
+}
+
+#header {
+    margin: 10px 0px 10px 0px;
+
 }

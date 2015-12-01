@@ -45,18 +45,21 @@ class UsersController < ApplicationController
   def update
 
     was_approved = @user.approved
-    @user.update(user_params)
-    if policy(current_user).set_roles?
-      set_roles
-    end
-
-    if policy(current_user).approve?
-      if !was_approved && @user.approved && @user.confirmed?
-        AdminMailer.approved_notify(@user).deliver
+    if @user.update_attributes(user_params)
+      if policy(current_user).set_roles?
+        set_roles
       end
-    end
 
-    share
+      if policy(current_user).approve?
+        if !was_approved && @user.approved && @user.confirmed?
+          AdminMailer.approved_notify(@user).deliver
+        end
+      end
+
+      share
+
+      flash[:notice] = "#{controller_name.classify} successfully updated."
+    end
 
     respond_with(@user)
   end

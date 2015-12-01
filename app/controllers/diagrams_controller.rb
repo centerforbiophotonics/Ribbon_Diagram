@@ -70,7 +70,10 @@ class DiagramsController < ApplicationController
 
     if @diagram.save
       share
+      flash[:notice] = "#{controller_name.classify} successfully created."
     end
+
+
 
     respond_with(@diagram)
   end
@@ -95,11 +98,13 @@ class DiagramsController < ApplicationController
   end
 
   def update
-    @diagram.update(diagram_params)
+    if @diagram.update_attributes(diagram_params)
+      share
+      #Check diagram data_format and remove data_files that don't belong to the format
 
-    share
-    #Check diagram data_format and remove data_files that don't belong to the format
-    
+      flash[:notice] = "#{controller_name.classify} successfully updated."
+    end
+
     respond_with(@diagram)
   end
 

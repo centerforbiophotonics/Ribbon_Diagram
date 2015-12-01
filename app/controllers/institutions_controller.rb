@@ -45,6 +45,7 @@ class InstitutionsController < ApplicationController
 
   def update
     @institution.update(institution_params)
+    flash[:notice] = "#{controller_name.classify} successfully updated."
     respond_with(@institution)
   end
 

@@ -25,8 +25,9 @@
 function ready(){
     $("#menu").slicknav({
         prependTo:'.slicknav',
-        label: "Navigation",
-        duration: 50
+        label: "",
+        duration: 50,
+        width: "resolve"
     });
 
     $('.datatable').DataTable({

@@ -8,12 +8,7 @@
     Created By
     = params[:creator]
 
-- if policy(Diagram).create?
-  #create_diagram_link
-    = link_to 'Create a New Diagram', new_diagram_path, :style => "font-size: x-large;"
-
-
-.index-nav-links{:style => "position: absolute; right: 20px; top: 20px;"}
+.index-nav-links
   = form_for :diagrams, :url=> diagrams_path, :html => { :method => 'GET' } do |f|
     = f.submit "View All Diagrams"
 
@@ -28,6 +23,10 @@
     %div{:style => "display:inline-block"}
       = select_tag :creator, options_for_select(@creators, :selected => params[:creator]), :style => "width: 100px;"
     = f.submit "Go", :style => "width: 100px;"
+
+- if policy(Diagram).create?
+  #create_diagram_link
+    = link_to 'Create a New Diagram', new_diagram_path, :style => "font-size: x-large;"
 
 
 %table.datatable.responsive.no-wrap
