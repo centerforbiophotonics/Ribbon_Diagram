@@ -16,6 +16,7 @@ Show:
       %th Name
       %th Email
       %th Institution
+      %th Roles
       %th
       - if policy(current_user).edit?
         %th
@@ -33,6 +34,13 @@ Show:
             = user.name
         %td= user.email
         %td= user.institution.name
+        %td
+          - if user.role_list.empty?
+            No Roles Assigned
+          - else
+            - user.role_list.each do |role|
+              = role
+              %br
         %td= link_to 'Show', user
         - if policy(current_user).edit?
           %td= link_to 'Edit', edit_user_path(user)

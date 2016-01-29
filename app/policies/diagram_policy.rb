@@ -22,7 +22,7 @@ class DiagramPolicy < ApplicationPolicy
         diagram_belongs_to_users_institution
       ) ||
       (
-        diagram_is_shared_with_users_institution ||
+        diagram_is_shared_within_users_institution ||
         diagram_is_shared_with_all_institutions
       ) ||
       user_is_super_admin
@@ -97,8 +97,6 @@ class DiagramPolicy < ApplicationPolicy
     )
   end
 
-
-
   def diagram_is_shared_with_user
     user.diagrams.include?(diagram)
   end
@@ -111,15 +109,13 @@ class DiagramPolicy < ApplicationPolicy
     user.institution == diagram.institution
   end
 
-  def diagram_is_shared_with_users_institution
+  def diagram_is_shared_within_users_institution
     user.institution.diagrams.where(:share_with_all => true).includes(diagram)
   end
 
   def diagram_is_shared_with_all_institutions
     Diagram.where(:share_with_all_institutions => true).includes(diagram)
   end
-
-
 
   class Scope < Scope
     def resolve
