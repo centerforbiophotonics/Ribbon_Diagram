@@ -91,8 +91,7 @@ class DiagramPolicy < ApplicationPolicy
         (
           user.has_role?('diagram-download') ||
           user_is_institution_admin
-        )
-        &&
+        ) &&
         diagram.downloadable
       ) ||
       user_is_super_admin

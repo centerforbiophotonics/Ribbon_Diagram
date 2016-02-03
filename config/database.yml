@@ -26,7 +26,7 @@ development:
   adapter: postgresql
   encoding: unicode
   pool: 5
-  database: ribbon_diagram_development
+  database: ribbon_diagram_development #ribbon_aws_prod
   host: localhost
 #  username: postgres
 #  password:
