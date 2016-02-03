@@ -12,8 +12,14 @@ class DiagramsController < ApplicationController
     authorize Diagram
 
     @categories = @diagrams.map(&:category).uniq
+
+    #ap @diagrams.inspect
+
+
     @creators = @diagrams.map{|d|
-      if d.creator.institution == current_user.institution
+      if d.creator.nil?
+        "Creator Unknown"
+      elsif d.creator.institution ==current_user.institution
         d.creator.name
       else
         d.creator.institution.name
