@@ -46,10 +46,8 @@ class DiagramPolicy < ApplicationPolicy
       (
         (
           (
-            (
-              diagram_is_shared_with_user ||
-              diagram_is_created_by_user
-            ) && user.has_role?('diagram-update')
+            diagram_is_created_by_user &&
+            user.has_role?('diagram-update')
           ) ||
           user_is_institution_admin
         ) && diagram_belongs_to_users_institution
@@ -98,7 +96,7 @@ class DiagramPolicy < ApplicationPolicy
   end
 
   def diagram_is_shared_with_user
-    user.diagrams.include?(diagram)
+    user.diagrams.include?(diagram) || diagram_is_shared_within_users_institution || diagram_is_shared_with_all_institutions
   end
 
   def diagram_is_created_by_user
