@@ -82,14 +82,18 @@ class DiagramPolicy < ApplicationPolicy
     (
       (
         (
-          (
-            diagram_is_shared_with_user &&
-            user.has_role?('diagram-download') &&
-            diagram.downloadable
-          ) ||
           diagram_is_created_by_user ||
           user_is_institution_admin
         ) && diagram_belongs_to_users_institution
+      ) ||
+      (
+        diagram_is_shared_with_user &&
+        (
+          user.has_role?('diagram-download') ||
+          user_is_institution_admin
+        )
+        &&
+        diagram.downloadable
       ) ||
       user_is_super_admin
     )
