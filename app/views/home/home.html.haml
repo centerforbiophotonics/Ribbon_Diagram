@@ -1,0 +1,78 @@
+- if current_user.approved
+  - if @announcements
+    #news
+      %h2 News
+      .indent
+        - @announcements.each do |a|
+          = render :partial => "announcement", locals: {announcement: a}
+        .previous_news= link_to "Previous News", home_news_path
+      %hr
+
+  - if current_user.has_role?("institution-admin")
+
+    %h3 Pending Tasks:
+    .indent#pending_tasks
+      %ul
+        - if current_user.institution.time_zone.blank?
+          %li#timezone_needed
+            %p{:style => "color: salmon;"} You need to <a href="#{edit_institution_path(current_user.institution)}">set your institution's time zone</a> before any courses or observations can be created.
+
+        - if current_user.institution.users_awaiting_approval.count > 0
+          %li#pending_approvals
+            %p{:style => "color: salmon;"} The following users are waiting to be approved:
+            .indent
+              %table
+                - current_user.institution.users_awaiting_approval.each do |user|
+                  %tr
+                    %td= user.name
+                    %td
+                      %a{:href => "mailto:"+user.email}= user.email
+                    %td= link_to 'Edit User To Approve', edit_user_path(user)
+
+        - if current_user.institution.users_with_no_roles.count > 0
+          %li#no_roles
+            %p{:style => "color: salmon;"} The following users have no assigned roles (so that can't do anything):
+            .indent
+              %table
+                - current_user.institution.users_with_no_roles.each do |user|
+                  %tr
+                    %td= user.name
+                    %td
+                      %a{:href => "mailto:"+user.email}= user.email
+                    %td= link_to 'Edit User To Assign Roles', edit_user_path(user)
+
+        - if current_user.institution.courses.count == 0
+          %li#create_courses
+            %p{:style => "color:salmon"} Before you can make observations, you need to <a href="#{new_course_path}">create a course</a> and assign one or more protocols to it.
+    %hr
+
+  #quick_start
+    %h3 Quick Start:
+    .indent
+      #quick_start_grid
+        .grid-item{:onclick => "window.open('https://drive.google.com/file/d/0B-GPdilGXQlBaUkzMVN3dnZHTWM/view');"}
+          .inner-grid= link_to "Read the Manual", "https://drive.google.com/file/d/0B-GPdilGXQlBaUkzMVN3dnZHTWM/view"
+        - if current_user.institution.courses.count > 0 && policy(Observation).new?
+          .grid-item{:onclick => "location.href='#{new_observation_path}';"}
+            .inner-grid= link_to "Start an Observation", new_observation_path
+        - if policy(Protocol).new?
+          .grid-item{:onclick => "location.href='#{new_protocol_path}';"}
+            .inner-grid= link_to "Create a Protocol", new_protocol_path
+        - users_last_observation = current_user.observations.order(:created_at).last
+        - if users_last_observation && users_last_observation.course && users_last_observation.date.today?
+          .grid-item{:onclick => "location.href='#{edit_observation_path(users_last_observation)}';"}
+            .inner-grid= link_to "Resume Observation of #{users_last_observation.course.title}", edit_observation_path(users_last_observation)
+        - if policy(Observation).export? && policy_scope(Observation).count > 0
+          .grid-item{:onclick => "location.href='#{export_observations_path}';"}
+            .inner-grid= link_to "Export Observations", export_observations_path
+- else
+  %p{:style => "color: red;"} Your account has not been approved by an admin. The admins for your insitution are:
+  .indent
+    %table
+      - current_user.institution.admins.each do |admin|
+        %tr
+          %td= admin.name
+          %td{:style => "padding-left: 10px"}
+            %a{:href => "mailto:"+admin.email}= admin.email
+
+%div{:style => "height:20px;"}

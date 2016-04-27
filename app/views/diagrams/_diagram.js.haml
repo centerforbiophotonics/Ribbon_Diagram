@@ -255,8 +255,8 @@
           var target_links_percentage = d.value/target_links_sum * 100
 
           var title = "<p class='tip_text'>"+format(d.value)+"</p>"+
-            "<p class='tip_text'>"+"went from " + d.source.name + " in " + d.source.time + " (" +formatNumber(source_links_percentage) + "%)</p>"+
-            "<p class='tip_text'>to " + d.target.name + " in " + d.target.time + " (" +formatNumber(target_links_percentage) + "%)";
+            "<p class='tip_text'>"+"went from " + d.source.get_name() + " in " + d.source.time + " (" +formatNumber(source_links_percentage) + "%)</p>"+
+            "<p class='tip_text'>to " + d.target.get_name() + " in " + d.target.time + " (" +formatNumber(target_links_percentage) + "%)";
 
           $("#current_hovered_item").html(title);
 
@@ -343,7 +343,7 @@
 
       var node_tip = d3.tip().attr("class","tip").html(function(d) {
         var title = "<p class='tip_text'>"+format(d.value) + "</p>";
-        title += "<p class='tip_text'>"+"are " + d.name + "</p>";
+        title += "<p class='tip_text'>"+"are " + d.get_name() + "</p>";
         title += "<p class='tip_text'>"+"in " + d.time + "</p>";
 
         if (d.parent_node == null){  //One of the top level nodes
@@ -401,7 +401,11 @@
           .attr("transform", null)
           .style("font-weight", "bold")
           .style("font-size", diagram.fontSize+"px")
-          .text(function(d) { return d.get_name(); })
+          .text(function(d) {
+            //var name_blank = (d.get_name() == undefined || d.get_name() == "" || d.get_name() == null);
+            //return (name_blank ? "Undefined" : d.get_name());
+            return d.get_name();
+          })
         .filter(function(d) { return d.x < width / 2; })
           .attr("x", -sankey.nodeWidth() + 6)
           .attr("text-anchor", "end");

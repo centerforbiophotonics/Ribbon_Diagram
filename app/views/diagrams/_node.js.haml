@@ -161,10 +161,12 @@
     },
 
     get_name: function(){
+      var name_missing = (this.name == undefined || this.name == null || this.name == "");
+
       if (this.parent_node == null)
-        return this.name;
+        return (name_missing ? "Undefined" : this.name);
       else
-        return this.parent_node.get_name() + "-" + this.name  ;
+        return this.parent_node.get_name() + "-" + (name_missing ? "Undefined" : this.name) ;
     },
 
     get_unique_name: function(){

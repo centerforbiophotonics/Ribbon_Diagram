@@ -83,8 +83,8 @@ Rails.application.configure do
   Rails.application.config.middleware.use ExceptionNotification::Rack,
     :email => {
         :email_prefix => "[Ribbon Tool Exception Notification] ",
-        :sender_address => %{"Ribbon Tool Notifier" <ribbon-tool@iamstem.ucdavis.edu>},
-        :exception_recipients => %w{matt.steinwachs@iamstem.ucdavis.edu}
+        :sender_address => %{"Ribbon Tool Notifier" <tea@ucdavis.edu>},
+        :exception_recipients => %w{mksteinwachs@ucdavis.edu}
     }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

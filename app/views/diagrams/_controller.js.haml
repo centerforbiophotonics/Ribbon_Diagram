@@ -4,20 +4,61 @@
     this.graph = null;
     this.filter = null;
     this.data_format = #{@diagram.data_format.inspect};
+    this.local = #{@diagram.local};
     this.format_converter = new RibbonFormatConverter(this.data_format);
 
-    this.data = this.format_converter.convert(
-      #{@diagram.data_files.map do |df| { "name" => df.name, "data" => Paperclip.io_adapters.for(df.data_file).read } end.to_json }
-    );
-    this.clean_data();
+    this.data = null;
+    this.get_data();
 
-    this.filter = new RibbonFilter(this.data);
+    if (this.local == false){
+      this.clean_data();
 
-    this.initialize();
-    this.register_form_events();
+      this.filter = new RibbonFilter(this.data);
+
+      this.initialize();
+      this.register_form_events();
+    }
   }
 
   RibbonController.prototype = {
+    get_data: function(){
+      var controller = this;
+      if (this.local){
+        if (this.data_format == "json"){
+          $("#demographics_file").hide();
+        }
+
+        $.blockUI({ message: $("#local_file_prompt"), fadeIn: 10, onBlock: function(){
+          $("#load_local_file").click(function(){
+            var reader = new FileReader();
+            reader.onload = function (event){
+              var obj = [{"name": "data", "data": event.target.result}]//JSON.parse(event.target.result);
+              controller.data = controller.format_converter.convert(obj);
+
+              controller.clean_data();
+
+              controller.filter = new RibbonFilter(controller.data);
+
+              controller.initialize();
+              controller.register_form_events();
+
+              $.unblockUI();
+
+            };
+            reader.readAsText($('#records').get(0).files[0]);
+
+          });
+        }});
+
+      } else {
+        this.data = this.format_converter.convert(
+          #{@diagram.data_files.map do |df| { "name" => df.name, "data" => Paperclip.io_adapters.for(df.data_file).read } end.to_json }
+        );
+      }
+
+
+    },
+
     register_form_events: function(){
       var controller = this;
 

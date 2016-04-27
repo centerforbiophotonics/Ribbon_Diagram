@@ -237,62 +237,63 @@
 
       var records = [];
 
-      var no_undefined = true;
-
       graph.views.forEach(function(view_time){
         var record = student["RECORDS"].filter(function(r){ return (""+r["TIME"]) == view_time })[0];
 
         if (record == undefined){
-          no_undefined = false;
           graph.not_specified_count[view_time]++;
+
+          record = {"TIME": view_time, "GROUPS":[{"undefined": "undefined"}]}
+
+          student["RECORDS"] << record
         } else {
 
         }
         records.push(record);
       });
 
-      if (no_undefined){
-        var last_node = null;
 
-        records.forEach(function(record){
-          var original_group_types = record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
-          var original_group_vals = record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
+      var last_node = null;
 
-          var reordered_group_types = $("#included_groups div").map(function(index) {
-            return this.id.split("-")[1];
-          });
+      records.forEach(function(record){
+        var original_group_types = record["GROUPS"].map(function(g){ return Object.keys(g)[0] });
+        var original_group_vals = record["GROUPS"].map(function(g){ return g[Object.keys(g)[0]] });
 
-          var reordered_group_vals = [];
-
-          reordered_group_types.each(function(index){
-            var original_types_index = original_group_types.indexOf(reordered_group_types[index])
-
-            if (original_types_index != -1){
-              reordered_group_vals.push(original_group_vals[original_types_index]);
-            } else {
-              reordered_group_vals.push(student["DEMOGRAPHICS"][reordered_group_types[index]]);
-            }
-          });
-
-          graph.create_leaf_node(
-            reordered_group_vals,
-            reordered_group_types,
-            record["TIME"]
-          );
-
-          var new_node = graph.find_node_recursive(
-            reordered_group_vals,
-            reordered_group_types,
-            record["TIME"]
-          );
-
-          if (last_node != null){
-            graph.create_or_increment_link_and_parent_node_links(last_node, new_node);
-          }
-
-          last_node = new_node;
+        var reordered_group_types = $("#included_groups div").map(function(index) {
+          return this.id.split("-")[1];
         });
-      }
+
+        var reordered_group_vals = [];
+
+        reordered_group_types.each(function(index){
+          var original_types_index = original_group_types.indexOf(reordered_group_types[index])
+
+          if (original_types_index != -1){
+            reordered_group_vals.push(original_group_vals[original_types_index]);
+          } else {
+            reordered_group_vals.push(student["DEMOGRAPHICS"][reordered_group_types[index]]);
+          }
+        });
+
+        graph.create_leaf_node(
+          reordered_group_vals,
+          reordered_group_types,
+          record["TIME"]
+        );
+
+        var new_node = graph.find_node_recursive(
+          reordered_group_vals,
+          reordered_group_types,
+          record["TIME"]
+        );
+
+        if (last_node != null){
+          graph.create_or_increment_link_and_parent_node_links(last_node, new_node);
+        }
+
+        last_node = new_node;
+      });
+
     },
 
     build : function(){
@@ -327,7 +328,7 @@
 
       for (var key in graph.not_specified_count) {
         if (graph.not_specified_count[key] > 0)
-          filter_desc += "<p>"+graph.not_specified_count[key]+" people had an unspecified status during "+key+"</p>\n";
+          filter_desc += "<p>"+graph.not_specified_count[key]+" people had an unspecified record during "+key+"</p>\n";
       }
 
       $("#vis_filter_desc").html(filter_desc);

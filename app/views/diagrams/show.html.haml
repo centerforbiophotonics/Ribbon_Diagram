@@ -26,6 +26,9 @@
     %img#control_toggle{:src => asset_path("wrench.png"), :height => "24", :width => "24", :style => "display:inline"}
     #menu_toggle_instructions <---- Click here to hide/show this menu.
   #controls
+    - if policy(@diagram).edit?
+      #edit_link= link_to "Edit This Diagram", edit_diagram_path(@diagram)
+      %br
     - if policy(@diagram).download?
       #download_links
         Download:
@@ -35,13 +38,19 @@
             %br
 
     #time_selector{:style => "margin-top:10px; margin-bottom:10px;"}
+      %h2{:style => "margin-bottom:3px;"} Time Options:
       %label{:for => "time_select", :style => "font-weight:bold"} Select Times to View:
       %br
-      = select_tag "time_select", [], :multiple => true, :style => "height:200px;"
+      = button_tag "Select All", {:id => "time_select_all"}
+      %br
+      = select_tag "time_select", [], :multiple => true, :style => "height:200px; min-width: 100px;"
+      %br
+
       = button_tag "Update", {:id => "time_select_update"}
       %p Note: The first selected time defines the starting cohort.
 
     #color_and_font
+      %h2{:style => "margin-bottom:3px;"} Appearance Options:
       %label{:for => "color_group_select", :style => "font-weight:bold"} Color Nodes by Group:
       %br
       = select_tag "color_group_select", []
@@ -54,9 +63,9 @@
 
     #filter_menu
       %h2{:style => "margin-bottom:3px;"} Filter Options:
-      %input{:type => :button, :value => "Apply Filter", :class => "apply_filter"}
+      %input{:type => :button, :value => "Update", :class => "apply_filter"}
       #filters
-      %input{:type => :button, :value => "Apply Filter", :class => "apply_filter"}
+      %input{:type => :button, :value => "Update", :class => "apply_filter"}
 
     #grouping_menu
       %h2{:style => "margin-bottom:3px;"} Grouping Options (experimental):
@@ -67,7 +76,7 @@
       Other Groups:
       #other_groups.group_list
 
-      %input{:type => :button, :value => "Apply Groups", :class => "apply_filter"}
+      %input{:type => :button, :value => "Update", :class => "apply_filter"}
 
 
 #ribbon_diagram_container
@@ -90,14 +99,18 @@
       =image_tag("spinner.gif")
       Loading
 
--##color_key_div{:style => "float:right; display:none; margin-left:10px;"}
--#  %h4 Key
--#  %table#color_key
--#    %tr
--#      %td Discipline
--#      %td Color
-
 %br{:style => "clear:both;"}
+
+#local_file_prompt{:style => "display:none;"}
+  %h2 Please select a file to build the diagram from.  It will be kept on your local machine.
+  #records_file
+    = label_tag 'records'
+    = file_field_tag 'records'
+  #demographics_file
+    = label_tag 'demographics'
+    = file_field_tag 'demographics'
+  = button_tag 'Load', :type => 'button', :id => 'load_local_file'
+
 
 
 = render(:partial => "diagrams/link.js")

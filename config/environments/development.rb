@@ -53,4 +53,8 @@ Rails.application.configure do
       :enable_starttls_auto => true,
       :port => 465
   }
+
+  config.action_dispatch.default_headers = {
+      'X-Frame-Options' => 'ALLOWALL'
+  }
 end

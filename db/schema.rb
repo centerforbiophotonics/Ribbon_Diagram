@@ -11,10 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120010655) do
+ActiveRecord::Schema.define(version: 20160211182506) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "announcements", force: true do |t|
+    t.string   "message",                    null: false
+    t.boolean  "admin_only", default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
 
   create_table "data_files", force: true do |t|
     t.integer  "diagram_id"
@@ -39,6 +46,7 @@ ActiveRecord::Schema.define(version: 20151120010655) do
     t.boolean  "downloadable",                default: false
     t.boolean  "share_with_all",              default: false
     t.boolean  "share_with_all_institutions", default: false
+    t.boolean  "local",                       default: false
   end
 
   add_index "diagrams", ["institution_id"], name: "index_diagrams_on_institution_id", using: :btree
