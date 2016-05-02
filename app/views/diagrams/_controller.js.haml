@@ -52,7 +52,7 @@
 
       } else {
         this.data = this.format_converter.convert(
-          #{@diagram.data_files.map do |df| { "name" => df.name, "data" => Paperclip.io_adapters.for(df.data_file).read } end.to_json }
+          #{@diagram.data_files.map do |df| { "name" => df.name, "data" => Paperclip.io_adapters.for(df.data_file).read.encode('UTF-8', :invalid => :replace, :undef => :replace) } end.to_json }
         );
       }
 
