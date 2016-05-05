@@ -13,10 +13,6 @@
     %h3 Pending Tasks:
     .indent#pending_tasks
       %ul
-        - if current_user.institution.time_zone.blank?
-          %li#timezone_needed
-            %p{:style => "color: salmon;"} You need to <a href="#{edit_institution_path(current_user.institution)}">set your institution's time zone</a> before any courses or observations can be created.
-
         - if current_user.institution.users_awaiting_approval.count > 0
           %li#pending_approvals
             %p{:style => "color: salmon;"} The following users are waiting to be approved:

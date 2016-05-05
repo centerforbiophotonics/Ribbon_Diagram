@@ -85,7 +85,8 @@ class UsersController < ApplicationController
       end
 
       if params[:roles]
-        params[:roles].each do |role|
+        puts params[:roles]
+        params[:roles].split(",").each do |role|
           if policy(:role).set_role?(role)
             @user.add_role role
           end
@@ -106,9 +107,9 @@ class UsersController < ApplicationController
 
     def user_params
       if current_user.super_admin
-        params.require(:user).permit(:institution_id, :name, :email, :title, :department, :approved)
+        params.require(:user).permit(:institution_id, :name, :email, :title, :department, :approved, :roles)
       else
-        params.require(:user).permit(:name, :email, :title, :department, :approved)
+        params.require(:user).permit(:name, :email, :title, :department, :approved, :roles)
       end
     end
 end

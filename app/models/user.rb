@@ -53,7 +53,17 @@ class User < ActiveRecord::Base
         "user-update" => "user-view",
         "user-destroy" => "user-view",
         "user-approve" => "user-update",
-        "user-set-roles" => "user-update"
+        "user-set-roles" => "user-update",
+        "diagram-update" => "diagram-create",
+        "diagram-destroy" => "diagram-create"
+    }
+  end
+
+  def dependent_roles
+    {
+        "user-view" => %w(user-update user-destroy user-approve user-set-roles),
+        "user-update" => %w(user-approve user-set-roles),
+        "diagram-create" => %w(diagram-update diagram-destroy)
     }
   end
 

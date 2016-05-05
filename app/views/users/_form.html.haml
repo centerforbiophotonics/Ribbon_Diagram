@@ -31,17 +31,10 @@
     - if policy(current_user).set_roles?
       .field
         %h2
-          Roles (
-          = link_to '?', '#', :id => 'toggle-role-docs'
-          )
-        #role-docs
-          = render "role_docs.html"
+          Roles
+        #role-select
+          = render "role_select.html"
 
-        .indent
-          #role-messages
-          = select_tag :roles, options_for_select(User.available_role_names, :selected => @user.roles), { :multiple => true, :class => 'role-select' }
-          %br
-          = button_tag "Remove All Roles", :type => "button", :id => "clear_roles"
   .indent
     - if policy(current_user).approve?
       %h2 Approval
@@ -83,8 +76,6 @@
   .actions
     = f.submit 'Save', :id => "user_submit"
 
-- if policy(current_user).set_roles?
-  = render "role_select.js"
 
 :javascript
   $("#user_diagrams").select2({

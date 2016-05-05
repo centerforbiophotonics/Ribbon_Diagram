@@ -26,4 +26,7 @@ Rails.application.routes.draw do
   resources :users
 
   resources :institutions
+
+  get 'home' => 'home#home'
+  get 'home/news'
 end

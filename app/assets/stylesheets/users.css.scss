@@ -2,12 +2,13 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.role-select {
-
+.role-selected {
+  font-weight: bold;
 }
 
-#role-docs {
-  display:none;
+#role-messages p{
+  color:red;
+
 }
 
 #admin-name{
@@ -25,6 +26,5 @@
 }
 
 #shared_diagrams_table {
-
   width: 600px;
 }
