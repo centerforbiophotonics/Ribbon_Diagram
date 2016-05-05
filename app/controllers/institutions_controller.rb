@@ -57,7 +57,7 @@ class InstitutionsController < ApplicationController
   private
     def set_institution
       @institution = Institution.find(params[:id])
-      authorize @diagram
+      authorize @institution
     end
 
     def set_institutions
