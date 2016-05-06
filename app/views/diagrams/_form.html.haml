@@ -26,7 +26,7 @@
   .indent
     .field
       = f.label :data_format, "Data Format: "
-      = f.select :data_format, options_for_select(["json", "csv"], :selected => @diagram.data_format || "json")
+      = f.select :data_format, options_for_select(["json", "csv", "csv-aggregate"], :selected => @diagram.data_format || "json")
 
       = link_to "Format Description", {}, :id => "format_description_link"
 
@@ -86,7 +86,8 @@
   window.onload = function(){
     var format_description_links = {
       "json": "#{asset_path("json_format.pdf")}",
-      "csv": "#{asset_path("csv_format.pdf")}"
+      "csv": "#{asset_path("csv_format.pdf")}",
+      "csv-aggregate": "#{asset_path("csv_format.pdf")}"
     };
     
     $("#diagram_data_format").change(function(){
@@ -96,7 +97,7 @@
       $("#diagram_data_files_attributes_1_data_file").val("");
       $("#diagram_data_files_attributes_0_data_file").val("");
 
-      if (format === "json") {
+      if (format === "json" || format === "csv-aggregate") {
         $("label[for='diagram_data_files_attributes_0_data_file']").text("Data File: ");
         $("#file_field_1").hide();
 

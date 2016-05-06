@@ -15,6 +15,13 @@
         }
       },
 
+      "csv-aggregate": {
+        "convert": function(data_in){
+          console.log(data_in);
+
+          return {};
+        }
+      },
 
       "csv": {
         "convert": function(data_in){
@@ -79,6 +86,7 @@
 
   RibbonFormatConverter.prototype = {
     "convert": function(data_in){
+      console.log(this.format);
       return this.handlers[this.format]["convert"](data_in);
     }
   };
