@@ -22,14 +22,25 @@ default: &default
   pool: 5
 
 #Local
-development:
+#development:
+#  adapter: postgresql
+#  encoding: unicode
+#  pool: 5
+#  database: ribbon_diagram_development #ribbon_aws_prod
+#  host: localhost
+##  username: postgres
+##  password:
+
+#Docker
+development: &default
   adapter: postgresql
   encoding: unicode
+  database: postgres
   pool: 5
-  database: ribbon_diagram_development #ribbon_aws_prod
-  host: localhost
-#  username: postgres
-#  password:
+  username: postgres
+  password:
+  host: db
+
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
