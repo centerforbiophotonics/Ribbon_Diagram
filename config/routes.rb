@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   devise_scope :user do
     authenticated :user do
       # Rails 4 users must specify the 'as' option to give it a unique name
-      root :to => "diagrams#index", :as => :authenticated_root
+      root :to => "home#home", :as => :authenticated_root
     end
 
     unauthenticated :user do

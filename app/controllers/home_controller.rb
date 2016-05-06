@@ -10,6 +10,11 @@ class HomeController < ApplicationController
       @announcements << Announcement.order(:created_at).where(:admin_only => true).last
     end
 
+    @announcements.compact!
+
+    diagrams = policy_scope(Diagram)
+    @categories = diagrams.map(&:category).uniq
+
   end
 
   def news
