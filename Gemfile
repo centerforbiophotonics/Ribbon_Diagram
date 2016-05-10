@@ -1,7 +1,5 @@
 source 'http://rubygems.org'
 
-ruby "2.2.2"
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.1.1'
 # Use postgresql as the database for Active Record
@@ -67,14 +65,9 @@ gem 'rails_admin_import'
 #Tagging
 gem 'acts-as-taggable-on', '~> 3.4'
 
-#Javascript library for blocking a page to display a message or menu
-gem 'blockuijs-rails',  :git => 'git://github.com/rusanu/blockuijs-rails.git'
-
 group :production do
   gem 'exception_notification'
 end
-
-
 
 group :development, :test do
   gem 'railroady'
