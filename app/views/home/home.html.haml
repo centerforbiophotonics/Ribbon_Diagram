@@ -33,8 +33,9 @@
           .inner-grid= link_to "Read the Manual", "https://drive.google.com/file/d/0B5s6JfQGMZhDRFd1ZkFXMUxMT2s/view"
         .grid-item{:onclick => "location.href='#{diagrams_path}';"}
           .inner-grid= link_to "Browse Diagrams", diagrams_path
-        .grid-item{:onclick => "location.href='#{new_diagram_path}';"}
-          .inner-grid= link_to "Create a Diagram", new_diagram_path
+        - if policy(Diagram).create?
+          .grid-item{:onclick => "location.href='#{new_diagram_path}';"}
+            .inner-grid= link_to "Create a Diagram", new_diagram_path
   #browse
     %h3 Diagram Categories:
     .indent
