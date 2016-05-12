@@ -1,12 +1,4 @@
-// Read the JSON specification for general formatting guidelines. http://www.json.org/
 
-//Individual Format
-// The keys of the "DEMOGRAPHICS" object and the objects within the "GROUPS" array can be custom to an institution
-// The "DEMOGRAPHICS" object is optional.  If provided, a filter menu will be generated based on the datatypes of the values of the "DEMOGRAPHICS" object attributes.
-// The "RECORDS" array should be chronological order
-// The "GROUPS" array should be ordered according to the grouping heirarchy. (the example below has a student in the group "Enrolled in the discipline of BIOSC in the major of BBMI")
-// The keys (quoted words before each colon) that are CAPITALIZED must be included (except "DEMOGRAPHICS" and the spelling and capitlization must match.
-// The keys that are lower-case can be customized.
 
 {
     "STUDENTS": [
