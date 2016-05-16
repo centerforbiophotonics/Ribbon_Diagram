@@ -184,8 +184,8 @@
     },
 
     clean_data: function(){
-      var students_with_no_records = []
-
+      var students_with_no_records = [];
+      console.log(this.data);
       this.data["STUDENTS"].forEach(function(s){
         if (s["RECORDS"].length == 0)
           students_with_no_records.push(s);
