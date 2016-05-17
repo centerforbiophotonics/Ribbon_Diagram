@@ -11,13 +11,20 @@
             alert("Your data does not have a top level \"STUDENTS\" attribute. It will not work :(");
 
           }
-          return JSON.parse(data_in[0]["data"]);
+          var data_out = JSON.parse(data_in[0]["data"]);
+
+          data_out["STUDENTS"].forEach(function(student){
+             if(!student.hasOwnProperty("COUNT")){
+              student["COUNT"] = 1;
+             }
+          });
+
+          return data_out;
         }
       },
 
       "csv-aggregate": {
         "convert": function(data_in){
-          //console.log(data_in);
           var data_out_lookup = {};
           var data_out = { "STUDENTS": [] };
 
@@ -31,16 +38,12 @@
               data_arrays = $.csv.toArrays(d.data);
             }
 
-            //console.log(data_arrays);
             data_arrays.forEach(function(row,r_ind){
-              //console.log(r_ind);
               if(r_ind > 0 ){
                 
                 var paths = row[0].split('--');
-               // var path = {"RECORDS":[]}; 
                 var path = {"RECORDS":[],"COUNT":row[1]}; 
-               // console.log("1");
-                //added count
+
 
                 for(var i = 0;i < paths.length;i++){
                   
@@ -67,6 +70,8 @@
 
       "csv": {
         "convert": function(data_in){
+          console.log(data_in);
+
           var data_out_lookup = {};
           var data_out = { "STUDENTS": [] };
           data_in.forEach(function(d){
@@ -78,6 +83,8 @@
               data_arrays = $.csv.toArrays(d.data);
             }
 
+            console.log(data_arrays);
+
             headers = data_arrays[0];
 
             data_arrays.forEach(function(row, r_ind){
@@ -86,7 +93,7 @@
                 var id = row[0];
 
                 if (data_out_lookup[id] === undefined){
-                  var new_student = {"ID": id, "DEMOGRAPHICS":{}, "RECORDS":[]}
+                  var new_student = {"ID": id, "DEMOGRAPHICS":{}, "RECORDS":[], "COUNT": 1}
                   data_out["STUDENTS"].push(new_student);
                   data_out_lookup[id] = data_out["STUDENTS"].length - 1;
                 }
@@ -94,6 +101,7 @@
                 student = data_out["STUDENTS"][data_out_lookup[id]];
 
                 if (d.name === "records"){
+
                   var new_record = {"TIME":null, "GROUPS":[]};
                   row.forEach(function(cell, c_ind){
                     if (c_ind == 1){
@@ -127,7 +135,6 @@
 
   RibbonFormatConverter.prototype = {
     "convert": function(data_in){
-      console.log(this.format);
       return this.handlers[this.format]["convert"](data_in);
     }
   };

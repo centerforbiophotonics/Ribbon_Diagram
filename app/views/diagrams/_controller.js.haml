@@ -8,32 +8,26 @@
     this.format_converter = new RibbonFormatConverter(this.data_format);
 
     this.data = null;
-    this.get_data();
-
-    if (this.local == false){
-      this.clean_data();
-
-      this.filter = new RibbonFilter(this.data);
-
-      this.initialize();
-      this.register_form_events();
-    }
+    this.get_data_and_init();
   }
 
   RibbonController.prototype = {
-    get_data: function(){
+    get_data_and_init: function(){
       var controller = this;
       if (this.local){
-        if (this.data_format == "json"){
+        if (this.data_format == "json" || this.data_format == "csv-aggregate"){
           $("#demographics_file").hide();
         }
 
         $.blockUI({ message: $("#local_file_prompt"), fadeIn: 10, onBlock: function(){
           $("#load_local_file").click(function(){
-            var reader = new FileReader();
-            reader.onload = function (event){
-              var obj = [{"name": "data", "data": event.target.result}]//JSON.parse(event.target.result);
-              controller.data = controller.format_converter.convert(obj);
+            var data_in = [];
+            var data_ready = {};
+            var reader1 = new FileReader();
+            var reader2 = new FileReader();
+
+            function dataReady(){
+              controller.data = controller.format_converter.convert(data_in);
 
               controller.clean_data();
 
@@ -43,10 +37,60 @@
               controller.register_form_events();
 
               $.unblockUI();
+            }
 
-            };
-            reader.readAsText($('#records').get(0).files[0]);
+            if (controller.data_format == "json"){
+              reader1.onload = function (event){
+                data_in.push({"name": "data", "data": event.target.result});
+                dataReady();
+              };
 
+              if ($('#records').get(0).files[0] != undefined){
+                reader1.readAsText($('#records').get(0).files[0]);
+              } else {
+                alert("You must choose a file to create the diagram from.");
+              }
+
+            } else if (controller.data_format == "csv"){
+              data_ready["records"] = false;
+              data_ready["demographics"] = false;
+
+              reader1.onload = function (event){
+                data_in.push({"name": "records", "data": event.target.result});
+                data_ready["records"] = true;
+                if (data_ready["records"] && data_ready["demographics"]) dataReady();
+
+              };
+
+              reader2.onload = function (event){
+                data_in.push({"name": "demographics", "data": event.target.result});
+                data_ready["demographics"] = true;
+                if (data_ready["records"] && data_ready["demographics"]) dataReady();
+              };
+
+              if ($('#records').get(0).files[0] != undefined){
+                reader1.readAsText($('#records').get(0).files[0]);
+              } else {
+                alert("You must choose at least a records file to create the diagram.");
+              }
+
+              if ($('#demographics').get(0).files[0] != undefined){
+                reader2.readAsText($('#demographics').get(0).files[0]);
+              } else {
+                data_ready["demographics"] = true;
+                if (data_ready["records"] && data_ready["demographics"]) dataReady();
+              }
+            } else if (controller.data_format == "csv-aggregate"){
+              reader1.onload = function (event){
+                data_in.push({"name": "records", "data": event.target.result});
+                dataReady();
+              };
+              if ($('#records').get(0).files[0] != undefined){
+                reader1.readAsText($('#records').get(0).files[0]);
+              } else {
+                alert("You must choose a file to create the diagram from.");
+              }
+            }
           });
         }});
 
@@ -54,6 +98,13 @@
         this.data = this.format_converter.convert(
           #{@diagram.data_files.map do |df| { "name" => df.name, "data" => Paperclip.io_adapters.for(df.data_file).read.encode('UTF-8', :invalid => :replace, :undef => :replace) } end.to_json }
         );
+
+        this.clean_data();
+
+        this.filter = new RibbonFilter(this.data);
+
+        this.initialize();
+        this.register_form_events();
       }
 
 

@@ -296,9 +296,7 @@
 
         if (last_node != null){
           graph.create_or_increment_link_and_parent_node_links(last_node, new_node,parseInt(student["COUNT"]));
-          //graph.create_or_increment_link_and_parent_node_links(last_node, new_node);
-        }  
-        //added student["COUNT"]
+        }
 
         last_node = new_node;
       });
@@ -313,32 +311,24 @@
         "STUDENTS" : filtered_data["STUDENTS"].filter($.proxy(this.student_in_starting_cohort, this))
       }
 
-      if("COUNT" in filtered_starting_cohort["STUDENTS"][0]){ //CVS aggre data
-        var unfiltered_starting_cohort_count = 0;//added
-        var unfiltered_starting_cohort = data["STUDENTS"].filter($.proxy(this.student_in_starting_cohort, this));
-        
-        for( var i=0;i<unfiltered_starting_cohort.length;i++){
-          unfiltered_starting_cohort_count+=parseInt(unfiltered_starting_cohort[i]["COUNT"]);
-        }
-      
-        graph.raw_data_total=0;
-        for( var i=0;i<data["STUDENTS"].length;i++){
-          graph.raw_data_total+=parseInt(data["STUDENTS"][i]["COUNT"]);
-        }
-        
-        graph.filtered_starting_cohort_count = 0;
-        for(var i = 0; i<filtered_starting_cohort["STUDENTS"].length;i++){
-          graph.filtered_starting_cohort_count+=parseInt(filtered_starting_cohort["STUDENTS"][i]["COUNT"]);
-        }
+      var unfiltered_starting_cohort_count = 0;//added
+      var unfiltered_starting_cohort = data["STUDENTS"].filter($.proxy(this.student_in_starting_cohort, this));
 
-      }else{
-        console.log("hi");
-        var unfiltered_starting_cohort_count = data["STUDENTS"].filter($.proxy(this.student_in_starting_cohort, this)).length;
-        graph.raw_data_total = data["STUDENTS"].length;
-        graph.filtered_starting_cohort_count = filtered_starting_cohort["STUDENTS"].length;
-      }
-      //updated
-      
+
+      unfiltered_starting_cohort.forEach(function(student){
+        unfiltered_starting_cohort_count += parseInt(student["COUNT"]);
+      });
+
+      graph.raw_data_total = 0;
+      data["STUDENTS"].forEach(function(student){
+        graph.raw_data_total += parseInt(student["COUNT"]);
+      });
+
+      graph.filtered_starting_cohort_count = 0;
+      filtered_starting_cohort["STUDENTS"].forEach(function(student){
+        graph.filtered_starting_cohort_count += parseInt(student["COUNT"]);
+      });
+
       graph.not_specified_count = {};
 
       graph.views.forEach(function(view_time){

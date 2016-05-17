@@ -26,8 +26,8 @@
   .indent
     .field
       = f.label :data_format, "Data Format: "
-      = f.select :data_format, options_for_select(["json", "csv"], :selected => @diagram.data_format || "json")
-      -#, "csv-aggregate"
+      = f.select :data_format, options_for_select(["json", "csv", "csv-aggregate"], :selected => @diagram.data_format || "json")
+      -#
       = link_to "Format Description", {}, :id => "format_description_link"
 
     .field
