@@ -109,26 +109,32 @@
 
     },
 
-    create_link : function(src_node, tgt_node){
+    //create_link : function(src_node, tgt_node){ 
+    create_link : function(src_node, tgt_node, count){  
+    //added count
       var existing_link = this.find_link(src_node, tgt_node);
 
       if (existing_link == null){
-        var new_link = new RibbonLink(src_node, tgt_node);
+        var new_link = new RibbonLink(src_node, tgt_node, count);
+        //var new_link = new RibbonLink(src_node, tgt_node);
         this.links.push(new_link);
         return new_link;
       } else {
-        existing_link.value++;
+        existing_link.value+=parseInt(count);
       }
       return null;
     },
 
 
-    create_or_increment_link_and_parent_node_links : function(src_node, tgt_node){
+    create_or_increment_link_and_parent_node_links : function(src_node, tgt_node,count){
+    //create_or_increment_link_and_parent_node_links : function(src_node, tgt_node){
       var source = src_node;
       while (source != null){
         var target = tgt_node;
         while(target != null){
-          var new_link = this.create_link(source,target);
+          //var new_link = this.create_link(source,target);
+          var new_link = this.create_link(source,target,count);  
+          //added count
           if (new_link != null){
             source.sourceLinks.push(new_link);
             target.targetLinks.push(new_link);
@@ -148,8 +154,9 @@
           total += n.value;
         }
       });
-
+      console.log(total);
       return total;
+
     },
 
     //Sets the showing attribute of links if both source and target nodes are showing and the link has a non-zero value
@@ -288,8 +295,10 @@
         );
 
         if (last_node != null){
-          graph.create_or_increment_link_and_parent_node_links(last_node, new_node);
-        }
+          graph.create_or_increment_link_and_parent_node_links(last_node, new_node,parseInt(student["COUNT"]));
+          //graph.create_or_increment_link_and_parent_node_links(last_node, new_node);
+        }  
+        //added student["COUNT"]
 
         last_node = new_node;
       });
@@ -299,17 +308,37 @@
     build : function(){
       var graph = this;
       var data = graph.data;
-      var unfiltered_starting_cohort_count = data["STUDENTS"].filter($.proxy(this.student_in_starting_cohort, this)).length
-
       var filtered_data = graph.filter.filter_data();
-
-      graph.raw_data_total = data["STUDENTS"].length;
-
       var filtered_starting_cohort = {
         "STUDENTS" : filtered_data["STUDENTS"].filter($.proxy(this.student_in_starting_cohort, this))
       }
 
-      graph.filtered_starting_cohort_count = filtered_starting_cohort["STUDENTS"].length;
+      if("COUNT" in filtered_starting_cohort["STUDENTS"][0]){ //CVS aggre data
+        var unfiltered_starting_cohort_count = 0;//added
+        var unfiltered_starting_cohort = data["STUDENTS"].filter($.proxy(this.student_in_starting_cohort, this));
+        
+        for( var i=0;i<unfiltered_starting_cohort.length;i++){
+          unfiltered_starting_cohort_count+=parseInt(unfiltered_starting_cohort[i]["COUNT"]);
+        }
+      
+        graph.raw_data_total=0;
+        for( var i=0;i<data["STUDENTS"].length;i++){
+          graph.raw_data_total+=parseInt(data["STUDENTS"][i]["COUNT"]);
+        }
+        
+        graph.filtered_starting_cohort_count = 0;
+        for(var i = 0; i<filtered_starting_cohort["STUDENTS"].length;i++){
+          graph.filtered_starting_cohort_count+=parseInt(filtered_starting_cohort["STUDENTS"][i]["COUNT"]);
+        }
+
+      }else{
+        console.log("hi");
+        var unfiltered_starting_cohort_count = data["STUDENTS"].filter($.proxy(this.student_in_starting_cohort, this)).length;
+        graph.raw_data_total = data["STUDENTS"].length;
+        graph.filtered_starting_cohort_count = filtered_starting_cohort["STUDENTS"].length;
+      }
+      //updated
+      
       graph.not_specified_count = {};
 
       graph.views.forEach(function(view_time){

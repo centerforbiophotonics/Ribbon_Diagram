@@ -17,9 +17,51 @@
 
       "csv-aggregate": {
         "convert": function(data_in){
-          console.log(data_in);
+          //console.log(data_in);
+          var data_out_lookup = {};
+          var data_out = { "STUDENTS": [] };
 
-          return {};
+          data_in.forEach(function(d){
+            
+            var data_arrays = null;
+            
+            if(d.data.match(/[\n]/g) == null){
+              data_arrays = $.csv.toArrays(d.data.replace(/[\r|\r\n]/g, "\n"));
+            } else {
+              data_arrays = $.csv.toArrays(d.data);
+            }
+
+            //console.log(data_arrays);
+            data_arrays.forEach(function(row,r_ind){
+              //console.log(r_ind);
+              if(r_ind > 0 ){
+                
+                var paths = row[0].split('--');
+               // var path = {"RECORDS":[]}; 
+                var path = {"RECORDS":[],"COUNT":row[1]}; 
+               // console.log("1");
+                //added count
+
+                for(var i = 0;i < paths.length;i++){
+                  
+                  var cells=paths[i].split('-');
+                  var new_record={"TIME":cells[0],"GROUPS":[]};
+                  
+                  for(var j=1;j<cells.length;j++){
+                    var new_group = {};
+                    new_group["group_level_"+j] = cells[j];
+                    new_record["GROUPS"].push(new_group);
+                  }
+                 
+                  path["RECORDS"].push(new_record);
+                }
+
+                data_out["STUDENTS"].push(path);
+              }
+            });
+            console.log(data_out);      
+          });
+          return data_out;
         }
       },
 
@@ -28,7 +70,7 @@
           var data_out_lookup = {};
           var data_out = { "STUDENTS": [] };
           data_in.forEach(function(d){
-            data_arrays = null;
+            var data_arrays = null;
 
             if(d.data.match(/[\n]/g) == null){
               data_arrays = $.csv.toArrays(d.data.replace(/[\r|\r\n]/g, "\n"));
@@ -36,7 +78,6 @@
               data_arrays = $.csv.toArrays(d.data);
             }
 
-            data_obj = {"name": d.name, "data": {}};
             headers = data_arrays[0];
 
             data_arrays.forEach(function(row, r_ind){
