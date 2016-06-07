@@ -28,8 +28,7 @@
           var data_out_lookup = {};
           var data_out = { "STUDENTS": [] };
 
-          data_in.forEach(function(d){
-            
+          data_in.forEach(function(d){     
             var data_arrays = null;
             
             if(d.data.match(/[\n]/g) == null){
@@ -40,10 +39,8 @@
 
             data_arrays.forEach(function(row,r_ind){
               if(r_ind > 0 ){
-                
                 var paths = row[0].split('--');
                 var path = {"RECORDS":[],"COUNT":row[1]}; 
-
 
                 for(var i = 0;i < paths.length;i++){
                   
@@ -55,14 +52,11 @@
                     new_group["group_level_"+j] = cells[j];
                     new_record["GROUPS"].push(new_group);
                   }
-                 
                   path["RECORDS"].push(new_record);
                 }
-
                 data_out["STUDENTS"].push(path);
               }
             });
-            console.log(data_out);      
           });
           return data_out;
         }

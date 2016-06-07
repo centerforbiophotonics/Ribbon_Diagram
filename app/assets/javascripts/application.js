@@ -19,7 +19,8 @@
 //= require select2
 //= require jquery.slicknav.js
 //= require google_analytics.js.coffee
-
+//= require highcharts
+//= require chartkick
 
 
 function ready(){

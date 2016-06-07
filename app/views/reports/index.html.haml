@@ -6,36 +6,23 @@
   = label_tag('new_or_total', 'Do you want to see the number of model instances created each month, or the total number of model instances at the end of each month?')
   = select_tag('new_or_total', options_for_select(['New', 'Total']))
 
-%h2#table_header
 
-- ['new', 'total'].each do |new_or_total|
-  - [{name: 'users', collection: @users}, {name: 'diagrams', collection: @diagrams}].each do |model_collection|
-    %table.usage_summary{:id => "#{new_or_total}_#{model_collection[:name]}_usage_summary"}
-      / %h2="#{model_collection[:name].capitalize} created each month"
-      %thead
+%h2#table_header
+-@summary.each do |model|
+  %div.usage_chart{:id => model[:name]+"_chart"}= line_chart model[:data]
+  %table.usage_summary{:id => model[:name]}
+    %thead
+      %tr
+        %th Institution
+        - model[:month].each do |month|
+          %th=month 
+    %tbody
+      - model[:data].each do |institution|
         %tr
-          %th Institution
-          - months = (model_collection[:collection].minimum(:created_at).to_date..Date.today).map {|d| d.strftime("%B %Y")}.uniq
-          - months.each do |month|
-            %th=month    
-      %tbody
-        - @institutions.each do |institution|
-          %tr
-            %td= institution.name
-            - obs_hash = {}
-            - months.each do |month|
-              - obs_hash[month] = 0
-            - collection = model_collection[:collection].where(:institution_id => institution.id)
-            - collection.chunk {|obs| obs.created_at.strftime("%B %Y") }.each do |month, collection|
-              - unless collection.nil? || obs_hash[month].nil?
-                - obs_hash[month] = obs_hash[month] + collection.length
-            - if new_or_total == 'total'
-              - last_month_total = 0
-              - months.each do |month|
-                - obs_hash[month] = last_month_total + obs_hash[month]
-                - last_month_total = obs_hash[month]
-            - obs_hash.each do |month, count|
-              %td= count
+          %td= institution[:name]
+          - institution[:data].each do |month,counts|
+            %td= counts
+
 :javascript
   var tableHeaders = {};
   ['new', 'total'].forEach(function(new_or_total) {
@@ -47,14 +34,19 @@
   });
 
   $(".usage_summary").dataTable();
+  $('.dataTables_wrapper').hide(); 
+  $('.usage_chart').hide();
 
-  $('.dataTables_wrapper').hide();
-  $("#new_users_usage_summary_wrapper").show();
-  $("#table_header").html(tableHeaders["new_users_usage_summary_wrapper"]);
+  $("#new_diagrams_usage_summary_wrapper").show();
+  $("#new_diagrams_usage_summary_chart").show();
+  $("#table_header").html(tableHeaders["new_diagrams_usage_summary_wrapper"]);
 
   $("#model, #new_or_total").on('change', function(e) {
-    var id = $("#new_or_total").val().toLowerCase()+"_"+$("#model").val()+"_wrapper";
+  	console.log($("#model").val());
+    var id = $("#new_or_total").val().toLowerCase()+"_"+$("#model").val();
     $(".dataTables_wrapper").hide();
-    $("#"+ id).show();
-    $("#table_header").html(tableHeaders[id]);
+    $('.usage_chart').hide();
+    $("#"+ id + "_wrapper").show();
+    $("#"+ id + "_chart").show();
+    $("#table_header").html(tableHeaders[id+"_wrapper"]);
   });

@@ -48,6 +48,7 @@ GEM
     builder (3.2.2)
     cane (2.6.2)
       parallel
+    chartkick (1.5.2)
     chronic (0.10.2)
     churn (0.0.35)
       chronic (>= 0.2.3)
@@ -102,6 +103,8 @@ GEM
       sexp_processor (~> 4.4)
     font-awesome-rails (4.2.0.0)
       railties (>= 3.2, < 5.0)
+    groupdate (2.5.3)
+      activesupport (>= 3)
     haml (4.0.5)
       tilt
     haml-rails (0.5.3)
@@ -319,10 +322,12 @@ PLATFORMS
 DEPENDENCIES
   acts-as-taggable-on (~> 3.4)
   aws-sdk
+  chartkick
   coffee-rails (~> 4.0.0)
   d3-rails
   devise
   exception_notification
+  groupdate
   haml-rails
   jbuilder (~> 2.0)
   jquery-datatables-rails
@@ -345,8 +350,5 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   unicorn
 
-RUBY VERSION
-   ruby 2.2.2p95
-
 BUNDLED WITH
-   1.12.0
+   1.12.5
