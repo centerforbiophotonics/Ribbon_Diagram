@@ -36,6 +36,7 @@
       %th Category
       %th Tags
       %th Creator
+      %th Shared With
       %th Last Updated
       %th
   %tbody
@@ -45,6 +46,17 @@
         %td= diagram.category
         %td= diagram.tag_list
         %td= diagram.creator.institution == current_user.institution ? diagram.creator.name : diagram.institution.name
+        %td
+          - if diagram.share_with_all_institutions
+            = "All Institutions"
+          - elsif diagram.share_with_all
+            = "All Users in #{diagram.institution.name}"
+          - elsif diagram.users.count > 0
+            - diagram.users.each do |u|
+              %p= u.name
+          - else
+            = "No One"
+
         %td= diagram.updated_at.strftime("%m/%d/%Y")
         %td.diagram_controls{:id => "control_cell_#{diagram.id}"}
           %ul.control_menu{:id => "control_menu_#{diagram.id}", :style => "display:none;"}
