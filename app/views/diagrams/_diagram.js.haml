@@ -148,6 +148,13 @@
               }
           },
           {
+            title: 'Toggle Out/In Links',
+            action: function(elm, d, i) {
+              d.toggle_selection();
+              set_opacity_by_selected();
+            }
+          },
+          {
               title: 'Deselect All',
               action: function(elm, d, i) {
                 graph.select_none();
@@ -218,8 +225,6 @@
 
       var filtered_nodes = sankey_object.nodes;
       var filtered_links = sankey_object.links;
-
-      console.log(sankey_object);
 
       sankey
           .nodes(filtered_nodes)
