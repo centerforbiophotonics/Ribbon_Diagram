@@ -43,7 +43,6 @@ class UsersController < ApplicationController
   end
 
   def update
-
     was_approved = @user.approved
     if @user.update_attributes(user_params)
       if policy(current_user).set_roles?
@@ -62,6 +61,20 @@ class UsersController < ApplicationController
     end
 
     respond_with(@user)
+  end
+
+  def export_users_awaiting_approval
+    authorize User
+
+    output_csv = CSV.generate({:force_quotes => true}) do |csv|
+      csv << %w(name email title department signup_date)
+      User.where(:approved => false).where(:institution_id => current_user.institution_id).each do |user|
+        csv << [user.name, user.email, user.title, user.department, user.created_at.strftime("%F")]
+      end
+    end
+
+    send_data(output_csv, :type => 'text/csv', :disposition => :attachment, :filename => "ribbon_users_awaiting_approval_as_of_#{DateTime.now.strftime("%F")}.csv")
+
   end
 
   def destroy

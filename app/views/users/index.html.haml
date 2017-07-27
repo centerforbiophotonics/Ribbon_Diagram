@@ -7,7 +7,8 @@ Show:
 - if policy(current_user).approve?
   |
   = link_to "Users awaiting approval", :action => "index", :approved => "false"
-
+  |
+  = link_to "Export List of Users Awaiting Approval", :action => "export_users_awaiting_approval"
 
 %table.datatable.responsive.no-wrap
   %thead

@@ -23,7 +23,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :users
+  resources :users do
+    collection do
+      get :export_users_awaiting_approval
+    end
+  end
 
   resources :institutions
 
