@@ -1,9 +1,9 @@
 development:
-  access_key_id: AKIAJHAQF6LLG5S5B2OA
-  secret_access_key: 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
+  access_key_id: <%= ENV["RIB_S3_KEY"] %> 
+  secret_access_key: <%= ENV["RIB_S3_SECRET"] %>
   bucket: ribbon-files
 
 production:
-  access_key_id: AKIAJHAQF6LLG5S5B2OA
-  secret_access_key: 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
+  access_key_id: <%= ENV["RIB_S3_KEY"] %> 
+  secret_access_key: <%= ENV["RIB_S3_SECRET"] %>
   bucket: ribbon-files
