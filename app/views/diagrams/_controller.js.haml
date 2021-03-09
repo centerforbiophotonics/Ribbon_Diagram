@@ -3,7 +3,7 @@
     this.diagram = null;
     this.graph = null;
     this.filter = null;
-    this.data_format = #{@diagram.data_format.inspect};
+    this.data_format = '#{@diagram.data_format}';
     this.local = #{@diagram.local};
     this.format_converter = new RibbonFormatConverter(this.data_format);
 
@@ -263,5 +263,3 @@
   window.onload = function(){
     ribbon_controller = new RibbonController();
   }
-
-

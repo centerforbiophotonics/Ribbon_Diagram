@@ -3,10 +3,10 @@ class DiagramsController < ApplicationController
   before_action :set_diagrams, :only => [:index]
 
   #Enforces access right checks for individuals resources
-  after_filter :verify_authorized
+  after_action :verify_authorized
 
   # Enforces access right checks for collections
-  after_filter :verify_policy_scoped, :only => :index
+  after_action :verify_policy_scoped, :only => :index
 
   def index
     authorize Diagram

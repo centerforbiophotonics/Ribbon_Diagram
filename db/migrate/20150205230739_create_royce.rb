@@ -1,4 +1,4 @@
-class CreateRoyce < ActiveRecord::Migration
+class CreateRoyce < ActiveRecord::Migration[5.2]
 
   def change
 

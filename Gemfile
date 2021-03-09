@@ -1,17 +1,19 @@
 source 'http://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.1.1'
+#gem 'rails', '~> 4.1.1'
+gem 'rails', '>= 5.2.4.4'
 # Use postgresql as the database for Active Record
 gem 'pg'#, '~> 0.18.3'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
+gem 'coffee-rails', '~> 4.2'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-gem 'therubyracer',  platforms: :ruby
+#gem 'therubyracer',  platforms: :ruby
+gem 'mini_racer'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -41,7 +43,7 @@ gem 'unicorn'#, group: :production
 # gem 'debugger', group: [:development, :test]
 
 # File Storage
-gem 'paperclip', "~> 4.2"
+gem 'paperclip'
 gem 'aws-sdk'
 
 # Authentication
@@ -63,7 +65,7 @@ gem 'rails_admin'
 gem 'rails_admin_import'
 
 #Tagging
-gem 'acts-as-taggable-on', '~> 3.4'
+gem 'acts-as-taggable-on'
 
 group :production do
   gem 'exception_notification'
@@ -73,4 +75,3 @@ group :development, :test do
   gem 'railroady'
   gem 'metric_fu'
 end
-

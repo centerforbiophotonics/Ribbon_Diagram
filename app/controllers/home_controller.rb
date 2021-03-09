@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
-  skip_before_filter :is_approved
-  skip_before_action :set_timezone
-  skip_filter :user_time_zone
+  # skip_before_action :is_approved
+  # skip_before_action :set_timezone
+  # skip_filter :user_time_zone
 
   def home
     @announcements = [Announcement.order(:created_at).where(:admin_only => false).last]

@@ -1,4 +1,4 @@
-class CreateDiagrams < ActiveRecord::Migration
+class CreateDiagrams < ActiveRecord::Migration[5.2]
   def change
     create_table :diagrams do |t|
       t.belongs_to :institution, :index => true

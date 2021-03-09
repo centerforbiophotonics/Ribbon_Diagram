@@ -2,7 +2,7 @@ class InstitutionsController < ApplicationController
   before_action :set_institution, :only => [:show, :edit, :update, :destroy]
   before_action :set_institutions, :only => [:index]
 
-  before_filter :user_is_super_admin, :except => :create
+  before_action :user_is_super_admin, :except => :create
 
   skip_before_action :authenticate_user!, :only => :create
   skip_before_action :user_signed_in?, :only => :create
@@ -10,10 +10,10 @@ class InstitutionsController < ApplicationController
   skip_before_action :user_session, :only => :create
 
   #Enforces access right checks for individuals resources
-  after_filter :verify_authorized
+  after_action :verify_authorized
 
   # Enforces access right checks for collections
-  after_filter :verify_policy_scoped, :only => :index
+  after_action :verify_policy_scoped, :only => :index
 
 
   def index
