@@ -6,7 +6,11 @@ class DataFile < ActiveRecord::Base
                     :s3_permissions => :private,
                     :s3_server_side_encryption => :aes256,
                     :s3_credentials => S3_CREDENTIALS,
-                    :path => "data_files#{Rails.env == "development" ? "_dev":""}/:institution/:creator_id/:diagram_id/:data_file_id/:filename"
+                    :s3_region => 'us-west-1',
+                    :path => "#{Rails.env == "development" ? "/Users/ceedev/Desktop/ribbon-s3-backup/":""}data_files_flat/:diagram_id/:data_file_id/:filename"
+  # "#{Rails.env == "development" ? "/Users/ceedev/Desktop/ribbon-s3-backup/":""}data_files/:institution/:creator_id/:diagram_id/:data_file_id/:filename"
+
+  #{Rails.env == "development" ? "_dev":""}
 
   validates_attachment_content_type :data_file, :content_type => ["application/json", "text/plain", "text/csv", "application/vnd.ms-excel", "application/octet-stream"]
 

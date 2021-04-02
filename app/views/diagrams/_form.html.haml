@@ -89,9 +89,11 @@
       "csv": "#{asset_path("csv_format.pdf")}",
       "csv-aggregate": "#{asset_path("csv_aggregate_format.pdf")}"
     };
-    
+
     $("#diagram_data_format").change(function(){
+
       var format = $(this).val();
+      console.log(format);
 
       $("#format_description_link").attr("href", format_description_links[format]);
       $("#diagram_data_files_attributes_1_data_file").val("");
@@ -120,7 +122,7 @@
       var format = $("#diagram_data_format").val();
       var local = $("#diagram_local").prop('checked');
 
-      var action = #{params[:action].inspect};
+      var action = '#{params[:action]}';
       if (action != "edit"){
         if (!local){
           if (format === "json" && $("#diagram_data_files_attributes_0_data_file").val() === "") {

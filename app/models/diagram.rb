@@ -15,5 +15,7 @@ class Diagram < ActiveRecord::Base
 
   #validates_presence_of :data_files
 
+  has_many_attached :data_files
+
   acts_as_taggable
 end
