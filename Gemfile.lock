@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/mimemagicrb/mimemagic.git
+  revision: 01f92d86d15d85cfd0f20dabd025dcbd36a8a60f
+  ref: 01f92d86d15d85cfd0f20dabd025dcbd36a8a60f
+  specs:
+    mimemagic (0.3.5)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -1103,7 +1110,6 @@ GEM
     builder (3.2.4)
     cane (2.6.2)
       parallel
-    charlock_holmes (0.7.7)
     chronic (0.10.2)
     churn (1.0.8)
       chronic (>= 0.2.3)
@@ -1235,7 +1241,6 @@ GEM
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0225)
-    mimemagic (0.3.5)
     mini_mime (1.0.2)
     mini_racer (0.3.1)
       libv8 (~> 8.4.255)
@@ -1299,11 +1304,6 @@ GEM
       rails (>= 5.0, < 7)
       remotipart (~> 1.3)
       sassc-rails (>= 1.3, < 3)
-    rails_admin_import (2.2.0)
-      charlock_holmes (~> 0.6)
-      rails (>= 3.2)
-      rails_admin (>= 0.6.6)
-      simple_xlsx_reader (~> 1.0)
     rails_best_practices (1.20.0)
       activesupport
       code_analyzer (>= 0.5.1)
@@ -1343,7 +1343,6 @@ GEM
     ruby-progressbar (1.11.0)
     ruby_parser (3.15.1)
       sexp_processor (~> 4.9)
-    rubyzip (2.3.0)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -1368,9 +1367,6 @@ GEM
       rdoc (~> 4.0)
     select2-rails (4.0.13)
     sexp_processor (4.15.2)
-    simple_xlsx_reader (1.0.4)
-      nokogiri
-      rubyzip
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -1413,6 +1409,7 @@ DEPENDENCIES
   jquery-rails
   jquerycsv-rails
   metric_fu
+  mimemagic!
   mini_racer
   paperclip
   pg
@@ -1420,7 +1417,6 @@ DEPENDENCIES
   railroady
   rails (>= 5.2.4.4)
   rails_admin
-  rails_admin_import
   royce
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)

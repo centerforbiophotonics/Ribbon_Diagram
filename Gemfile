@@ -62,7 +62,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
 #Rails Admin
 gem 'rails_admin'
-gem 'rails_admin_import'
+# gem 'rails_admin_import'
 
 #Tagging
 gem 'acts-as-taggable-on'
@@ -75,3 +75,5 @@ group :development, :test do
   gem 'railroady'
   gem 'metric_fu'
 end
+
+gem 'mimemagic', github: 'mimemagicrb/mimemagic', ref: '01f92d86d15d85cfd0f20dabd025dcbd36a8a60f'
