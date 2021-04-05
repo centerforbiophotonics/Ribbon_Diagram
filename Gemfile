@@ -21,7 +21,7 @@ gem 'jquery-datatables-rails'
 gem 'jquerycsv-rails'
 gem 'select2-rails'
 
-gem 'd3-rails'
+gem 'd3-rails', '3.4.11'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'

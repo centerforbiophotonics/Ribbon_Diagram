@@ -1125,7 +1125,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.8)
     crass (1.0.6)
-    d3-rails (5.9.2)
+    d3-rails (3.4.11)
       railties (>= 3.1)
     devise (4.7.3)
       bcrypt (~> 3.0)
@@ -1404,7 +1404,7 @@ DEPENDENCIES
   acts-as-taggable-on
   aws-sdk
   coffee-rails (~> 4.2)
-  d3-rails
+  d3-rails (= 3.4.11)
   devise
   exception_notification
   haml-rails
