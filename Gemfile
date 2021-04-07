@@ -77,3 +77,4 @@ group :development, :test do
 end
 
 gem 'mimemagic', ">= 0.3.6"
+gem 'nio4r', '2.5.7'
