@@ -99,12 +99,21 @@ test:
 
 ## Gets overridden by OpsWorks
 #Local
+# production:
+#   adapter: postgresql
+#   encoding: unicode
+#   pool: 5
+#   database: ribbon_diagram_production
+#   host: "localhost"
 production:
   adapter: postgresql
-  encoding: unicode
-  pool: 5
-  database: ribbon_diagram_production
-  host: "localhost"
+  encoding: utf8
+  pool:     20
+  database: <%= ENV['RDS_DB_NAME'] %>
+  username: <%= ENV['RDS_USERNAME'] %>
+  password: <%= ENV['RDS_PASSWORD'] %>
+  host: <%= ENV['RDS_HOSTNAME'] %>
+  port: <%= ENV['RDS_PORT'] %>
 
 #production:
 #  <<: *default
