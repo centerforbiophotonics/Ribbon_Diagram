@@ -1244,7 +1244,7 @@ GEM
     minitest (5.14.4)
     multi_json (1.15.0)
     nested_form (0.3.2)
-    nio4r (2.5.5)
+    nio4r (2.5.7)
     nokogiri (1.11.1-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.11.1-x86_64-linux)
@@ -1263,6 +1263,8 @@ GEM
     pg (1.2.3)
     psych (3.3.1)
     public_suffix (4.0.6)
+    puma (5.2.2)
+      nio4r (~> 2.0)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
     racc (1.5.2)
@@ -1411,8 +1413,10 @@ DEPENDENCIES
   metric_fu
   mimemagic (>= 0.3.6)
   mini_racer
+  nio4r (= 2.5.7)
   paperclip
   pg
+  puma (>= 4.3.3)
   pundit
   railroady
   rails (>= 5.2.4.4)
