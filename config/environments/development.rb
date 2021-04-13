@@ -58,5 +58,5 @@ Rails.application.configure do
       'X-Frame-Options' => 'ALLOWALL'
   }
 
-  config.active_storage.service = :local
+  config.active_storage.service = :dev_amazon
 end

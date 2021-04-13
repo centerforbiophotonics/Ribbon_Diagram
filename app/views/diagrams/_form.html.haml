@@ -37,8 +37,10 @@
         %p{:style => "color:red;"} If you select this option, no data will be sent to the ribbon servers.  You will be prompted to select a file on your local machine each time you open a diagram.  If you choose this option please describe the diagram with one or more tags so we can get an idea how the ribbon tool is being used and make it better.
 
     .field#file_upload_container
-      = f.fields_for :data_files do |builder|
-        = render "data_file_form", :f => builder
+      = f.file_field :data_files, multiple: true
+      -#
+      -# = f.fields_for :data_files do |builder|
+      -#   = render "data_file_form", :f => builder
 
   %h3 Tags:
   .indent
