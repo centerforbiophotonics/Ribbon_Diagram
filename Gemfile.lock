@@ -1184,7 +1184,7 @@ GEM
       railties (>= 3.2.16)
     jquerycsv-rails (0.71.2)
       railties (>= 3.1)
-    json (1.8.6)
+    json (2.5.1)
     kaminari (1.2.1)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.2.1)
@@ -1406,6 +1406,7 @@ DEPENDENCIES
   jquery-datatables-rails
   jquery-rails
   jquerycsv-rails
+  json (>= 2.3.0)
   metric_fu
   mimemagic (>= 0.3.6)
   mini_racer
