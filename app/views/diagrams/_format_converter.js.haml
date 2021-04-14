@@ -29,9 +29,9 @@
           var data_out = { "STUDENTS": [] };
 
           data_in.forEach(function(d){
-            
+
             var data_arrays = null;
-            
+
             if(d.data.match(/[\n]/g) == null){
               data_arrays = $.csv.toArrays(d.data.replace(/[\r|\r\n]/g, "\n"));
             } else {
@@ -40,29 +40,29 @@
 
             data_arrays.forEach(function(row,r_ind){
               if(r_ind > 0 ){
-                
+
                 var paths = row[0].split('--');
-                var path = {"RECORDS":[],"COUNT":row[1]}; 
+                var path = {"RECORDS":[],"COUNT":row[1]};
 
 
                 for(var i = 0;i < paths.length;i++){
-                  
+
                   var cells=paths[i].split('-');
                   var new_record={"TIME":cells[0],"GROUPS":[]};
-                  
+
                   for(var j=1;j<cells.length;j++){
                     var new_group = {};
                     new_group["group_level_"+j] = cells[j];
                     new_record["GROUPS"].push(new_group);
                   }
-                 
+
                   path["RECORDS"].push(new_record);
                 }
 
                 data_out["STUDENTS"].push(path);
               }
             });
-            console.log(data_out);      
+            console.log(data_out);
           });
           return data_out;
         }
@@ -76,7 +76,7 @@
           var data_out = { "STUDENTS": [] };
 
 
-          data_in.forEach(function(d){
+          data_in.forEach(function(d,i){
             var data_arrays = null;
 
             if(d.data.match(/[\n]/g) == null){
@@ -102,7 +102,7 @@
 
                 student = data_out["STUDENTS"][data_out_lookup[id]];
 
-                if (d.name === "records"){
+                if (i == 0){
 
                   var new_record = {"TIME":null, "GROUPS":[]};
                   row.forEach(function(cell, c_ind){
@@ -116,7 +116,7 @@
                   });
                   student["RECORDS"].push(new_record);
 
-                } else if (d.name === "demographics"){
+                } else if (i == 1){
 
                   row.forEach(function(cell, c_ind){
                     if (c_ind > 0){
@@ -129,6 +129,7 @@
             });
           });
 
+          console.log(data_out);
           return data_out;
         }
       }
