@@ -34,7 +34,7 @@
         Download:
         %div{:style => "margin-left: 20px;"}
           - @diagram.data_files.each do |df|
-            = link_to "#{df.name}", download_diagram_path(@diagram, :data_file_id => df.id)
+            = link_to "#{df.filename.to_s}", url_for(df)
             %br
 
     #time_selector{:style => "margin-top:10px; margin-bottom:10px;"}
@@ -120,4 +120,3 @@
 = render(:partial => "diagrams/filter.js")
 = render(:partial => "diagrams/format_converter.js")
 = render(:partial => "diagrams/controller.js")
-

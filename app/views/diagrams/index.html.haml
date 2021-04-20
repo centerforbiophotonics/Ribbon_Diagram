@@ -66,7 +66,7 @@
                 Download
                 %ul
                   - diagram.data_files.each do |df|
-                    %li= link_to "Download #{df.name}", download_diagram_path(diagram, :data_file_id => df.id)
+                    %li= link_to "Download #{df.filename.to_s}", url_for(df)
             - if policy(diagram).edit?
               %li= link_to 'Edit', edit_diagram_path(diagram)
             - if policy(diagram).destroy?
@@ -81,5 +81,3 @@
       duration: 50
     });
   });
-
-
