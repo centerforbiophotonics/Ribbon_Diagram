@@ -106,8 +106,6 @@
     });
 
     if ($(this).is(':not(:checked)') && dependent_roles[changed_role] != undefined){
-      console.log(dependent_roles);
-
       dependent_roles[changed_role].forEach(function(role){
         var index = vals.indexOf(role);
         if (index > -1) {
@@ -117,17 +115,15 @@
       });
     }
 
-    console.log(vals);
-
     $(".role-name").removeClass("role-selected");
     $(".role-select").prop("checked",false);
     vals.forEach(function(role){
       var e = $("#"+role)
-      e.prop("checked","checked");
+      e.prop("checked",true);
       e.parent().siblings(".role-name").addClass("role-selected");
     });
 
-    $("#_roles").val(vals.join(","));
+    $("#roles").val(vals.join(","));
 
     $("#role-messages").html("");
     messages.forEach(function(m){
@@ -140,7 +136,7 @@
   $("#clear_roles").click(function(){
     $(".role-name").removeClass("role-selected");
     $(".role-select").prop("checked",false);
-    $("#_roles").val('');
+    $("#roles").val('');
   });
 
   $(document).ready(function() {
