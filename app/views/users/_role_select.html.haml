@@ -21,52 +21,52 @@
     %tbody
       %tr
         %td= check_box_tag 'institution-admin', 1,  false, {:class => 'role-select'}
-        %td.role-name  institution-admin 
+        %td.role-name  institution-admin
         %td This role is equivalent to being granted all roles.  In addition a institution-admin can view, edit, and delete all diagrams and data created by all users in the institution regardless of if they were shared with her or him.
         %td None
       %tr
         %td= check_box_tag 'user-view', 1,  false, {:class => 'role-select'}
-        %td.role-name  user-view 
+        %td.role-name  user-view
         %td This role grants the user access to the user list and the user show page with more information about the user.
         %td user-update, user-delete
       %tr
         %td= check_box_tag 'user-update', 1,  false, {:class => 'role-select'}
-        %td.role-name  user-update 
+        %td.role-name  user-update
         %td This role grants the user access to the user edit page.
         %td user-approve, user-set-roles
       %tr
         %td= check_box_tag 'user-set-roles', 1,  false, {:class => 'role-select'}
-        %td.role-name  user-set-roles 
+        %td.role-name  user-set-roles
         %td This role allows a user to edit the roles of other users.  A user can only grant roles that he or she also possesses.
         %td None
       %tr
         %td= check_box_tag 'user-approve', 1,  false, {:class => 'role-select'}
-        %td.role-name  user-approve 
+        %td.role-name  user-approve
         %td This role allows a user to approve new users for your institution.  Users with this role will automatically be sent notification emails when a new user signs up.
         %td None
       %tr
         %td= check_box_tag 'user-destroy', 1,  false, {:class => 'role-select'}
-        %td.role-name  user-destroy 
+        %td.role-name  user-destroy
         %td This role allows a user to delete other users.
         %td None
       %tr
         %td= check_box_tag 'diagram-create', 1,  false, {:class => 'role-select'}
-        %td.role-name  diagram-create 
+        %td.role-name  diagram-create
         %td This role allows a user to create diagrams. A diagram's creator can always edit the diagram, download its data files, and view it.  Users can not delete diagrams unless they have the diagram-destroy role.
         %td diagram-update, diagram-destroy
       %tr
         %td= check_box_tag 'diagram-update', 1,  false, {:class => 'role-select'}
-        %td.role-name  diagram-update 
+        %td.role-name  diagram-update
         %td This role allows a user to edit their own diagrams.  This includes changing a diagram's name, description, replacing its data files, and sharing the diagram with other users.
         %td None
       %tr
         %td= check_box_tag 'diagram-destroy', 1,  false, {:class => 'role-select'}
-        %td.role-name  diagram-destroy 
+        %td.role-name  diagram-destroy
         %td This role allows a user to delete the diagrams they have created.
         %td None
       %tr
         %td= check_box_tag 'diagram-download', 1,  false, {:class => 'role-select'}
-        %td.role-name  diagram-download 
+        %td.role-name  diagram-download
         %td This role allows a user to download diagrams that have been shared with them and that have been marked as downloadable by their creator.  Users can always download the diagrams they create.
         %td None
   #role-messages
@@ -76,9 +76,9 @@
   %p{:style => "color:red;"}  If these roles do not meet all the requirements for your university, please contact us so we can improve them.
 
 :javascript
-  var role_dependencies = #{@user.role_dependencies.to_json}
-  var dependent_roles = #{@user.dependent_roles.to_json}
-  var current_roles = #{@user.roles.map{|r| r.name}.to_json}
+  var role_dependencies = #{@user.role_dependencies.to_json.html_safe}
+  var dependent_roles = #{@user.dependent_roles.to_json.html_safe}
+  var current_roles = #{@user.roles.map{|r| r.name}.to_json.html_safe}
 
   current_roles.forEach(function(role){
     $("#"+role).attr("checked", true);
