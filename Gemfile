@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 #gem 'rails', '~> 4.1.1'
-gem 'rails', '= 5.2.4.5'
+gem 'rails', '= 5.2.4.6'
 # Use postgresql as the database for Active Record
 gem 'pg'#, '~> 0.18.3'
 # Use SCSS for stylesheets
@@ -79,4 +79,7 @@ end
 
 gem 'mimemagic', ">= 0.3.6"
 gem 'nio4r', '2.5.7'
-gem 'puma', ">= 4.3.3"
+
+gem "nokogiri", ">= 1.11.4"
+gem "addressable", ">= 2.8.0"
+gem "puma", ">= 5.3.1"
