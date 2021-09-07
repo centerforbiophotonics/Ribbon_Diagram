@@ -1320,7 +1320,7 @@ GEM
     minitest (5.14.4)
     multi_json (1.15.0)
     nested_form (0.3.2)
-    nio4r (2.5.7)
+    nio4r (2.5.8)
     nokogiri (1.12.4-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.12.4-x86_64-linux)
@@ -1485,7 +1485,7 @@ DEPENDENCIES
   metric_fu
   mimemagic (>= 0.3.6)
   mini_racer
-  nio4r (= 2.5.7)
+  nio4r (>= 2.5.7)
   nokogiri (>= 1.11.4)
   paperclip
   pg
