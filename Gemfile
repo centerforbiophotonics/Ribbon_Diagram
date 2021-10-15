@@ -82,4 +82,4 @@ gem 'nio4r', '>= 2.5.7'
 
 gem "nokogiri", ">= 1.11.4"
 gem "addressable", ">= 2.8.0"
-gem "puma", ">= 5.3.1"
+gem "puma", ">= 5.5.2"
