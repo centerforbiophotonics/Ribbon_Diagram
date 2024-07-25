@@ -16,6 +16,17 @@
 
 <div id="header">
     <% if user_signed_in? %>
+
+        <div style="background-color: white; color:red">
+          <h1>
+            NOTICE: We can no longer host and maintain The Ribbon Tool. The site will be taken offline on September 27th, 2024.
+            Please export any data you wish to keep before September 27th, 2024.
+            If you need assistance exporting your data you can contact <a style="color:red;" href:"mailto:mksteinwachs@ucdavis.edu">mksteinwachs@ucdavis.edu</a>
+            In early September we will release the code for the site under an open license so that you may host your own instance.
+            We are sorry for any inconvenience this may cause. 
+          </h1>
+        </div>
+
         <p>You are: <a href="<%= user_path(current_user) %>"><%= current_user.name %></a></p>
         <div class="slicknav-container">
             <div class="slicknav">
